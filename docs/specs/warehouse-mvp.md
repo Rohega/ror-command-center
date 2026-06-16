@@ -474,8 +474,13 @@ app/
 
 - Stack objetivo: Rails + MySQL + React/Inertia (según estándares del proyecto)
 - Transacciones DB en todos los flujos de stock
-- ADR recomendado: `StockUpdater` como único writer de inventario
-- ADR recomendado: estrategia de reservas en salidas
+- **ADR-0001:** `Warehouse::StockUpdater` como único writer de inventario — [Accepted](../architecture/adr-0001-stock-updater-single-writer.md)
+- **ADR-0002:** Reservas location-level al iniciar picking — [Accepted](../architecture/adr-0002-outbound-stock-reservations.md)
+- **ADR-0003:** Asignación greedy por orden de ubicación — [Accepted](../architecture/adr-0003-picking-location-allocation.md)
+- **ADR-0004:** Namespace `Warehouse::` y estructura de módulo — [Accepted](../architecture/adr-0004-warehouse-module-boundaries.md)
+- **ADR-0005:** Capa `Integration::*` para Odoo futuro — [Accepted](../architecture/adr-0005-erp-integration-layer.md)
+- Diseño técnico: [warehouse-mvp.md](../design/warehouse-mvp.md)
+- Revisión arquitectura: [warehouse-mvp-review.md](../architecture/warehouse-mvp-review.md) — **APPROVED WITH CONDITIONS**
 - Performance: índices en `stock_levels(warehouse_id, product_id)`, `stock_movements(product_id, occurred_at)`
 - Seguridad: RBAC en API y UI; auditoría no editable
 
@@ -493,4 +498,5 @@ app/
 ## Approval
 
 - [x] Product Owner sign-off
-- [ ] Rails Architect review (pendiente ADR StockUpdater y reservas)
+- [x] Rails Architect review — APPROVED WITH CONDITIONS (2026-06-16)
+- [ ] MySQL DBA review — pendiente primer PR de migraciones
