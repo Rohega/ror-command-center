@@ -1,4 +1,4 @@
-# Wardogs AI Development Studio
+# Rolos AI Development Studio
 
 **Vendor-neutral AI engineering framework** for Rails, React/Inertia, AWS, MySQL, Odoo, and Textract workflows.
 
