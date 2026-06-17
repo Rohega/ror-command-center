@@ -1,0 +1,59 @@
+services:
+  db:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-warehouse_wms_development}
+    ports:
+      - "${MYSQL_PORT:-3307}:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${MYSQL_ROOT_PASSWORD:-root}"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    restart: unless-stopped
+    entrypoint: ["/app/bin/docker-entrypoint.sh"]
+    command: ["rails", "server", "-b", "0.0.0.0"]
+    volumes:
+      - .:/app
+      - bundle_cache:/usr/local/bundle
+      - node_modules_cache:/app/node_modules
+    ports:
+      - "${RAILS_PORT:-3000}:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      RAILS_ENV: development
+      DATABASE_HOST: db
+      DATABASE_USERNAME: root
+      DATABASE_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+      DATABASE_NAME: ${MYSQL_DATABASE:-warehouse_wms_development}
+    stdin_open: true
+    tty: true
+
+  # Uso: docker compose run --rm rails-new  (solo bootstrap, ver bin/bootstrap-docker)
+  rails-new:
+    image: ruby:3.3-bookworm
+    profiles: ["bootstrap"]
+    working_dir: /output
+    volumes:
+      - ${TARGET_DIR:-.}:/output
+      - ${FRAMEWORK_DIR:-/framework}:/framework:ro
+    environment:
+      RAILS_NEW_ARGS: ${RAILS_NEW_ARGS:---database=mysql --css=tailwind --javascript=esbuild --skip-git}
+    entrypoint: ["/framework/examples/warehouse-wms/bin/rails-new-docker.sh"]
+
+volumes:
+  mysql_data:
+  bundle_cache:
+  node_modules_cache:

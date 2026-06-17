@@ -1,0 +1,11 @@
+# Gemas Fase 0 — se añaden al Gemfile tras rails new
+# NOTA: mysql2 ya lo incluye rails new --database=mysql; no duplicar.
+
+gem "devise"
+gem "pundit"
+gem "alba"
+
+group :development, :test do
+  gem "rspec-rails"
+  gem "factory_bot_rails"
+end

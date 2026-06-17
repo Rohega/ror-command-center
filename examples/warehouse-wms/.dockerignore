@@ -1,0 +1,11 @@
+.git/
+log/
+tmp/
+node_modules/
+vendor/bundle
+storage/
+.env
+.env.*
+!.env.example
+coverage/
+spec/tmp/
