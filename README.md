@@ -35,17 +35,36 @@ You stay in control. Agents ask questions, present options, draft artifacts, and
 
 ## Installation
 
+Clone this framework, then run `install.sh` pointing at your project:
+
 ```bash
-git clone <repo-url> my-project
-cd my-project
+git clone <repo-url> rolos-ai-studio
+cd rolos-ai-studio
+./install.sh /path/to/your-project
 ```
 
-**For a Rails app:** copy or merge `.ai/`, `.cursor/`, and `.claude/` into your application repository.
+The script copies the framework **core** into your project and creates an empty `docs/` scaffolding — it does **not** copy example-specific content. Existing files are skipped unless you pass `--force`.
+
+| Flag | Effect |
+|------|--------|
+| `--dry-run` | Show what would be copied without writing anything |
+| `--force` | Overwrite files that already exist in the target |
+| `--backup` | Save conflicting files as `<file>.bak` before overwriting |
+| `--with-examples` | Also copy `examples/` and the warehouse example docs |
+| `-h`, `--help` | Show usage |
+
+**What gets copied (core):** `.ai/`, `.cursor/`, `.claude/{agents,hooks,skills,settings.json}`, `CLAUDE.md`, `docs/integrations/`, `docs/CLAUDE.md`, `docs/COLLABORATIVE-DESIGN-PRINCIPLE.md`, `.github/copilot-instructions.md`, plus empty `docs/{architecture,specs,stories,design,runbooks,modules}/`.
+
+**What is excluded:** `examples/`, `archive/`, `production/`, `.git/`, repo meta files, and the warehouse-mvp example docs (unless `--with-examples`).
+
+Full step-by-step guide: [docs/INSTALL.md](docs/INSTALL.md).
 
 **Prerequisites (recommended):**
-- Git
+- Git, Bash
 - For Claude Code: `@anthropic-ai/claude-code`
 - For hooks: `jq`, Python 3 (optional, hooks degrade gracefully)
+
+> Prefer manual control? You can still copy or merge `.ai/`, `.cursor/`, and `.claude/` into your application repository by hand.
 
 ---
 
