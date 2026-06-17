@@ -5,7 +5,7 @@
 Add to project or workspace instructions:
 
 ```
-Project uses Wardogs AI Development Studio (.ai/ directory).
+Project uses Rolos AI Development Studio (.ai/ directory).
 
 Before implementing:
 1. Read .ai/standards/collaboration.md

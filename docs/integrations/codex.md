@@ -14,7 +14,7 @@ Paste or attach:
 ## Example Prompt
 
 ```
-You are operating under Wardogs AI Development Studio.
+You are operating under Rolos AI Development Studio.
 
 Collaboration: Question → Options → Decision → Draft → Approval. Ask before writing files.
 

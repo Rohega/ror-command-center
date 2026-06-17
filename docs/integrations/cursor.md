@@ -2,7 +2,7 @@
 
 ## Setup
 
-1. Clone or copy Wardogs AI Development Studio into your project.
+1. Clone or copy Rolos AI Development Studio into your project.
 2. Ensure `.cursor/rules/` exists with the six rule files.
 3. Open the project in Cursor — rules load automatically.
 

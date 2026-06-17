@@ -1,6 +1,6 @@
 ---
 name: odoo-specialist
-description: "Design, customize, and integrate Odoo ERP modules with Wardogs Rails applications."
+description: "Design, customize, and integrate Odoo ERP modules with Rolos Rails applications."
 tools: Read, Glob, Grep, Write, Edit, Bash, Task
 model: sonnet
 ---

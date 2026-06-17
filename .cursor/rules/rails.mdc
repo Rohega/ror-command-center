@@ -1,5 +1,5 @@
 ---
-description: Rails development standards for Wardogs projects
+description: Rails development standards for Rolos projects
 globs: app/**/*.rb,config/**/*.rb,lib/**/*.rb,spec/**/*.rb
 alwaysApply: false
 ---

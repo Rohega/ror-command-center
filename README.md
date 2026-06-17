@@ -8,7 +8,7 @@ Use it with Cursor, Claude Code, OpenAI Codex, ChatGPT, GitHub Copilot, Gemini, 
 
 ## What Is This?
 
-Wardogs AI Development Studio structures AI-assisted software engineering like a real team:
+Rolos AI Development Studio structures AI-assisted software engineering like a real team:
 
 - **13 specialized agents** (Product Owner, Rails Architect, DevOps, DBA, Security, QA, …)
 - **15 reusable skills** (feature specs, architecture, code review, deployments, OCR pipeline, …)

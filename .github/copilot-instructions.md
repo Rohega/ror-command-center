@@ -1,4 +1,4 @@
-# Wardogs AI Development Studio
+# Rolos AI Development Studio
 
 Follow standards in `.ai/standards/`. Key rules:
 - Rails conventions over custom abstractions

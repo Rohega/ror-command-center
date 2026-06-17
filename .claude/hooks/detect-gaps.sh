@@ -1,5 +1,5 @@
 #!/bin/bash
-# Wardogs — detect documentation gaps for software projects
+# Rolos — detect documentation gaps for software projects
 
 echo "=== Documentation Gap Check ==="
 

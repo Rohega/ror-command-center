@@ -114,7 +114,7 @@ Si quieres specs siempre al día sin mezclar código:
 
 ```bash
 cd warehouse-wms
-git submodule add git@github.com:Rohega/Wardogs-AI-Development-Studio.git vendor/ai-studio
+git submodule add git@github.com:Rohega/Rolos-AI-Development-Studio.git vendor/ai-studio
 ln -s vendor/ai-studio/docs/specs docs/specs-framework  # opcional
 ```
 

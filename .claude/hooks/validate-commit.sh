@@ -1,5 +1,5 @@
 #!/bin/bash
-# Wardogs AI Development Studio — validate git commits
+# Rolos AI Development Studio — validate git commits
 # Canonical standards: .ai/standards/git-workflow.md
 
 INPUT=$(cat)

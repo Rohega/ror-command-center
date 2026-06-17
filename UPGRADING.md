@@ -1,4 +1,4 @@
-# Upgrading to Wardogs AI Development Studio
+# Upgrading to Rolos AI Development Studio
 
 ## From Claude Code Game Studios
 

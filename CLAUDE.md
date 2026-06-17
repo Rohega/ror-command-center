@@ -1,4 +1,4 @@
-# Wardogs AI Development Studio — Claude Code Adapter
+# Rolos AI Development Studio — Claude Code Adapter
 
 Vendor-neutral AI engineering framework. **Canonical definitions live in `.ai/`** — this file is the Claude Code entry point only.
 

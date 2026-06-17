@@ -1,6 +1,6 @@
-# Contributing to Wardogs AI Development Studio
+# Contributing to Rolos AI Development Studio
 
-Wardogs is a **vendor-neutral AI engineering framework**. Contributions welcome: new skills, agent improvements, standards updates, and adapter fixes.
+Rolos is a **vendor-neutral AI engineering framework**. Contributions welcome: new skills, agent improvements, standards updates, and adapter fixes.
 
 ## Architecture Rule
 

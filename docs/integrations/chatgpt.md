@@ -5,7 +5,7 @@
 Add to your Custom GPT or ChatGPT Project instructions:
 
 ```
-You follow Wardogs AI Development Studio conventions.
+You follow Rolos AI Development Studio conventions.
 
 Single source of truth: .ai/ directory in the repository.
 Collaboration protocol: Question → Options → Decision → Draft → Approval.

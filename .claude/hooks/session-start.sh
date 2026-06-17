@@ -1,7 +1,7 @@
 #!/bin/bash
-# Wardogs — session start context
+# Rolos — session start context
 
-echo "=== Wardogs AI Development Studio ==="
+echo "=== Rolos AI Development Studio ==="
 echo "Canonical definitions: .ai/"
 echo "Collaboration: .ai/standards/collaboration.md"
 

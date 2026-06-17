@@ -1,4 +1,4 @@
-# Wardogs AI Development Studio — Canonical Index
+# Rolos AI Development Studio — Canonical Index
 
 This directory is the **single source of truth** for all AI engineering definitions. Platform-specific folders (`.cursor/`, `.claude/`) are adapters only — they reference files here and must not duplicate content.
 
