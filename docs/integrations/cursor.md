@@ -3,7 +3,7 @@
 ## Setup
 
 1. Clone or copy Rolos AI Development Studio into your project.
-2. Ensure `.cursor/rules/` exists with the six rule files.
+2. Ensure `.cursor/rules/` exists with the ten rule files.
 3. Open the project in Cursor — rules load automatically.
 
 ## Rules Map
@@ -12,6 +12,10 @@
 |-------------|-------------------|
 | `project-structure.mdc` | `.ai/` layout (always applied) |
 | `rails.mdc` | `.ai/standards/stacks/rails/development.md` |
+| `frontend.mdc` | `.ai/standards/stacks/rails/frontend.md` |
+| `ux-accessibility.mdc` | `.ai/standards/ux-accessibility.md` |
+| `api-design.mdc` | `.ai/standards/api-design.md` |
+| `testing.mdc` | `.ai/standards/testing.md` |
 | `aws.mdc` | `.ai/standards/aws-infrastructure.md` |
 | `security.mdc` | `.ai/standards/security.md` |
 | `database.mdc` | `.ai/standards/stacks/rails/mysql.md` |

@@ -10,11 +10,11 @@ Use it with Cursor, Claude Code, OpenAI Codex, ChatGPT, GitHub Copilot, Gemini, 
 
 Rolos AI Development Studio structures AI-assisted software engineering like a real team:
 
-- **11 specialized agents** (Product Owner, Rails Architect, DevOps, DBA, Security, QA, …)
-- **15 reusable skills** (feature specs, architecture, code review, deployments, …)
+- **13 specialized agents** (Product Owner, Rails Architect, DevOps, DBA, Security, QA, UX Designer, …)
+- **16 reusable skills** (feature specs, architecture, code review, UX specs, deployments, …)
 - **3 end-to-end workflows** (new feature, production incident, AWS deploy)
-- **9 engineering standards** (Rails, AWS, MySQL, API, security, testing, …)
-- **7 document templates** (feature spec, ADR, QA plan, release checklist, …)
+- **12 engineering standards** (Rails, frontend, UX/accessibility, AWS, MySQL, API, security, testing, …)
+- **8 document templates** (feature spec, ADR, UX spec, QA plan, release checklist, …)
 
 You stay in control. Agents ask questions, present options, draft artifacts, and wait for approval before writing files.
 
@@ -139,15 +139,16 @@ See [docs/integrations/codex.md](docs/integrations/codex.md).
 Follow `.ai/workflows/new-feature.yaml`:
 
 ```text
-Idea → User Stories → Architecture → Implementation → Review → QA → Release
+Idea → User Stories → {Design, Architecture} → Implementation → Review → QA → Release
 ```
 
 | Phase | Skill | Agent |
 |-------|-------|-------|
 | Idea | `create-feature-spec` | Product Owner |
 | Stories | `create-user-stories` | Product Owner |
+| Design | `create-ux-spec` | UX Designer |
 | Architecture | `create-architecture-plan` | Rails Architect |
-| Implementation | `create-api-endpoints` | Backend Rails Developer |
+| Implementation | `create-api-endpoints` | Backend Rails Developer, Frontend React/Inertia Developer |
 | Review | `review-rails-models`, `security-audit` | Code Reviewer |
 | QA | `qa-plan` | QA Engineer |
 | Release | `release-checklist` | Release Manager |
@@ -184,12 +185,13 @@ Standard: `.ai/standards/aws-infrastructure.md`
 
 1. **Product Owner** drafts `docs/specs/feature-stock-transfer.md` via `create-feature-spec`
 2. **Stories** → `docs/stories/stock-transfer/US-001.md`
-3. **Rails Architect** writes `docs/architecture/adr-0001-stock-transfer-flow.md`
-4. **Backend Developer** implements models, jobs, and service objects
-5. **Frontend Developer** builds the Inertia/React screens
-6. **Code Reviewer** runs `review-rails-models` + `security-audit`
-7. **QA Engineer** produces QA plan; smoke test on staging
-8. **Release Manager** completes checklist; Capistrano deploy to production
+3. **UX Designer** writes `docs/design/ux-stock-transfer.md` via `create-ux-spec`
+4. **Rails Architect** writes `docs/architecture/adr-0001-stock-transfer-flow.md`
+5. **Backend Developer** implements models, jobs, and service objects
+6. **Frontend Developer** builds the Inertia/React screens
+7. **Code Reviewer** runs `review-rails-models` + `security-audit`
+8. **QA Engineer** produces QA plan; smoke test on staging
+9. **Release Manager** completes checklist; Capistrano deploy to production
 
 ---
 

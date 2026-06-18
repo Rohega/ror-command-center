@@ -21,6 +21,8 @@ Full examples: `docs/COLLABORATIVE-DESIGN-PRINCIPLE.md`
 ## Standards
 
 @.ai/standards/stacks/rails/development.md
+@.ai/standards/stacks/rails/frontend.md
+@.ai/standards/ux-accessibility.md
 @.ai/standards/aws-infrastructure.md
 @.ai/standards/stacks/rails/mysql.md
 @.ai/standards/security.md

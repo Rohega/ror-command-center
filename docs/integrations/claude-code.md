@@ -21,6 +21,7 @@
 |---------|-----------------|
 | `/create-feature-spec` | `.ai/skills/create-feature-spec/SKILL.md` |
 | `/create-user-stories` | `.ai/skills/create-user-stories/SKILL.md` |
+| `/create-ux-spec` | `.ai/skills/create-ux-spec/SKILL.md` |
 | `/create-architecture-plan` | `.ai/skills/create-architecture-plan/SKILL.md` |
 | `/review-rails-models` | `.ai/skills/review-rails-models/SKILL.md` |
 | `/review-db-migrations` | `.ai/skills/review-db-migrations/SKILL.md` |
