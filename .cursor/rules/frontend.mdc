@@ -1,0 +1,18 @@
+---
+description: Frontend React/Inertia/Tailwind standards for Rolos projects
+globs: app/frontend/**/*.{tsx,jsx,ts,js,css},app/javascript/**/*.{tsx,jsx,ts,js}
+alwaysApply: false
+---
+
+# Frontend Standards
+
+Follow the canonical standard: **`.ai/standards/stacks/rails/frontend.md`**
+
+Key rules:
+- Server is source of truth — no business logic duplicated in React
+- Use Inertia visits/forms; avoid ad-hoc fetch unless ADR-approved
+- Handle loading, error, and empty states in every data-driven component
+- Tailwind theme tokens — no arbitrary magic values
+
+Agent: `.ai/agents/stacks/rails/frontend-react-inertia-developer.yaml`  
+UX/Accessibility: `.ai/standards/ux-accessibility.md`

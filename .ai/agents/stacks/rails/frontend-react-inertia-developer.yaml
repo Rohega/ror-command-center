@@ -31,4 +31,6 @@ success_criteria:
   - Critical paths have automated component or E2E tests
   - No console errors in production build
 references:
+  - .ai/standards/stacks/rails/frontend.md
+  - .ai/standards/ux-accessibility.md
   - .ai/standards/stacks/rails/development.md

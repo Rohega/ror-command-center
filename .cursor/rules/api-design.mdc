@@ -1,0 +1,18 @@
+---
+description: REST API design standards
+globs: app/controllers/**/*.rb,config/routes.rb,app/serializers/**/*.rb
+alwaysApply: false
+---
+
+# API Design Standards
+
+Follow the canonical standard: **`.ai/standards/api-design.md`**
+
+Key rules:
+- REST: nouns for resources, HTTP verbs for actions, plural names
+- JSON only unless ADR specifies otherwise; ISO 8601 UTC timestamps
+- URL path versioning (`/api/v1/`); breaking changes require a new version
+- Consistent error envelope: `{ "error": { "code", "message", "details" } }`
+
+Skill: `create-api-endpoints`  
+Standard: `.ai/standards/security.md`

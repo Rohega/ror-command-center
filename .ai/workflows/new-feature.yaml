@@ -19,6 +19,13 @@ phases:
     output: docs/stories/*.md
     depends_on: [idea]
 
+  - id: design
+    label: Design
+    role: ux-designer          # resolved via stacks.<stack>.ux-designer
+    skill: create-ux-spec
+    output: docs/design/ux-*.md
+    depends_on: [user-stories]
+
   - id: architecture
     label: Architecture
     role: architect            # resolved via stacks.<stack>.architect
@@ -31,7 +38,7 @@ phases:
     label: Implementation
     roles: [backend-developer, frontend-developer]  # resolved via stacks.<stack>
     skills: [create-api-endpoints, review-db-migrations]
-    depends_on: [architecture]
+    depends_on: [architecture, design]
 
   - id: review
     label: Review
@@ -60,6 +67,7 @@ stacks:
     architect: .ai/agents/stacks/rails/rails-architect.yaml
     backend-developer: .ai/agents/stacks/rails/backend-rails-developer.yaml
     frontend-developer: .ai/agents/stacks/rails/frontend-react-inertia-developer.yaml
+    ux-designer: .ai/agents/stacks/rails/ux-designer.yaml
     skills:
       stack-review: review-rails-models
       deploy-review: capistrano-review

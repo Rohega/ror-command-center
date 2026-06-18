@@ -1,0 +1,18 @@
+---
+description: Testing standards and coverage expectations
+globs: spec/**/*.rb,**/*_spec.rb,**/*.test.{ts,tsx,js,jsx},**/*.spec.{ts,tsx,js,jsx}
+alwaysApply: false
+---
+
+# Testing Standards
+
+Follow the canonical standard: **`.ai/standards/testing.md`**
+
+Key rules:
+- Respect the pyramid: unit, integration, system/E2E
+- Test files mirror the structure of the code under test
+- API endpoints cover happy path + auth failure + validation errors
+- No skipped/pending tests without a ticket reference
+
+Agent: `.ai/agents/qa-engineer.yaml`  
+Skill: `qa-plan`

@@ -1,0 +1,19 @@
+---
+description: UX and accessibility standards (WCAG 2.2 AA)
+globs: app/frontend/**/*.{tsx,jsx},app/javascript/**/*.{tsx,jsx}
+alwaysApply: false
+---
+
+# UX & Accessibility Standards
+
+Follow the canonical standard: **`.ai/standards/ux-accessibility.md`**
+
+Key rules:
+- WCAG 2.2 AA: contrast, keyboard navigation, visible focus, ARIA, prefers-reduced-motion
+- Specify loading, empty, error, and success states for every screen
+- Mobile-first and responsive; reflow without horizontal scroll at 320px
+- Reuse design-system tokens before adding new values
+
+Agent: `.ai/agents/ux-designer.yaml`  
+Skill: `create-ux-spec`  
+Template: `.ai/templates/ux-specification.md`
