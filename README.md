@@ -166,11 +166,11 @@ archive/game-studio-original/   # Previous game-studio framework (preserved)
 ## How to Use with Cursor
 
 1. Open the project in Cursor — rules in `.cursor/rules/` load automatically.
-2. `project-structure.mdc` is always applied; others activate by file glob.
-3. Ask the agent to follow a workflow: *"Run the new feature workflow for multi-warehouse stock transfer"*
-4. Point to canonical skills: *"Use `.ai/skills/create-feature-spec/SKILL.md`"*
+2. `project-structure.mdc` always applies; others activate by file glob.
+3. **New to this?** Follow the 5-minute quickstart in [docs/integrations/cursor.md](docs/integrations/cursor.md#quickstart-5-minutes).
+4. Plan in **Ask mode**, then switch to **Agent mode** to implement.
 
-See [docs/integrations/cursor.md](docs/integrations/cursor.md).
+See [docs/integrations/cursor.md](docs/integrations/cursor.md) for concepts, copy-paste recipes, and troubleshooting.
 
 ---
 
