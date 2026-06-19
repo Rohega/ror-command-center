@@ -1,0 +1,19 @@
+---
+description: Legacy Rails intervention and reverse-documentation standards
+globs:
+alwaysApply: false
+---
+
+# Legacy Rails Standards
+
+Follow the canonical standard: **`.ai/standards/legacy-rails.md`**
+
+Key rules:
+- Understand before you touch — reverse-document models, routes, jobs, integrations
+- Characterize current behavior with tests before refactoring
+- Strangler fig over big-bang rewrite; keep a documented rollback
+- Upgrade Rails one minor at a time, never skipping majors
+
+Agent: `.ai/agents/documentation-writer.yaml`  
+Skill: `reverse-document-legacy`  
+Workflow: `.ai/workflows/legacy-onboarding.yaml`

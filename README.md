@@ -80,7 +80,7 @@ Idea → Specification → Architecture → Implementation Plan → Development 
 | Documentation | `document-module` | Documentation Engineer |
 | Deployment | `release-checklist`, `capistrano-review` | DevOps AWS Engineer |
 
-Standards: `.ai/standards/development.md`, `.ai/standards/postgresql.md`, `.ai/standards/mysql.md`, `.ai/standards/testing.md`
+Standards: `.ai/standards/development.md`, `.ai/standards/postgresql.md`, `.ai/standards/mysql.md`, `.ai/standards/testing.md`, `.ai/standards/legacy-rails.md`
 
 ---
 
