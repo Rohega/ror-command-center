@@ -33,7 +33,27 @@ Pick a base model by RAM (see `ollama/models.yaml`):
 > local is privacy, zero cost, and offline use. For hard problems, use a cloud
 > client (Cursor/Claude Code) and keep local for everyday tasks.
 
-## Quickstart
+## Easy install (non-technical users)
+
+One command installs everything (Ollama, a model, the `rorcc` CLI, and the
+specialists), then you just type `rorcc` and pick from a menu. Works on Linux,
+macOS, and Windows + WSL.
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Rohega/ror-command-center/main/setup.sh | bash
+```
+
+The script asks for **one** confirmation, then runs on its own. It detects your
+RAM, picks a suitable model, and is **idempotent** (safe to re-run). When done:
+
+```bash
+rorcc            # opens an interactive menu — pick a specialist by number
+```
+
+> Running piped/non-interactively? Accept upfront with:
+> `curl -fsSL <url>/setup.sh | RORCC_YES=1 bash`
+
+## Quickstart (manual / developers)
 
 ```bash
 # 1. Install Ollama + pull a model

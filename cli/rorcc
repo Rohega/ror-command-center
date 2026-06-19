@@ -23,9 +23,10 @@ usage() {
 rorcc — RoR Command Center local AI CLI
 
 USAGE:
-  rorcc <command> [args]
+  rorcc [command] [args]      (no command → interactive menu)
 
 COMMANDS:
+  menu                    Interactive launcher: pick a specialist by number
   init <project>          Scaffold a new project with the .ai/ framework
   doctor                  Check Ollama, models, and environment
   build-agent <name>      Compile a .ai/agents/<name>.yaml into an Ollama model
@@ -62,9 +63,11 @@ cmd_init() {
 }
 
 main() {
-  local cmd="${1:-help}"
+  # No command → friendly interactive menu (built for non-technical users).
+  local cmd="${1:-menu}"
   [ $# -gt 0 ] && shift || true
   case "$cmd" in
+    menu)         . "$RORCC_LIB_DIR/menu.sh";        cmd_menu "$@" ;;
     init)         cmd_init "$@" ;;
     doctor)       . "$RORCC_LIB_DIR/doctor.sh";      cmd_doctor "$@" ;;
     build-agent)  . "$RORCC_LIB_DIR/build_agent.sh"; cmd_build_agent "$@" ;;
