@@ -84,6 +84,28 @@ Standards: `.ai/standards/development.md`, `.ai/standards/postgresql.md`, `.ai/s
 
 ---
 
+## Legacy & Reverse-Documentation
+
+Inherited a Rails app with missing or stale specs? RoR Command Center can
+reverse-document it and plan safe, incremental modernization.
+
+```text
+Discovery → Inventory → Risk Assessment → Reverse Documentation → Modernization Plan
+```
+
+| Artifact | Path |
+|----------|------|
+| Standard | `.ai/standards/legacy-rails.md` (characterization tests, seams, strangler fig, Rails upgrades) |
+| Skill | `.ai/skills/reverse-document-legacy/SKILL.md` (audit app → system map, module docs, retrospective ADRs, risks) |
+| Workflow | `.ai/workflows/legacy-onboarding.yaml` |
+| Templates | `.ai/templates/legacy-module-audit.md`, `.ai/templates/modernization-plan.md`, `.ai/templates/retrospective-adr.md` |
+
+Start by running the `reverse-document-legacy` skill in `map` mode, then follow the
+`legacy-onboarding` workflow. All changes stay documentation-only until a modernization
+plan is approved.
+
+---
+
 ## Operating Rules
 
 - Follow Rails conventions whenever possible.
