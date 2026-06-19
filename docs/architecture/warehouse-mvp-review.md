@@ -1,3 +1,143 @@
+> Language: English | [Español](#versión-en-español)
+
+# Architecture Review: WMS MVP — warehouse-mvp
+
+**Reviewer:** Rails Architect  
+**Date:** 2026-06-16  
+**Spec:** [warehouse-mvp.md](../specs/warehouse-mvp.md)  
+**Verdict:** **APPROVED WITH CONDITIONS**
+
+---
+
+## Summary
+
+The product spec can be built as a Rails monolith with the agreed stack. The data model is consistent for a multi-warehouse distributor. **5 Accepted ADRs** are issued to govern the blocking decisions identified in the spec.
+
+Implementation can start in **Phase 0** (`auth-rbac`, `master-data`, `stock-core`) as long as the conditions listed at the end are met.
+
+---
+
+## Architectural decisions issued
+
+| ADR | Title | Status |
+|-----|--------|--------|
+| [ADR-0001](adr-0001-stock-updater-single-writer.md) | StockUpdater as the single writer | Accepted |
+| [ADR-0002](adr-0002-outbound-stock-reservations.md) | Location-level reservations when picking starts | Accepted |
+| [ADR-0003](adr-0003-picking-location-allocation.md) | Greedy by location order | Accepted |
+| [ADR-0004](adr-0004-warehouse-module-boundaries.md) | `Warehouse::` namespace and structure | Accepted |
+| [ADR-0005](adr-0005-erp-integration-layer.md) | Integration layer with no coupling to the ERP | Accepted |
+
+**Technical design:** [warehouse-mvp.md](../design/warehouse-mvp.md)
+
+---
+
+## Strengths of the product design
+
+1. **Vertical slices** in the roadmap aligned with real data dependencies.
+2. **Append-only audit trail** well thought out; it fits compensating cancellations.
+3. **Scoped approvals** only where there is risk (adjustments, cancellations) — reduces operational friction.
+4. **Multi-warehouse** with two-phase transfers is the correct minimum viable approach for a distributor.
+5. **ERP readiness** without over-engineering (importer + external_references).
+
+---
+
+## Findings and resolutions
+
+### BLOCKING (resolved in ADRs)
+
+| # | Finding | Resolution |
+|---|----------|------------|
+| B1 | No single contract for stock mutation | ADR-0001 `Warehouse::StockUpdater` |
+| B2 | Timing and granularity of reservations not defined | ADR-0002 reserve at `start_picking`, by location |
+| B3 | Ambiguous picking algorithm ("FIFO") | ADR-0003 greedy by aisle/rack/position |
+| B4 | Code structure for 3 devs in parallel | ADR-0004 `Warehouse::` namespace |
+| B5 | ERP integration with no pattern | ADR-0005 `Integration::*` + `ExternalReference` |
+
+### CONCERNS (implementation conditions)
+
+| # | Risk | Required mitigation |
+|---|--------|----------------------|
+| C1 | Denormalized `warehouse_id` in `stock_levels` can get out of sync | Validate in `StockUpdater`; coherence test |
+| C2 | Transfer without a virtual location: stock "disappears" in transit | Documented; UI must show `in_transit` in the transfer report; do not count it as available |
+| C3 | Cancelling a `transfer_in` that was already received | US-035 blocks a simple cancellation; force a reverse transfer — **add an E2E test** |
+| C4 | Concurrency in picking | Pessimistic locks ADR-0001 + mandatory integration tests |
+| C5 | Counting with stock in motion | Snapshot `system_quantity` at count **submit** (confirmed in the design) |
+| C6 | Long `StartPicking` transaction | Keep the allocator at O(n) locations; monitor; no async job needed in the MVP |
+
+### SUGGESTIONS (non-blocking)
+
+| # | Suggestion |
+|---|------------|
+| S1 | Add `lock_version` to `reception_lines` and `picking_lines` |
+| S2 | Validate integer quantities for discrete units in the `Product` model |
+| S3 | Initial CSV load: reuse `Integration::ProductImporter` (ADR-0005 dogfooding) |
+| S4 | `warehouse_sequences` table for document numbers without race conditions |
+| S5 | Future infra ADR: Solid Queue vs Sidekiq once there is an AWS deployment |
+
+---
+
+## Adjustments to the data model (vs the original spec)
+
+| Entity | Change |
+|---------|--------|
+| `picking_lines` | + `status` (`pending`, `picked`, `skipped`) |
+| `reception_lines` | + `lock_version` |
+| `stock_movements` | `location_id` required for location-based operations |
+| New `warehouse_sequences` | Generates `REC/OUT/TRF` numbers |
+
+---
+
+## Confirmed merge order
+
+```mermaid
+flowchart LR
+    A[auth-rbac] --> B[master-data]
+    B --> C[stock-core]
+    C --> D[reception + inventory-query]
+    D --> E[outbound-picking]
+    D --> F[transfers]
+    E --> G[counts-adjustments]
+    E --> H[cancellations]
+```
+
+**Hard gate:** any PR that writes `quantity_on_hand` or `quantity_reserved` outside `StockUpdater` does not pass code review.
+
+---
+
+## Unblocked stories
+
+All P0 stories are **unblocked for implementation** after this review, with implementation following ADRs 0001–0005 and the [technical design](../design/warehouse-mvp.md).
+
+| Phase | Stories | Prerequisite |
+|------|-----------|--------------|
+| 0 | US-001–004, US-040 | ADR-0004 |
+| 0 | US-005, US-041 | ADR-0001, ADR-0004 |
+| 1 | US-010–011, US-030 | stock-core merged |
+| 2 | US-020–023 | ADR-0002, ADR-0003 |
+| 3 | US-031–035, US-034 | ADR-0001 |
+
+---
+
+## Conditions (must be met in PRs)
+
+1. [ ] `Warehouse::StockUpdater` merged with concurrency tests before reception/outbound
+2. [ ] Pundit policies for the US-040 matrix in the same PR as the mutating endpoints
+3. [ ] Migrations with indexes per the technical design
+4. [ ] No new gems without justification in an ADR
+5. [ ] MySQL DBA review on the PR with the `stock_levels` and `stock_movements` migrations
+
+---
+
+## Sign-off
+
+- [x] Rails Architect — **APPROVED WITH CONDITIONS** (2026-06-16)
+- [x] ADRs 0001–0005 — **Accepted**
+- [x] MySQL DBA review — APPROVED WITH CONDITIONS (2026-06-16) — [migrations review](warehouse-mvp-migrations-review.md)
+
+---
+
+## Versión en español
+
 # Architecture Review: WMS MVP — warehouse-mvp
 
 **Reviewer:** Rails Architect  

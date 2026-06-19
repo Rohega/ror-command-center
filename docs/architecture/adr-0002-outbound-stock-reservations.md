@@ -1,3 +1,80 @@
+> Language: English | [Español](#versión-en-español)
+
+# ADR-0002: Stock reservations for outbound orders (location-level)
+
+## Status
+
+Accepted
+
+## Date
+
+2026-06-16
+
+## Context
+
+Outbound orders move through the states `draft` → `picking` → `completed`. Multiple orders running at the same time on the same warehouse can over-assign stock if we only check availability without reserving. The spec (US-020, US-023) separates draft (no reservation) from picking (with validation). We need to decide **when** to reserve and **at what level of detail**.
+
+## Decision
+
+### When to reserve
+
+| Order state | Reservation |
+|--------------|---------|
+| `draft` | None |
+| `picking`, `partial` | Active reservation per location |
+| `completed`, `cancelled` | Reservations released or consumed |
+
+The reservation is created in **`Outbound::StartPicking`** (the `draft` → `picking` transition), not when the draft is created.
+
+### Level of detail
+
+Reserve at the **location level** (`stock_levels.quantity_reserved`), not just an aggregate by product/warehouse.
+
+Flow:
+
+1. `Outbound::AvailabilityChecker` checks aggregate availability per product in the warehouse.
+2. `Picking::GenerateLines` assigns locations (ADR-0003).
+3. For each `picking_line`, `StockUpdater.reserve!` increases `quantity_reserved` on the matching `stock_level`.
+4. When picking is confirmed: `StockUpdater.decrement!` reduces `on_hand` and `release!` releases the reserved portion in the same transaction.
+5. When an order is cancelled during picking: `StockUpdater.release!` runs for each pending line.
+
+### Available
+
+```
+disponible(location) = quantity_on_hand - quantity_reserved
+disponible(almacén, producto) = SUM(disponible(location)) ∀ locations del almacén
+```
+
+## Alternatives Considered
+
+| Option | Pros | Cons |
+|--------|------|------|
+| **A: Reserve per location when picking starts (chosen)** | Avoids assigning the same position twice; aligns with picking lines | More locked rows; line generation required before reserving |
+| **B: Aggregate reservation by product/warehouse** | Simpler | Two pickers can reserve the same physical location |
+| **C: Reserve when the draft is created** | Locks stock early | Reduces operational availability; abandoned drafts lock stock |
+
+## Consequences
+
+### Positive
+
+- US-023 can be implemented with an aggregate query plus consistency with picking.
+- Concurrency controlled with the ADR-0001 locks per `stock_level`.
+
+### Negative
+
+- `StartPicking` is a heavy atomic operation (generate lines + reserve); it must be transactional.
+- Regenerating picking with lines already confirmed requires an explicit flow (not automatic in the MVP).
+
+## Compliance
+
+- Standards: `.ai/standards/development.md`, `.ai/standards/mysql.md`
+- Stories blocked until Accepted: US-020, US-021, US-022, US-023
+- Depends on: ADR-0001, ADR-0003
+
+---
+
+## Versión en español
+
 # ADR-0002: Reservas de stock en salidas (location-level)
 
 ## Status
