@@ -115,7 +115,7 @@ Standards: `.ai/standards/development.md`, `.ai/standards/postgresql.md`, `.ai/s
 Clone this framework, then run `install.sh` pointing at your project:
 
 ```bash
-git clone <repo-url> ror-command-center
+git clone https://github.com/Rohega/ror-command-center.git
 cd ror-command-center
 ./install.sh /path/to/your-project
 ```

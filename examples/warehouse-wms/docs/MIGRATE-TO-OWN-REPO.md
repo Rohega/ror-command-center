@@ -1,6 +1,6 @@
 # Pasar de scaffold Docker a repositorio propio
 
-La app **no debe vivir dentro** de `Rolos-AI-Development-Studio`. El bootstrap crea un directorio hermano (por defecto `../warehouse-wms`) que ya es tu proyecto independiente.
+La app **no debe vivir dentro** de `ror-command-center`. El bootstrap crea un directorio hermano (por defecto `../warehouse-wms`) que ya es tu proyecto independiente.
 
 ---
 
@@ -8,7 +8,7 @@ La app **no debe vivir dentro** de `Rolos-AI-Development-Studio`. El bootstrap c
 
 ```mermaid
 flowchart LR
-    A[Rolos-AI-Development-Studio] -->|bootstrap-docker.sh| B[warehouse-wms local]
+    A[ror-command-center] -->|bootstrap-docker.sh| B[warehouse-wms local]
     B -->|git init + commit| C[Repo propio]
     C -->|git push| D[GitHub/GitLab]
     D -->|clone en otro PC| E[Mismo stack Docker]
@@ -114,7 +114,7 @@ Si quieres specs siempre al día sin mezclar código:
 
 ```bash
 cd warehouse-wms
-git submodule add git@github.com:Rohega/Rolos-AI-Development-Studio.git vendor/ai-studio
+git submodule add git@github.com:Rohega/ror-command-center.git vendor/ai-studio
 ln -s vendor/ai-studio/docs/specs docs/specs-framework  # opcional
 ```
 

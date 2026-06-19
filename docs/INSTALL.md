@@ -11,7 +11,7 @@ This guide explains how to add the framework to a new or existing project using 
 ## Step 1 — Clone the framework
 
 ```bash
-git clone <repo-url> ror-command-center
+git clone https://github.com/Rohega/ror-command-center.git
 cd ror-command-center
 ```
 
