@@ -39,7 +39,7 @@ Guide collaborative authoring of a UX specification from approved user stories t
 
 ## Agent
 
-`ux-designer` — see `.ai/agents/ux-designer.yaml` (stack variant: `.ai/agents/stacks/rails/ux-designer.yaml`)
+`frontend-engineer` — see `.ai/agents/frontend-react-inertia-developer.yaml` (owns UX and accessibility)
 
 ## Workflow
 

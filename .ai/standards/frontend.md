@@ -1,8 +1,8 @@
 # Rails Frontend Standards (React / Inertia / Tailwind)
 
-> Stack: **rails** (reference stack). Frontend-specific development standard. Backend
-> rules live in `.ai/standards/stacks/rails/development.md`; agnostic UX and
-> accessibility rules live in `.ai/standards/ux-accessibility.md`.
+> Frontend development standard (Hotwire and React + Inertia). Backend rules live in
+> `.ai/standards/development.md`; UX and accessibility rules live in
+> `.ai/standards/ux-accessibility.md`.
 
 ## Architecture
 
@@ -37,6 +37,6 @@
 
 ## References
 
-- Agent: `.ai/agents/stacks/rails/frontend-react-inertia-developer.yaml`
+- Agent: `.ai/agents/frontend-react-inertia-developer.yaml`
 - UX/Accessibility: `.ai/standards/ux-accessibility.md`
-- Backend: `.ai/standards/stacks/rails/development.md`
+- Backend: `.ai/standards/development.md`

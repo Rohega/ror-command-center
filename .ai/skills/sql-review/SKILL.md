@@ -8,7 +8,7 @@ Review SQL and ActiveRecord queries for correctness, performance, and index usag
 
 - Query code, slow query log excerpt, or EXPLAIN output
 - Relevant schema from `db/schema.rb`
-- Standard: `.ai/standards/stacks/rails/mysql.md`
+- Standards: `.ai/standards/postgresql.md`, `.ai/standards/mysql.md`
 
 ## Outputs
 

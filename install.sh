@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Rolos AI Development Studio — installer
+# RoR Command Center — installer
 # Copies the framework core into a target project without example-specific content.
 set -euo pipefail
 
@@ -38,7 +38,6 @@ CORE_ITEMS=(
   "docs/integrations"
   "docs/CLAUDE.md"
   "docs/COLLABORATIVE-DESIGN-PRINCIPLE.md"
-  "docs/ADDING-A-LANGUAGE.md"
   ".github/copilot-instructions.md"
 )
 
@@ -64,7 +63,7 @@ EXAMPLE_ITEMS=(
 
 usage() {
   cat <<'EOF'
-Rolos AI Development Studio — installer
+RoR Command Center — installer
 
 USAGE:
   ./install.sh [options] <target-dir>
@@ -83,7 +82,7 @@ OPTIONS:
 WHAT GETS COPIED (core):
   .ai/  .cursor/  .claude/{agents,hooks,skills,settings.json}
   CLAUDE.md  docs/integrations/  docs/CLAUDE.md
-  docs/COLLABORATIVE-DESIGN-PRINCIPLE.md  docs/ADDING-A-LANGUAGE.md
+  docs/COLLABORATIVE-DESIGN-PRINCIPLE.md
   .github/copilot-instructions.md
   + empty docs/ scaffolding (architecture, specs, stories, design, runbooks, modules)
 
@@ -215,7 +214,7 @@ scaffold_dir() {
 }
 
 # --- Run ----------------------------------------------------------------------
-log "${C_BOLD}Rolos AI Development Studio — installer${C_RESET}"
+log "${C_BOLD}RoR Command Center — installer${C_RESET}"
 log "  source: ${C_DIM}$SRC${C_RESET}"
 log "  target: ${C_DIM}$TARGET${C_RESET}"
 [ "$DRY_RUN" -eq 1 ] && warn "dry-run: no files will be written"

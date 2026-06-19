@@ -1,8 +1,7 @@
 # UX & Accessibility Standards
 
-> Agnostic principles for usable, accessible interfaces. Stack-specific UI tooling
-> (component libraries, CSS frameworks) lives in the active stack standard under
-> `.ai/standards/stacks/<stack>/`.
+> Principles for usable, accessible interfaces. Rails-specific UI tooling
+> (Hotwire, React + Inertia, Tailwind) lives in `.ai/standards/frontend.md`.
 
 ## Accessibility (WCAG 2.2 AA — minimum bar)
 
@@ -45,6 +44,6 @@ Every screen and data-driven component must specify all four states:
 
 ## References
 
-- Agent: `.ai/agents/ux-designer.yaml` (stack: `.ai/agents/stacks/rails/ux-designer.yaml`)
+- Agent: `.ai/agents/frontend-react-inertia-developer.yaml` (UX/accessibility responsibilities)
 - Skill: `create-ux-spec`
 - Template: `.ai/templates/ux-specification.md`

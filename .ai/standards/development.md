@@ -1,6 +1,6 @@
 # Rails Development Standards
 
-> Stack: **rails** (reference stack). This file is the stack-specific development standard. Agnostic rules live in `.ai/standards/` (security, testing principles, api-design, git-workflow, …).
+> Core Ruby on Rails development standard. Cross-cutting rules live alongside in `.ai/standards/` (security, testing, api-design, git-workflow, …).
 
 ## Conventions
 
@@ -42,6 +42,6 @@
 
 ## References
 
-- Agent: `.ai/agents/stacks/rails/backend-rails-developer.yaml`
-- Data layer: `.ai/standards/stacks/rails/mysql.md`
+- Agent: `.ai/agents/backend-rails-developer.yaml`
+- Data layer: `.ai/standards/postgresql.md`, `.ai/standards/mysql.md`
 - Skills: `review-rails-models`, `create-api-endpoints`

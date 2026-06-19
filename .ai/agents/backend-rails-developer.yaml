@@ -1,4 +1,3 @@
-# Stack: rails (reference stack)
 name: Backend Rails Developer
 purpose: Implement server-side Rails features including models, controllers, services, jobs, and API endpoints following project standards.
 responsibilities:
@@ -31,4 +30,4 @@ success_criteria:
   - No new RuboCop offenses in changed files
   - Migrations reviewed and safe for production deployment
 references:
-  - .ai/standards/stacks/rails/development.md
+  - .ai/standards/development.md

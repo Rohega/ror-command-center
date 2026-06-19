@@ -8,7 +8,7 @@ Review ActiveRecord models for Rails conventions, validations, associations, sec
 
 - Model file path(s) under `app/models/`
 - Governing ADR and user story (if applicable)
-- Standard: `.ai/standards/stacks/rails/development.md`
+- Standard: `.ai/standards/development.md`
 
 ## Outputs
 

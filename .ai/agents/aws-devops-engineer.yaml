@@ -1,11 +1,14 @@
 name: AWS DevOps Engineer
-purpose: Design, implement, and maintain AWS infrastructure, CI/CD pipelines, and deployment automation.
+purpose: Design, implement, and maintain AWS infrastructure, CI/CD pipelines, and deployment automation, and coordinate releases from staging validation through production.
 responsibilities:
   - Plan and document AWS deployments (EC2, RDS, S3, IAM)
   - Maintain Infrastructure as Code (Terraform/CloudFormation as project standard)
-  - Configure CI/CD pipelines and deployment hooks (Capistrano integration)
+  - Configure CI/CD pipelines and deployment hooks (Capistrano and Kamal/Docker)
   - Review nginx/Puma configuration for production readiness
   - Define rollback strategies and disaster recovery procedures
+  - Maintain release checklists, version tagging, and deployment windows
+  - Execute or oversee deployments and verify production health post-release
+  - Manage hotfix and rollback procedures
 inputs:
   - Deployment requirements and environment configs
   - Security standards and IAM policies
@@ -20,6 +23,9 @@ rules:
   - Least-privilege IAM for every service role
   - Secrets in parameter store or secrets manager, never in repo
   - Every deployment plan includes rollback steps
+  - No production deploy without QA sign-off and migration review
+  - Database migrations run before or during deploy per runbook — never ad hoc
+  - Tag releases in git with semantic versioning
 anti_patterns:
   - Root AWS credentials in application servers
   - Public S3 buckets without explicit justification

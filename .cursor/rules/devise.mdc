@@ -1,0 +1,20 @@
+---
+description: Authentication standards (Devise)
+globs: config/initializers/devise.rb,app/controllers/users/**/*.rb,app/models/user.rb,app/models/admin_user.rb
+alwaysApply: false
+---
+
+# Authentication Standards
+
+Follow the canonical standard: **`.ai/standards/devise-auth.md`**
+
+Key rules:
+- Enable only the Devise modules you need; use `confirmable` and `lockable`
+- Web: secure/httponly/samesite cookies; APIs: token strategy (e.g. devise-jwt), not the session cookie
+- Add 2FA for admin and privileged roles
+- Rate-limit login, password reset, and confirmation endpoints (Rack::Attack)
+- Authenticate is not authorize — always authorize server-side
+- Never store tokens or reset secrets in plain text or logs
+
+Agent: `.ai/agents/backend-rails-developer.yaml`, `.ai/agents/security-reviewer.yaml`  
+Related: `.ai/standards/security.md`

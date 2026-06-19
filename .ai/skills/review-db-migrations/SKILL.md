@@ -8,7 +8,7 @@ Review Rails database migrations for safety, reversibility, locking risk, and in
 
 - Migration file(s) in `db/migrate/`
 - `db/schema.rb` for context
-- Standard: `.ai/standards/stacks/rails/mysql.md`
+- Standards: `.ai/standards/postgresql.md`, `.ai/standards/mysql.md`
 
 ## Outputs
 

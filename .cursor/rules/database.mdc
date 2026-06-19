@@ -1,17 +1,17 @@
 ---
-description: MySQL and database migration standards
+description: PostgreSQL/MySQL and database migration standards
 globs: db/migrate/**/*.rb,db/schema.rb,db/**/*.sql
 alwaysApply: false
 ---
 
 # Database Standards
 
-Follow the canonical standard: **`.ai/standards/stacks/rails/mysql.md`**
+Follow the canonical standards: **`.ai/standards/postgresql.md`** and **`.ai/standards/mysql.md`**
 
 Key rules:
 - Reversible migrations when possible
 - Index all foreign keys
 - Large table DDL requires online schema change strategy
 
-Agent: `.ai/agents/stacks/rails/mysql-dba.yaml`  
+Agent: `.ai/agents/rails-architect.yaml` (data modeling, migrations, indexing)  
 Skills: `review-db-migrations`, `sql-review`

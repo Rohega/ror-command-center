@@ -14,6 +14,6 @@ Key rules:
 - Mobile-first and responsive; reflow without horizontal scroll at 320px
 - Reuse design-system tokens before adding new values
 
-Agent: `.ai/agents/ux-designer.yaml`  
+Agent: `.ai/agents/frontend-react-inertia-developer.yaml`  
 Skill: `create-ux-spec`  
 Template: `.ai/templates/ux-specification.md`

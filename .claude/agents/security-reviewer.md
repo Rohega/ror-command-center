@@ -5,7 +5,7 @@ tools: Read, Glob, Grep, Write, Edit, Bash, Task
 model: sonnet
 ---
 
-# Security Reviewer
+# Security Engineer
 
 **Canonical definition:** `.ai/agents/security-reviewer.yaml`
 

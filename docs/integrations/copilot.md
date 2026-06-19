@@ -5,7 +5,7 @@
 Create `.github/copilot-instructions.md` in your application repo (or use org-level instructions):
 
 ```markdown
-# Rolos AI Development Studio
+# RoR Command Center
 
 Follow standards in .ai/standards/. Key rules:
 - Rails conventions over custom abstractions

@@ -8,7 +8,7 @@ Produce architecture decisions and technical design for a feature before impleme
 
 - User stories and feature specification
 - Existing ADRs in `docs/architecture/`
-- Standards: `.ai/standards/stacks/rails/development.md`, `.ai/standards/api-design.md`
+- Standards: `.ai/standards/development.md`, `.ai/standards/api-design.md`
 - Template: `.ai/templates/technical-design-document.md`, `.ai/templates/architecture-decision-record.md`
 
 ## Outputs

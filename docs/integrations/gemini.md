@@ -5,21 +5,21 @@
 Add to project or workspace instructions:
 
 ```
-Project uses Rolos AI Development Studio (.ai/ directory).
+Project uses RoR Command Center (.ai/ directory).
 
 Before implementing:
 1. Read .ai/standards/collaboration.md
 2. Identify agent (.ai/agents/) and skill (.ai/skills/)
 3. Ask clarifying questions; present options; wait for approval before changes
 
-Reference stack: Rails, React/Inertia, AWS, MySQL. New language stacks live under `.ai/standards/stacks/` and `.ai/agents/stacks/`.
+Stack: Ruby on Rails 7+/8+, PostgreSQL & MySQL, Sidekiq/ActiveJob, Devise, ActiveAdmin, Hotwire, React/Inertia, AWS, Docker, Capistrano, Kamal.
 ```
 
 ## Context Files
 
 Pin in workspace:
 - `.ai/README.md`
-- `.ai/standards/stacks/rails/development.md`
+- `.ai/standards/development.md`
 - `.ai/standards/security.md`
 - Active workflow from `.ai/workflows/`
 

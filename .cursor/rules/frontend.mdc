@@ -1,12 +1,12 @@
 ---
-description: Frontend React/Inertia/Tailwind standards for Rolos projects
+description: Frontend React/Inertia/Tailwind standards for RoR Command Center projects
 globs: app/frontend/**/*.{tsx,jsx,ts,js,css},app/javascript/**/*.{tsx,jsx,ts,js}
 alwaysApply: false
 ---
 
 # Frontend Standards
 
-Follow the canonical standard: **`.ai/standards/stacks/rails/frontend.md`**
+Follow the canonical standard: **`.ai/standards/frontend.md`**
 
 Key rules:
 - Server is source of truth — no business logic duplicated in React
@@ -14,5 +14,5 @@ Key rules:
 - Handle loading, error, and empty states in every data-driven component
 - Tailwind theme tokens — no arbitrary magic values
 
-Agent: `.ai/agents/stacks/rails/frontend-react-inertia-developer.yaml`  
+Agent: `.ai/agents/frontend-react-inertia-developer.yaml`  
 UX/Accessibility: `.ai/standards/ux-accessibility.md`

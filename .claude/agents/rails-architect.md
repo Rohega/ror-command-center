@@ -7,7 +7,7 @@ model: sonnet
 
 # Rails Architect
 
-**Canonical definition:** `.ai/agents/stacks/rails/rails-architect.yaml`
+**Canonical definition:** `.ai/agents/rails-architect.yaml`
 
 Read and follow the YAML agent definition above. It is the single source of truth for purpose, responsibilities, inputs, outputs, rules, anti-patterns, and success criteria.
 

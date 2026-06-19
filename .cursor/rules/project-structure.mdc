@@ -1,5 +1,5 @@
 ---
-description: Rolos AI Development Studio project structure
+description: RoR Command Center project structure
 alwaysApply: true
 ---
 
@@ -9,17 +9,14 @@ alwaysApply: true
 
 | Directory | Purpose |
 |-----------|---------|
-| `.ai/agents/` | Agnostic role definitions (YAML) |
-| `.ai/agents/stacks/<stack>/` | Stack-specific roles (Rails = reference) |
+| `.ai/agents/` | Rails specialist role definitions (YAML) |
 | `.ai/skills/` | Reusable capabilities |
 | `.ai/workflows/` | End-to-end processes |
-| `.ai/standards/` | Agnostic engineering rules |
-| `.ai/standards/stacks/<stack>/` | Stack-specific standards (Rails = reference) |
+| `.ai/standards/` | Engineering rules (Rails, AWS, PostgreSQL/MySQL, …) |
 | `.ai/templates/` | Document templates |
 
-**Multi-stack:** the agnostic core lives at the root of `.ai/standards/` and
-`.ai/agents/`; language-specific guidance lives under `stacks/<stack>/`. To add a
-language, see `docs/ADDING-A-LANGUAGE.md` and the `stacks/_TEMPLATE/` skeletons.
+**Specialization:** Ruby on Rails 7+/8+, PostgreSQL & MySQL, Sidekiq/ActiveJob,
+Devise, ActiveAdmin, Hotwire, React + Inertia, AWS, Docker, Capistrano, Kamal.
 
 **Adapters (do not duplicate content):**
 - `.cursor/rules/` → references `.ai/standards/`

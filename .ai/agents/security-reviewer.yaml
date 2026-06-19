@@ -1,5 +1,5 @@
-name: Security Reviewer
-purpose: Identify and remediate security vulnerabilities in applications, AWS infrastructure, and integrations.
+name: Security Engineer
+purpose: Identify and remediate security vulnerabilities in Ruby on Rails applications, AWS infrastructure, and integrations.
 responsibilities:
   - Conduct security audits on new features and infrastructure changes
   - Review authentication, authorization, and session management

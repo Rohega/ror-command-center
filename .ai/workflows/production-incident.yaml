@@ -3,7 +3,7 @@ description: Respond to production incidents from detection through postmortem.
 phases:
   - id: incident
     label: Incident
-    agent: release-manager
+    agent: aws-devops-engineer
     output: Incident ticket with severity
     gate: Incident commander assigned
 
@@ -17,7 +17,7 @@ phases:
 
   - id: root-cause-analysis
     label: Root Cause Analysis
-    agents: [backend-rails-developer, mysql-dba, security-reviewer]
+    agents: [backend-rails-developer, rails-architect, security-reviewer]
     depends_on: [triage]
 
   - id: fix
@@ -37,7 +37,7 @@ phases:
 
   - id: release
     label: Release
-    agent: release-manager
+    agent: aws-devops-engineer
     skills: [release-checklist, capistrano-review]
     depends_on: [validation]
 

@@ -33,6 +33,6 @@
 
 ## References
 
-- Agent: `.ai/agents/code-reviewer.yaml`
+- Agent: `.ai/agents/qa-engineer.yaml` (code review responsibilities)
 - Skill: `review-rails-models`, `review-db-migrations`
-- Standard: `.ai/standards/stacks/rails/development.md`
+- Standard: `.ai/standards/development.md`

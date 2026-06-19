@@ -1,4 +1,4 @@
-# Upgrading to Rolos AI Development Studio
+# Upgrading to RoR Command Center
 
 ## From Claude Code Game Studios
 
@@ -9,8 +9,8 @@ If you used the previous **game studio** template, content is preserved in `arch
 | Before | After |
 |--------|-------|
 | `.claude/` as source of truth | `.ai/` as source of truth |
-| 49 game agents | 11 software engineering agents |
-| 73 game skills | 15 Rails/AWS skills |
+| 49 game agents | 8 Rails specialists |
+| 73 game skills | 18 Rails/AWS skills |
 | Game workflows (GDD, playtest) | Software workflows (feature, incident, deploy) |
 | Engine-specific rules | Rails, AWS, MySQL, security rules |
 

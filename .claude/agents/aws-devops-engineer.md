@@ -1,6 +1,6 @@
 ---
 name: aws-devops-engineer
-description: "Design, implement, and maintain AWS infrastructure, CI/CD pipelines, and deployment automation."
+description: "Design and maintain AWS infrastructure, CI/CD pipelines, deployment automation, and coordinate releases from staging to production."
 tools: Read, Glob, Grep, Write, Edit, Bash, Task
 model: sonnet
 ---

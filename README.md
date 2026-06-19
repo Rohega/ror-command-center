@@ -1,22 +1,99 @@
-# Rolos AI Development Studio
+# RoR Command Center
 
-**Vendor-neutral, multi-stack AI engineering framework.** Rails (with React/Inertia, AWS, MySQL) ships as the reference stack, and the `.ai/` structure is designed to add new language stacks without duplicating the agnostic core.
+**A production-grade Ruby on Rails AI engineering team.**
 
-Use it with Cursor, Claude Code, OpenAI Codex, ChatGPT, GitHub Copilot, Gemini, or future AI coding agents. The canonical definitions live in `.ai/` — platform folders are thin adapters only.
+RoR Command Center is **not** a generic agent framework. Its purpose is to accelerate
+real, production-grade Ruby on Rails development using proven architecture, conventions,
+and operational practices — and to build real business applications faster, not
+experimental demos.
+
+Use it with Cursor, Claude Code, OpenAI Codex, ChatGPT, GitHub Copilot, Gemini, or future
+AI coding agents. The canonical definitions live in `.ai/` — platform folders are thin
+adapters only.
+
+---
+
+## Core Philosophy
+
+- **Rails First**
+- **Convention Over Configuration**
+- **Production Ready**
+- **AWS Native**
+- **Maintainable Code**
+- **Testable Code**
+- **Senior Engineer Standards**
+
+---
+
+## Specialization
+
+Ruby on Rails 7+ and 8+ · PostgreSQL & MySQL · Sidekiq · ActiveJob · Devise ·
+ActiveAdmin · Hotwire · React + Inertia · AWS · Docker · Capistrano · Kamal ·
+REST APIs · Background Processing · OCR Pipelines · WhatsApp Integrations ·
+Enterprise Applications.
 
 ---
 
 ## What Is This?
 
-Rolos AI Development Studio structures AI-assisted software engineering like a real team:
+RoR Command Center structures AI-assisted Rails engineering like a real senior team:
 
-- **13 specialized agents** (Product Owner, Rails Architect, DevOps, DBA, Security, QA, UX Designer, …)
-- **16 reusable skills** (feature specs, architecture, code review, UX specs, deployments, …)
-- **3 end-to-end workflows** (new feature, production incident, AWS deploy)
-- **12 engineering standards** (Rails, frontend, UX/accessibility, AWS, MySQL, API, security, testing, …)
-- **8 document templates** (feature spec, ADR, UX spec, QA plan, release checklist, …)
+- **8 specialists** (Product Owner, Rails Architect, Backend, Frontend, DevOps AWS, QA, Documentation, Security)
+- **Reusable skills** (feature specs, architecture, code review, UX specs, deployments, …)
+- **End-to-end workflows** (new feature, production incident, AWS deploy)
+- **Engineering standards** (Rails, frontend, UX/accessibility, AWS, PostgreSQL/MySQL, API, security, testing, …)
+- **Document templates** (feature spec, ADR, UX spec, QA plan, release checklist, …)
 
 You stay in control. Agents ask questions, present options, draft artifacts, and wait for approval before writing files.
+
+---
+
+## Available Specialists
+
+1. **Product Owner** — scope, specs, acceptance criteria
+2. **Rails Architect** — architecture, data modeling, migrations & rollback strategy
+3. **Backend Engineer** — models, service objects, jobs, REST APIs
+4. **Frontend Engineer** — Hotwire and React + Inertia, UX/accessibility
+5. **DevOps AWS Engineer** — AWS, Docker, Capistrano/Kamal, releases
+6. **QA Engineer** — test plans, code review, quality gates
+7. **Documentation Engineer** — module docs, ADRs, runbooks
+8. **Security Engineer** — security review across every feature
+
+---
+
+## Feature Pipeline
+
+Every feature request follows:
+
+```text
+Idea → Specification → Architecture → Implementation Plan → Development → Testing → Documentation → Deployment
+```
+
+| Phase | Skill | Specialist |
+|-------|-------|-----------|
+| Idea | `create-feature-spec` | Product Owner |
+| Specification | `create-user-stories` | Product Owner |
+| Architecture | `create-architecture-plan` | Rails Architect |
+| Implementation Plan | `create-architecture-plan` | Rails Architect |
+| Development | `create-api-endpoints`, `review-db-migrations` | Backend & Frontend Engineers |
+| Testing | `qa-plan` | QA Engineer |
+| Documentation | `document-module` | Documentation Engineer |
+| Deployment | `release-checklist`, `capistrano-review` | DevOps AWS Engineer |
+
+Standards: `.ai/standards/development.md`, `.ai/standards/postgresql.md`, `.ai/standards/mysql.md`, `.ai/standards/testing.md`
+
+---
+
+## Operating Rules
+
+- Follow Rails conventions whenever possible.
+- Avoid unnecessary abstractions.
+- Prefer Service Objects over fat controllers.
+- Prefer ActiveJob for async work.
+- Generate migration strategies and rollback plans.
+- Include security, monitoring, and deployment considerations.
+- Assume production deployment on AWS.
+- Output must always be actionable and production-focused.
 
 ---
 
@@ -38,8 +115,8 @@ You stay in control. Agents ask questions, present options, draft artifacts, and
 Clone this framework, then run `install.sh` pointing at your project:
 
 ```bash
-git clone <repo-url> rolos-ai-studio
-cd rolos-ai-studio
+git clone <repo-url> ror-command-center
+cd ror-command-center
 ./install.sh /path/to/your-project
 ```
 
@@ -52,10 +129,6 @@ The script copies the framework **core** into your project and creates an empty 
 | `--backup` | Save conflicting files as `<file>.bak` before overwriting |
 | `--with-examples` | Also copy `examples/` and the warehouse example docs |
 | `-h`, `--help` | Show usage |
-
-**What gets copied (core):** `.ai/`, `.cursor/`, `.claude/{agents,hooks,skills,settings.json}`, `CLAUDE.md`, `docs/integrations/`, `docs/CLAUDE.md`, `docs/COLLABORATIVE-DESIGN-PRINCIPLE.md`, `.github/copilot-instructions.md`, plus empty `docs/{architecture,specs,stories,design,runbooks,modules}/`.
-
-**What is excluded:** `examples/`, `archive/`, `production/`, `.git/`, repo meta files, and the warehouse-mvp example docs (unless `--with-examples`).
 
 Full step-by-step guide: [docs/INSTALL.md](docs/INSTALL.md).
 
@@ -72,31 +145,21 @@ Full step-by-step guide: [docs/INSTALL.md](docs/INSTALL.md).
 
 ```text
 .ai/                    # SINGLE SOURCE OF TRUTH
-  agents/               # Agnostic role definitions (YAML)
-    stacks/<stack>/     # Stack-specific roles (Rails = reference)
+  agents/               # 8 Rails specialist role definitions (YAML)
   skills/               # Reusable capabilities
   workflows/            # End-to-end processes
-  standards/            # Agnostic engineering rules
-    stacks/<stack>/     # Stack-specific standards (Rails = reference)
+  standards/            # Engineering rules (Rails, AWS, PostgreSQL/MySQL, …)
   templates/            # Document templates
 
 .cursor/rules/          # Cursor adapter → .ai/standards/
 .claude/                # Claude Code adapter → .ai/
 
 docs/
-  ADDING-A-LANGUAGE.md  # How to add a new language stack
   integrations/         # Per-platform setup guides
   COLLABORATIVE-DESIGN-PRINCIPLE.md
 
 archive/game-studio-original/   # Previous game-studio framework (preserved)
 ```
-
-## Multi-Stack
-
-Rails is the **reference stack**. The agnostic core lives at the root of `.ai/standards/`
-and `.ai/agents/`; language-specific guidance lives under `stacks/<stack>/`. To add a
-language (Python, Node, Go, …), follow [docs/ADDING-A-LANGUAGE.md](docs/ADDING-A-LANGUAGE.md)
-and the `stacks/_TEMPLATE/` skeletons.
 
 ---
 
@@ -122,55 +185,6 @@ See [docs/integrations/claude-code.md](docs/integrations/claude-code.md).
 
 ---
 
-## How to Use with Codex
-
-Load context at session start:
-
-1. `CLAUDE.md` or `.ai/standards/collaboration.md`
-2. Relevant agent YAML from `.ai/agents/`
-3. Skill from `.ai/skills/<name>/SKILL.md`
-
-See [docs/integrations/codex.md](docs/integrations/codex.md).
-
----
-
-## Rails Project Workflow
-
-Follow `.ai/workflows/new-feature.yaml`:
-
-```text
-Idea → User Stories → {Design, Architecture} → Implementation → Review → QA → Release
-```
-
-| Phase | Skill | Agent |
-|-------|-------|-------|
-| Idea | `create-feature-spec` | Product Owner |
-| Stories | `create-user-stories` | Product Owner |
-| Design | `create-ux-spec` | UX Designer |
-| Architecture | `create-architecture-plan` | Rails Architect |
-| Implementation | `create-api-endpoints` | Backend Rails Developer, Frontend React/Inertia Developer |
-| Review | `review-rails-models`, `security-audit` | Code Reviewer |
-| QA | `qa-plan` | QA Engineer |
-| Release | `release-checklist` | Release Manager |
-
-Standards: `.ai/standards/stacks/rails/development.md`, `.ai/standards/stacks/rails/mysql.md`, `.ai/standards/testing.md`
-
----
-
-## AWS Project Workflow
-
-Follow `.ai/workflows/aws-deployment.yaml`:
-
-```text
-Planning → Infrastructure Review → Security Review → Deployment → Validation → Rollback Strategy
-```
-
-Skills: `aws-deploy-plan`, `nginx-puma-review`, `capistrano-review`, `security-audit`
-
-Standard: `.ai/standards/aws-infrastructure.md`
-
----
-
 ## Security Recommendations
 
 - Follow `.ai/standards/security.md` on every feature
@@ -178,20 +192,6 @@ Standard: `.ai/standards/aws-infrastructure.md`
 - Never commit secrets — hooks warn on staged credential patterns
 - IAM least privilege for S3, RDS, and every service role
 - Dependency scanning (`bundle audit`) in CI
-
----
-
-## Example Feature Lifecycle
-
-1. **Product Owner** drafts `docs/specs/feature-stock-transfer.md` via `create-feature-spec`
-2. **Stories** → `docs/stories/stock-transfer/US-001.md`
-3. **UX Designer** writes `docs/design/ux-stock-transfer.md` via `create-ux-spec`
-4. **Rails Architect** writes `docs/architecture/adr-0001-stock-transfer-flow.md`
-5. **Backend Developer** implements models, jobs, and service objects
-6. **Frontend Developer** builds the Inertia/React screens
-7. **Code Reviewer** runs `review-rails-models` + `security-audit`
-8. **QA Engineer** produces QA plan; smoke test on staging
-9. **Release Manager** completes checklist; Capistrano deploy to production
 
 ---
 

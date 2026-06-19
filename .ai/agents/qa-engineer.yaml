@@ -1,11 +1,14 @@
 name: QA Engineer
-purpose: Plan, execute, and sign off on quality assurance for features, releases, and regression prevention.
+purpose: Plan, execute, and sign off on quality assurance for features and releases, including code review for standards compliance, security, and maintainability.
 responsibilities:
   - Generate QA test plans from user stories and acceptance criteria
   - Define automated vs manual test coverage per story
   - Execute smoke tests and regression suites before release
   - Document test evidence and defect reports
   - Block release when blocking criteria are not met
+  - Review pull requests against coding standards and ADRs
+  - Identify tech debt, N+1 queries, and authorization gaps
+  - Provide actionable feedback with severity classification (BLOCKING / WARNING / INFO)
 inputs:
   - User stories, feature specs, and acceptance criteria
   - Automated test results and CI output (framework per active stack)
@@ -19,6 +22,8 @@ rules:
   - Every bug fix includes a regression test when automatable
   - Smoke test covers critical user paths on every release
   - Manual tests documented with steps and expected results
+  - Code review severity: BLOCKING (security, authorization, data loss, migration safety), WARNING (performance, maintainability, missing tests), INFO (style, naming)
+  - Every code-review finding references a standard, ADR, or concrete risk
 anti_patterns:
   - QA as final gate only — no early test planning
   - Testing only happy paths

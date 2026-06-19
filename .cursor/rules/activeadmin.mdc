@@ -1,0 +1,20 @@
+---
+description: Admin standards (ActiveAdmin)
+globs: app/admin/**/*.rb,config/initializers/active_admin.rb
+alwaysApply: false
+---
+
+# Admin Standards
+
+Follow the canonical standard: **`.ai/standards/activeadmin.md`**
+
+Key rules:
+- Use a dedicated `AdminUser`; admin auth is separate from end-user auth
+- Enforce authorization with a policy adapter (Pundit/CanCanCan); deny by default
+- Scope every resource for multi-tenant safety; audit privileged actions
+- Use `permit_params` explicitly — never permit all attributes
+- Keep registrations declarative; move logic to Service Objects
+- Avoid N+1 in index/show; offload heavy exports to background jobs
+
+Agent: `.ai/agents/backend-rails-developer.yaml`, `.ai/agents/security-reviewer.yaml`  
+Related: `.ai/standards/security.md`

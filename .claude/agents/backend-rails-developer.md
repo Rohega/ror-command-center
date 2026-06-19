@@ -7,7 +7,7 @@ model: sonnet
 
 # Backend Rails Developer
 
-**Canonical definition:** `.ai/agents/stacks/rails/backend-rails-developer.yaml`
+**Canonical definition:** `.ai/agents/backend-rails-developer.yaml`
 
 Read and follow the YAML agent definition above. It is the single source of truth for purpose, responsibilities, inputs, outputs, rules, anti-patterns, and success criteria.
 

@@ -10,7 +10,7 @@ Accepted
 
 ## Context
 
-El MVP abarca 18 historias P0 con dominio acotado pero no trivial: catálogo, operaciones, aprobaciones y auditoría. El repositorio objetivo seguirá stack Rails + MySQL + React/Inertia (`.ai/standards/stacks/rails/development.md`). Se necesita estructura de carpetas que permita trabajo paralelo de 2–3 desarrolladores sin colisiones ni acoplamiento circular.
+El MVP abarca 18 historias P0 con dominio acotado pero no trivial: catálogo, operaciones, aprobaciones y auditoría. El repositorio objetivo seguirá stack Rails + MySQL + React/Inertia (`.ai/standards/development.md`). Se necesita estructura de carpetas que permita trabajo paralelo de 2–3 desarrolladores sin colisiones ni acoplamiento circular.
 
 ## Decision
 
@@ -99,6 +99,6 @@ Genera `REC-2026-00001` sin colisiones.
 
 ## Compliance
 
-- Standards: `.ai/standards/stacks/rails/development.md`, `.ai/standards/documentation.md`
+- Standards: `.ai/standards/development.md`, `.ai/standards/documentation.md`
 - Stories blocked until Accepted: todas (estructura transversal)
 - Depends on: ninguno

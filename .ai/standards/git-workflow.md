@@ -34,4 +34,4 @@
 ## References
 
 - Standard: `.ai/standards/code-review.md`
-- Agent: `.ai/agents/release-manager.yaml`
+- Agent: `.ai/agents/aws-devops-engineer.yaml` (release coordination)

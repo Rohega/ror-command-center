@@ -1,16 +1,16 @@
-# Rolos AI Development Studio — Canonical Index
+# RoR Command Center — Canonical Index
 
-This directory is the **single source of truth** for all AI engineering definitions. Platform-specific folders (`.cursor/`, `.claude/`) are adapters only — they reference files here and must not duplicate content.
+This directory is the **single source of truth** for all Ruby on Rails AI engineering definitions. Platform-specific folders (`.cursor/`, `.claude/`) are adapters only — they reference files here and must not duplicate content.
 
 ## Contents
 
-| Directory | Files | Description |
-|-----------|-------|-------------|
-| [agents/](agents/) | 13 YAML | Role definitions |
-| [skills/](skills/) | 16 skills | Reusable capabilities |
-| [workflows/](workflows/) | 3 YAML | End-to-end processes |
-| [standards/](standards/) | 12 MD | Engineering rules |
-| [templates/](templates/) | 8 MD | Document templates |
+| Directory | Description |
+|-----------|-------------|
+| [agents/](agents/) | 8 Rails specialist role definitions (YAML) |
+| [skills/](skills/) | Reusable capabilities |
+| [workflows/](workflows/) | End-to-end processes |
+| [standards/](standards/) | Engineering rules |
+| [templates/](templates/) | Document templates |
 
 ## Quick Start
 
@@ -18,19 +18,18 @@ This directory is the **single source of truth** for all AI engineering definiti
 2. Load collaboration rules: [standards/collaboration.md](standards/collaboration.md)
 3. Invoke the first skill: [skills/create-feature-spec/SKILL.md](skills/create-feature-spec/SKILL.md)
 
-## Agent Roster
+## Agent Roster (8 specialists)
 
 - product-owner, rails-architect, backend-rails-developer
-- frontend-react-inertia-developer, aws-devops-engineer, mysql-dba
-- security-reviewer, qa-engineer, documentation-writer
-- release-manager, code-reviewer, ux-designer (agnostic + rails)
+- frontend-react-inertia-developer, aws-devops-engineer
+- qa-engineer, documentation-writer, security-reviewer
 
-## Design Principles
+## Core Philosophy
 
-- Rails conventions over custom abstractions
-- Security by default
-- Infrastructure as Code
-- Documentation-driven development
-- Testability first
-- Simplicity over complexity
-- Vendor-neutral architecture
+- Rails First
+- Convention Over Configuration
+- Production Ready
+- AWS Native
+- Maintainable Code
+- Testable Code
+- Senior Engineer Standards

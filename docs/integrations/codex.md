@@ -7,19 +7,19 @@ Codex does not read project files automatically. Load context explicitly at sess
 Paste or attach:
 
 1. `.ai/standards/collaboration.md`
-2. `.ai/standards/stacks/rails/development.md` (or relevant stack standard)
+2. `.ai/standards/development.md`
 3. The agent YAML: `.ai/agents/<role>.yaml`
 4. The skill: `.ai/skills/<skill>/SKILL.md`
 
 ## Example Prompt
 
 ```
-You are operating under Rolos AI Development Studio.
+You are operating under RoR Command Center.
 
 Collaboration: Question → Options → Decision → Draft → Approval. Ask before writing files.
 
 Agent definition:
-[paste .ai/agents/stacks/rails/backend-rails-developer.yaml]
+[paste .ai/agents/backend-rails-developer.yaml]
 
 Skill:
 [paste .ai/skills/create-api-endpoints/SKILL.md]

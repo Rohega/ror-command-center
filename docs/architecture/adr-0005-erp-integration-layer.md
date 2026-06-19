@@ -87,6 +87,6 @@ end
 
 ## Compliance
 
-- Standards: `.ai/standards/stacks/rails/development.md`
+- Standards: `.ai/standards/development.md`
 - Stories blocked until Accepted: US-002 (stub), US-005 (CSV puede usar importer)
 - Depends on: ADR-0004

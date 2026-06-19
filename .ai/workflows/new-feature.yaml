@@ -1,8 +1,5 @@
 name: new-feature
-description: End-to-end workflow from idea through release for new software features. Stack-neutral; resolve stack-specific roles and skills via the `stacks` mapping below.
-
-# Active stack. Override to target a different language stack defined under `stacks`.
-stack: rails
+description: End-to-end workflow from idea through deployment for new Ruby on Rails features.
 
 phases:
   - id: idea
@@ -12,62 +9,60 @@ phases:
     output: docs/specs/feature-*.md
     gate: Product Owner approval
 
-  - id: user-stories
-    label: User Stories
+  - id: specification
+    label: Specification
     agent: product-owner
     skill: create-user-stories
     output: docs/stories/*.md
     depends_on: [idea]
 
-  - id: design
-    label: Design
-    role: ux-designer          # resolved via stacks.<stack>.ux-designer
-    skill: create-ux-spec
-    output: docs/design/ux-*.md
-    depends_on: [user-stories]
-
   - id: architecture
     label: Architecture
-    role: architect            # resolved via stacks.<stack>.architect
+    agent: rails-architect
     skill: create-architecture-plan
     output: docs/architecture/adr-*.md
-    depends_on: [user-stories]
+    depends_on: [specification]
     gate: ADR Accepted for significant decisions
 
-  - id: implementation
-    label: Implementation
-    roles: [backend-developer, frontend-developer]  # resolved via stacks.<stack>
+  - id: implementation-plan
+    label: Implementation Plan
+    agent: rails-architect
+    skill: create-architecture-plan
+    output: docs/architecture/impl-plan-*.md
+    depends_on: [architecture]
+    notes: Include migration strategy and rollback plan.
+
+  - id: development
+    label: Development
+    agents: [backend-rails-developer, frontend-react-inertia-developer]
     skills: [create-api-endpoints, review-db-migrations]
-    depends_on: [architecture, design]
+    depends_on: [implementation-plan]
 
-  - id: review
-    label: Review
-    agent: code-reviewer
-    skills: [stack-review, security-audit]           # stack-review resolved per stack
-    depends_on: [implementation]
-    gate: No BLOCKING findings
-
-  - id: qa
-    label: QA
+  - id: testing
+    label: Testing
     agent: qa-engineer
-    skill: qa-plan
-    depends_on: [review]
-    gate: QA sign-off
+    skills: [qa-plan, review-rails-models, security-audit]
+    depends_on: [development]
+    gate: QA sign-off and no BLOCKING findings
 
-  - id: release
-    label: Release
-    agent: release-manager
-    skills: [release-checklist, deploy-review]        # deploy-review resolved per stack
-    depends_on: [qa]
+  - id: documentation
+    label: Documentation
+    agent: documentation-writer
+    skill: document-module
+    output: docs/modules/*.md
+    depends_on: [testing]
 
-# Stack mappings: add a new entry per language stack (see docs/ADDING-A-LANGUAGE.md).
-stacks:
-  rails:
-    standard: .ai/standards/stacks/rails/development.md
-    architect: .ai/agents/stacks/rails/rails-architect.yaml
-    backend-developer: .ai/agents/stacks/rails/backend-rails-developer.yaml
-    frontend-developer: .ai/agents/stacks/rails/frontend-react-inertia-developer.yaml
-    ux-designer: .ai/agents/stacks/rails/ux-designer.yaml
-    skills:
-      stack-review: review-rails-models
-      deploy-review: capistrano-review
+  - id: deployment
+    label: Deployment
+    agent: aws-devops-engineer
+    skills: [release-checklist, capistrano-review]
+    depends_on: [documentation]
+    notes: Assume production deployment on AWS. Include monitoring and rollback considerations.
+
+design_principles:
+  - Follow Rails conventions whenever possible.
+  - Avoid unnecessary abstractions.
+  - Prefer Service Objects over fat controllers.
+  - Prefer ActiveJob for async work.
+  - Always generate migration strategies and rollback plans.
+  - Always include security, monitoring, and deployment considerations.

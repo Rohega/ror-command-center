@@ -1,6 +1,6 @@
 # MySQL Standards
 
-> Stack: **rails** (reference stack). Data-layer standard for the Rails stack.
+> MySQL data-layer standard. For PostgreSQL projects, see `.ai/standards/postgresql.md`.
 
 ## Schema
 
@@ -36,5 +36,5 @@
 
 ## References
 
-- Agent: `.ai/agents/stacks/rails/mysql-dba.yaml`
+- Agent: `.ai/agents/rails-architect.yaml` (data modeling, migrations, indexing)
 - Skills: `review-db-migrations`, `sql-review`

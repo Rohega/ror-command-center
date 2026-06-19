@@ -1,7 +1,7 @@
 # Testing Standards
 
-> Agnostic principles. Stack-specific tooling (frameworks, runners, factory libs)
-> lives in the active stack standard under `.ai/standards/stacks/<stack>/`.
+> Testing principles for Ruby on Rails (RSpec, factories, system specs). Backend
+> conventions live in `.ai/standards/development.md`.
 
 ## Pyramid
 

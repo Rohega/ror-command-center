@@ -1,5 +1,5 @@
 #!/bin/bash
-# Rolos AI Development Studio — validate git commits
+# RoR Command Center — validate git commits
 # Canonical standards: .ai/standards/git-workflow.md
 
 INPUT=$(cat)

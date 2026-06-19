@@ -1,0 +1,20 @@
+---
+description: Background processing standards (ActiveJob + Sidekiq)
+globs: app/jobs/**/*.rb,app/workers/**/*.rb,config/sidekiq.yml,config/initializers/sidekiq.rb,config/schedule.rb
+alwaysApply: false
+---
+
+# Background Processing Standards
+
+Follow the canonical standard: **`.ai/standards/sidekiq-activejob.md`**
+
+Key rules:
+- Prefer ActiveJob as the interface; Sidekiq as the production adapter
+- Keep `perform` thin — delegate to a Service Object
+- Pass identifiers (IDs), never whole ActiveRecord objects
+- Jobs must be idempotent and retry-safe
+- Set explicit queues by latency class; protect the Sidekiq Web UI
+- Never log secrets or PII in job arguments
+
+Agent: `.ai/agents/backend-rails-developer.yaml`  
+Skills: `review-rails-models`

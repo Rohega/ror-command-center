@@ -1,4 +1,4 @@
-# Rolos AI Development Studio
+# RoR Command Center
 
 Follow standards in `.ai/standards/`. Key rules:
 - Rails conventions over custom abstractions

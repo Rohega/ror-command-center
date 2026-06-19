@@ -1,6 +1,6 @@
 ---
 name: qa-engineer
-description: "Plan, execute, and sign off on quality assurance for features, releases, and regression prevention."
+description: "Plan, execute, and sign off on QA for features and releases, including code review for standards, security, and maintainability."
 tools: Read, Glob, Grep, Write, Edit, Bash, Task
 model: sonnet
 ---

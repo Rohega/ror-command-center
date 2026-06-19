@@ -1,6 +1,6 @@
 # Docs Directory
 
-Project documentation for Rolos AI Development Studio and consuming applications.
+Project documentation for RoR Command Center and consuming applications.
 
 ## Structure
 

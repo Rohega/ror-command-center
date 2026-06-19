@@ -1,0 +1,20 @@
+---
+description: Hotwire standards (Turbo + Stimulus)
+globs: app/javascript/controllers/**/*.{js,ts},app/javascript/**/*_controller.{js,ts},app/views/**/*.turbo_stream.erb
+alwaysApply: false
+---
+
+# Hotwire Standards
+
+Follow the canonical standard: **`.ai/standards/hotwire.md`**
+
+Key rules:
+- Hotwire for server-rendered apps with light interactivity; React/Inertia for complex client state
+- Turbo Frames scope partial updates; give frames stable `id`s
+- Authorize Turbo Stream subscriptions per user; keep payloads small
+- One Stimulus controller per behavior; use `data-*` actions/targets/values, no inline JS
+- Server remains source of truth — no duplicated business logic in Stimulus
+- Preserve focus across Turbo updates; respect `prefers-reduced-motion`
+
+Agent: `.ai/agents/frontend-react-inertia-developer.yaml`  
+Related: `.ai/standards/frontend.md`, `.ai/standards/ux-accessibility.md`

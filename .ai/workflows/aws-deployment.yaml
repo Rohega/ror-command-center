@@ -25,7 +25,7 @@ phases:
 
   - id: deployment
     label: Deployment
-    agents: [aws-devops-engineer, release-manager]
+    agent: aws-devops-engineer
     skills: [capistrano-review, nginx-puma-review]
     depends_on: [security-review]
 
@@ -40,7 +40,7 @@ phases:
 
   - id: rollback-strategy
     label: Rollback Strategy
-    agent: release-manager
+    agent: aws-devops-engineer
     required: true
     document:
       - Rollback triggers

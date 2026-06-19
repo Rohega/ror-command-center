@@ -1,5 +1,5 @@
 #!/bin/bash
-# Rolos — detect documentation gaps for software projects
+# RoR Command Center — detect documentation gaps for Rails projects
 
 echo "=== Documentation Gap Check ==="
 

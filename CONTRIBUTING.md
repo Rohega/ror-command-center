@@ -1,6 +1,6 @@
-# Contributing to Rolos AI Development Studio
+# Contributing to RoR Command Center
 
-Rolos is a **vendor-neutral AI engineering framework**. Contributions welcome: new skills, agent improvements, standards updates, and adapter fixes.
+RoR Command Center is a **production-grade Ruby on Rails AI engineering team**. Contributions welcome: new skills, agent improvements, standards updates, and adapter fixes.
 
 ## Architecture Rule
 

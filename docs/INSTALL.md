@@ -1,4 +1,4 @@
-# Installing Rolos AI Development Studio
+# Installing RoR Command Center
 
 This guide explains how to add the framework to a new or existing project using the `install.sh` script.
 
@@ -11,8 +11,8 @@ This guide explains how to add the framework to a new or existing project using 
 ## Step 1 — Clone the framework
 
 ```bash
-git clone <repo-url> rolos-ai-studio
-cd rolos-ai-studio
+git clone <repo-url> ror-command-center
+cd ror-command-center
 ```
 
 ## Step 2 — Preview the install (recommended)
@@ -92,7 +92,7 @@ cd /path/to/your-project
 When the framework gets updates, pull them and re-run the installer with `--force` to refresh the framework files. Use `--backup` to keep copies of anything you customized:
 
 ```bash
-cd rolos-ai-studio
+cd ror-command-center
 git pull
 ./install.sh --force --backup /path/to/your-project
 ```

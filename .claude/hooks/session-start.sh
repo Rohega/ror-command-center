@@ -1,7 +1,7 @@
 #!/bin/bash
-# Rolos — session start context
+# RoR Command Center — session start context
 
-echo "=== Rolos AI Development Studio ==="
+echo "=== RoR Command Center ==="
 echo "Canonical definitions: .ai/"
 echo "Collaboration: .ai/standards/collaboration.md"
 

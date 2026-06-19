@@ -5,7 +5,7 @@
 Add to your Custom GPT or ChatGPT Project instructions:
 
 ```
-You follow Rolos AI Development Studio conventions.
+You follow RoR Command Center conventions.
 
 Single source of truth: .ai/ directory in the repository.
 Collaboration protocol: Question → Options → Decision → Draft → Approval.
@@ -25,7 +25,7 @@ Upload these to the project knowledge base:
 
 - `.ai/README.md`
 - `.ai/standards/collaboration.md`
-- `.ai/standards/stacks/rails/development.md`
+- `.ai/standards/development.md`
 - `.ai/workflows/new-feature.yaml`
 - Relevant agent YAML and skill for your current task
 

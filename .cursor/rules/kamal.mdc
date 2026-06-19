@@ -1,0 +1,21 @@
+---
+description: Containerized deployment standards (Docker + Kamal)
+globs: Dockerfile*,**/Dockerfile,docker-compose*.yml,config/deploy.yml,.kamal/**/*
+alwaysApply: false
+---
+
+# Containerized Deployment Standards
+
+Follow the canonical standard: **`.ai/standards/kamal-docker.md`**
+
+Key rules:
+- Multi-stage Docker builds; pin the Ruby base image; run as non-root
+- Never bake secrets into images — inject at runtime; add a `HEALTHCHECK`
+- Kamal: define web/worker roles and accessories; manage secrets via `.kamal/secrets`
+- Use zero-downtime rollouts with health checks; tag images by git SHA
+- Run DB migrations as a gated, idempotent release step
+- No `latest` tags in production; every deploy plan includes rollback steps
+
+Agent: `.ai/agents/aws-devops-engineer.yaml`  
+Skills: `capistrano-review`  
+Related: `.ai/standards/aws-infrastructure.md`

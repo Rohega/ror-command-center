@@ -71,5 +71,5 @@ end
 
 ## Compliance
 
-- Standards: `.ai/standards/stacks/rails/development.md` (service objects para workflows multi-paso)
+- Standards: `.ai/standards/development.md` (service objects para workflows multi-paso)
 - Stories blocked until Accepted: US-005, US-011, US-022, US-033, US-034, US-035
