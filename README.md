@@ -139,16 +139,27 @@ Prefer no cloud, no API keys, zero per-token cost? The `rorcc` CLI compiles the
 specialist agents into local [Ollama](https://ollama.com/) models. Ollama is a
 runtime dependency you install separately — it is not part of this repo.
 
+Non-technical? One command sets up everything:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Rohega/ror-command-center/main/setup.sh | bash
+rorcc                               # interactive menu — pick a specialist by number
+```
+
+Developers / manual setup:
+
 ```bash
 ./install.sh --install-cli          # link the 'rorcc' command into your PATH
 rorcc doctor                        # check Ollama, models, environment
 rorcc build-agent rails-architect   # compile .ai/agents/rails-architect.yaml → local model
-rorcc agent rails-architect         # chat locally
+rorcc agent rails-architect         # chat locally  (--cloud for hybrid)
+rorcc skill create-feature-spec     # run a skill with its responsible agent
+rorcc workflow new-feature          # run a full workflow, phase by phase
 ```
 
-`rorcc init <project>` scaffolds a new project (same as `install.sh`). Local
-7–14B models trade quality for privacy and offline use — see
-[docs/integrations/ollama.md](docs/integrations/ollama.md) for model tiers and caveats.
+Full command reference: [docs/rorcc-cli.md](docs/rorcc-cli.md). Ollama setup,
+model tiers, hybrid mode, and IDE bridge: [docs/integrations/ollama.md](docs/integrations/ollama.md).
+Local 7–14B models trade quality for privacy and offline use.
 
 ---
 

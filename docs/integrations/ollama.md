@@ -115,6 +115,20 @@ rorcc skill create-feature-spec --cloud  # hybrid
 
 If the skill's agent isn't compiled yet, `rorcc` builds it automatically.
 
+## Run a full workflow
+
+Run an end-to-end process (`.ai/workflows/<name>.yaml`) phase by phase. Each phase
+runs its skill with the right agent and pauses at its gate for your confirmation:
+
+```bash
+rorcc workflow new-feature           # local
+rorcc workflow new-feature --cloud   # hybrid
+```
+
+At each phase: `Enter` to run, `s` to skip, `q` to quit. After a phase with a
+gate, you confirm it before moving on. Available workflows: `new-feature`,
+`legacy-onboarding`, `aws-deployment`, `production-incident`.
+
 ## Hybrid mode (local + cloud)
 
 Use local models for everyday tasks and a cloud model for hard architecture work —

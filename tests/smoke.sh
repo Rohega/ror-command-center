@@ -41,6 +41,9 @@ assert_exit 2 "proxy bad flag -> 2"        -- "$RORCC" proxy --bogus
 assert_exit 2 "skill (no arg) -> 2"        -- "$RORCC" skill
 assert_exit 1 "skill bad name -> 1"        -- "$RORCC" skill does-not-exist
 assert_exit 2 "skill bad flag -> 2"        -- "$RORCC" skill create-feature-spec --bogus
+assert_exit 2 "workflow (no arg) -> 2"     -- "$RORCC" workflow
+assert_exit 1 "workflow bad name -> 1"     -- "$RORCC" workflow does-not-exist
+assert_exit 2 "workflow bad flag -> 2"     -- "$RORCC" workflow new-feature --bogus
 
 printf '\nbuild-agent codegen (no Ollama needed):\n'
 TMP="$(mktemp -d)"; export HOME="$TMP"
@@ -53,6 +56,13 @@ else
   bad "build-agent rails-architect failed"
 fi
 rm -rf "$ROOT/.rorcc" "$TMP"
+
+printf '\nworkflow parsing:\n'
+WFOUT="$(cd "$ROOT" && bash -c '. lib/rorcc/workflow.sh; _parse_phases .ai/workflows/new-feature.yaml')"
+nlines="$(printf '%s\n' "$WFOUT" | grep -c .)"
+[ "$nlines" -eq 8 ] && ok "new-feature parses 8 phases" || bad "phase count = $nlines (expected 8)"
+printf '%s\n' "$WFOUT" | awk -F'\t' 'NR==1{exit !($1=="Idea" && $2=="product-owner" && $3=="create-feature-spec")}' \
+  && ok "phase 1 = Idea/product-owner/create-feature-spec" || bad "phase 1 fields"
 
 printf '\n'
 printf '\033[1mResult:\033[0m %d passed, %d failed\n' "$PASS" "$FAIL"

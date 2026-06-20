@@ -33,6 +33,7 @@ COMMANDS:
   update [name]           Recompile agents after editing .ai/ (all, or just <name>)
   agent <name> [--cloud]  Chat with an agent (local Ollama by default, --cloud for hybrid)
   skill <name> [--cloud]  Run a .ai/skills/<name> skill with its responsible agent
+  workflow <name> [--cloud]  Run a .ai/workflows/<name> end to end, phase by phase
   proxy [--start]         Show IDE (Cursor/Claude Code) config; --start runs a LiteLLM gateway
   help                    Show this help
 
@@ -81,6 +82,7 @@ main() {
     update)       . "$RORCC_LIB_DIR/build_agent.sh"; cmd_update "$@" ;;
     agent)        . "$RORCC_LIB_DIR/agent.sh";       cmd_agent "$@" ;;
     skill)        . "$RORCC_LIB_DIR/skill.sh";       cmd_skill "$@" ;;
+    workflow)     . "$RORCC_LIB_DIR/workflow.sh";    cmd_workflow "$@" ;;
     proxy)        . "$RORCC_LIB_DIR/proxy.sh";       cmd_proxy "$@" ;;
     help|-h|--help) usage ;;
     *) err "unknown command: $cmd"; printf '\n'; usage; exit 2 ;;

@@ -38,6 +38,8 @@ cmd_skill() {
   # Build the skill seed: framing + SKILL.md + any referenced templates.
   local seed; seed="$(mktemp)"
   {
+    # Optional preamble injected by the workflow runner (phase/gate context).
+    [ -n "${RORCC_SKILL_PREAMBLE:-}" ] && printf '%s\n\n' "$RORCC_SKILL_PREAMBLE"
     printf 'You are executing the RoR Command Center skill "%s". Follow its instructions, ask clarifying questions first, present options, and wait for approval before producing final artifacts.\n\n' "$name"
     printf '===== SKILL: %s =====\n' "$name"
     cat "$skill_file"
