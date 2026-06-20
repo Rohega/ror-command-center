@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  shell:
+    name: Shell lint + smoke tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: ShellCheck
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y shellcheck
+          # lib/rorcc/*.sh are sourced fragments: vars/functions live in common.sh,
+          # so SC2154 (unassigned) and SC1091 (can't follow dynamic source) are
+          # expected. SC2034 covers shared color vars unused within a single file.
+          shellcheck -S warning -e SC2034 -e SC2154 -e SC1091 \
+            cli/rorcc lib/rorcc/*.sh install.sh setup.sh tests/smoke.sh
+
+      - name: Smoke tests
+        run: bash tests/smoke.sh

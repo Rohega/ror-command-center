@@ -22,7 +22,7 @@ cmd_agent() {
   printf '\n'
 
   local messages='[]'
-  local input content payload resp
+  local input content payload line chunk err_msg
 
   while true; do
     printf '%b' "${C_GREEN}you ›${C_RESET} "
@@ -34,18 +34,29 @@ cmd_agent() {
     esac
 
     messages="$(jq --arg c "$input" '. += [{"role":"user","content":$c}]' <<<"$messages")"
-    payload="$(jq -n --arg m "$model" --argjson msgs "$messages" '{model:$m, messages:$msgs, stream:false}')"
+    payload="$(jq -n --arg m "$model" --argjson msgs "$messages" '{model:$m, messages:$msgs, stream:true}')"
 
-    resp="$(curl -fsS "$OLLAMA_HOST/api/chat" -d "$payload" 2>/dev/null)" || {
-      err "request to Ollama failed"; continue
-    }
-    content="$(jq -r '.message.content // empty' <<<"$resp")"
+    # Stream the reply: Ollama returns one JSON object per line (NDJSON). Print
+    # each token chunk live and accumulate the full text for conversation history.
+    printf '%b\n' "${C_BLUE}$name ›${C_RESET}"
+    content=""; err_msg=""
+    while IFS= read -r line; do
+      [ -z "$line" ] && continue
+      err_msg="$(jq -r '.error // empty' <<<"$line" 2>/dev/null)"
+      [ -n "$err_msg" ] && break
+      chunk="$(jq -rj '.message.content // empty' <<<"$line" 2>/dev/null)"
+      printf '%s' "$chunk"
+      content="$content$chunk"
+    done < <(curl -fsS --no-buffer "$OLLAMA_HOST/api/chat" -d "$payload" 2>/dev/null)
+    printf '\n\n'
+
+    if [ -n "$err_msg" ]; then
+      err "model error: $err_msg"; continue
+    fi
     if [ -z "$content" ]; then
-      err "empty response (model error: $(jq -r '.error // "unknown"' <<<"$resp"))"
-      continue
+      err "empty response (is the model still loading? try again)"; continue
     fi
 
-    printf '%b\n%s\n\n' "${C_BLUE}$name ›${C_RESET}" "$content"
     messages="$(jq --arg c "$content" '. += [{"role":"assistant","content":$c}]' <<<"$messages")"
   done
 
