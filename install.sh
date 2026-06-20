@@ -35,6 +35,7 @@ CORE_ITEMS=(
   ".claude/hooks"
   ".claude/skills"
   ".claude/settings.json"
+  "AGENTS.md"
   "CLAUDE.md"
   "docs/integrations"
   "docs/CLAUDE.md"
@@ -84,7 +85,7 @@ OPTIONS:
 
 WHAT GETS COPIED (core):
   .ai/  .cursor/  .claude/{agents,hooks,skills,settings.json}
-  CLAUDE.md  docs/integrations/  docs/CLAUDE.md
+  AGENTS.md  CLAUDE.md  docs/integrations/  docs/CLAUDE.md
   docs/COLLABORATIVE-DESIGN-PRINCIPLE.md
   .github/copilot-instructions.md
   + empty docs/ scaffolding (architecture, specs, stories, design, runbooks, modules)

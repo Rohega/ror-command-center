@@ -123,9 +123,9 @@ plan is approved.
 
 | Platform | Integration | Entry Point |
 |----------|-------------|-------------|
-| **Cursor** | `.cursor/rules/` | Rules reference `.ai/standards/` |
+| **Cursor** | `.cursor/rules/` + `AGENTS.md` | Rules reference `.ai/standards/`; `AGENTS.md` binds agents/workflows |
 | **Claude Code** | `.claude/` | `CLAUDE.md` + slash skills |
-| **OpenAI Codex** | `docs/integrations/codex.md` | Load `.ai/` context manually |
+| **OpenAI Codex** | `docs/integrations/codex.md` + `AGENTS.md` | `AGENTS.md` auto-loads; `.ai/` for deep context |
 | **ChatGPT** | `docs/integrations/chatgpt.md` | Custom GPT or project instructions |
 | **GitHub Copilot** | `docs/integrations/copilot.md` | `.github/copilot-instructions.md` pattern |
 | **Gemini** | `docs/integrations/gemini.md` | Workspace instructions |
