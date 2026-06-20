@@ -102,6 +102,19 @@ Replies stream token-by-token in `rorcc agent`, so you see output as it's genera
 RORCC_MODEL=qwen2.5-coder:14b rorcc build-agent backend-rails-developer
 ```
 
+## Run a skill
+
+Beyond chatting with an agent, you can run a full skill (`.ai/skills/<name>`). It
+loads the skill's responsible agent plus the skill instructions and any templates,
+then opens a guided session:
+
+```bash
+rorcc skill create-feature-spec          # local
+rorcc skill create-feature-spec --cloud  # hybrid
+```
+
+If the skill's agent isn't compiled yet, `rorcc` builds it automatically.
+
 ## Hybrid mode (local + cloud)
 
 Use local models for everyday tasks and a cloud model for hard architecture work —

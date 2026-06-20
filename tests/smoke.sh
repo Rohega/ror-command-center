@@ -38,6 +38,9 @@ assert_exit 1 "agent --cloud (no key) -> 1" -- env -u OPENAI_API_KEY -u ANTHROPI
 # Proxy prints config and exits 0 (no --start, so it never launches a server).
 assert_exit 0 "proxy (info only) -> 0"     -- "$RORCC" proxy
 assert_exit 2 "proxy bad flag -> 2"        -- "$RORCC" proxy --bogus
+assert_exit 2 "skill (no arg) -> 2"        -- "$RORCC" skill
+assert_exit 1 "skill bad name -> 1"        -- "$RORCC" skill does-not-exist
+assert_exit 2 "skill bad flag -> 2"        -- "$RORCC" skill create-feature-spec --bogus
 
 printf '\nbuild-agent codegen (no Ollama needed):\n'
 TMP="$(mktemp -d)"; export HOME="$TMP"
