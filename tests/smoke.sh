@@ -35,6 +35,9 @@ assert_exit 2 "agent (no arg) -> 2"        -- "$RORCC" agent
 assert_exit 2 "agent bad flag -> 2"        -- "$RORCC" agent rails-architect --bogus
 # Cloud without credentials/jq must fail cleanly (exit 1), never hang.
 assert_exit 1 "agent --cloud (no key) -> 1" -- env -u OPENAI_API_KEY -u ANTHROPIC_API_KEY "$RORCC" agent rails-architect --cloud
+# Proxy prints config and exits 0 (no --start, so it never launches a server).
+assert_exit 0 "proxy (info only) -> 0"     -- "$RORCC" proxy
+assert_exit 2 "proxy bad flag -> 2"        -- "$RORCC" proxy --bogus
 
 printf '\nbuild-agent codegen (no Ollama needed):\n'
 TMP="$(mktemp -d)"; export HOME="$TMP"

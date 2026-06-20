@@ -32,6 +32,7 @@ COMMANDS:
   build-agent <name>      Compile a .ai/agents/<name>.yaml into an Ollama model
   update [name]           Recompile agents after editing .ai/ (all, or just <name>)
   agent <name> [--cloud]  Chat with an agent (local Ollama by default, --cloud for hybrid)
+  proxy [--start]         Show IDE (Cursor/Claude Code) config; --start runs a LiteLLM gateway
   help                    Show this help
 
 ENVIRONMENT:
@@ -78,6 +79,7 @@ main() {
     build-agent)  . "$RORCC_LIB_DIR/build_agent.sh"; cmd_build_agent "$@" ;;
     update)       . "$RORCC_LIB_DIR/build_agent.sh"; cmd_update "$@" ;;
     agent)        . "$RORCC_LIB_DIR/agent.sh";       cmd_agent "$@" ;;
+    proxy)        . "$RORCC_LIB_DIR/proxy.sh";       cmd_proxy "$@" ;;
     help|-h|--help) usage ;;
     *) err "unknown command: $cmd"; printf '\n'; usage; exit 2 ;;
   esac

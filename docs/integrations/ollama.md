@@ -130,6 +130,24 @@ Cloud mode needs no `build-agent` step — the prompt is assembled on the fly.
 `rorcc doctor` reports whether a cloud key is set. Cloud support is best-effort;
 provider APIs change over time.
 
+## Use Ollama from Cursor / Claude Code (bridge)
+
+Want your existing IDE to use the local model? `rorcc proxy` prints the exact
+config and can launch a gateway:
+
+```bash
+rorcc proxy            # show Cursor + Claude Code setup
+rorcc proxy --start    # launch a LiteLLM gateway (needs: pip install litellm)
+```
+
+- **Cursor**: add a custom OpenAI model with base URL `http://localhost:11434/v1`
+  (Ollama is OpenAI-compatible). Verification from Cursor's servers may fail for a
+  purely local URL depending on the version — best-effort.
+- **Claude Code**: speaks the Anthropic API, so run `rorcc proxy --start` (LiteLLM)
+  and set `ANTHROPIC_BASE_URL=http://localhost:4000`.
+
+This bridge is best-effort; IDE client behavior changes between versions.
+
 ## Available agents
 
 `rails-architect`, `backend-rails-developer`, `frontend-react-inertia-developer`,
