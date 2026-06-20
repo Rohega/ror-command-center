@@ -11,6 +11,7 @@ FORCE=0
 DRY_RUN=0
 BACKUP=0
 WITH_EXAMPLES=0
+INSTALL_CLI=0
 TARGET=""
 
 # Counters
@@ -77,6 +78,8 @@ OPTIONS:
   --dry-run         Show what would happen without writing anything.
   --backup          Back up conflicting files to <file>.bak before overwriting.
   --with-examples   Also copy example content (examples/ and warehouse docs).
+  --install-cli     Link the 'rorcc' CLI into your PATH (for local Ollama use)
+                    and exit. No <target-dir> required.
   -h, --help        Show this help.
 
 WHAT GETS COPIED (core):
@@ -109,6 +112,7 @@ while [ $# -gt 0 ]; do
     --dry-run) DRY_RUN=1 ;;
     --backup) BACKUP=1 ;;
     --with-examples) WITH_EXAMPLES=1 ;;
+    --install-cli) INSTALL_CLI=1 ;;
     -h|--help) usage; exit 0 ;;
     -*) err "unknown option: $1"; echo; usage; exit 2 ;;
     *)
@@ -120,6 +124,37 @@ while [ $# -gt 0 ]; do
   esac
   shift
 done
+
+# --- Optional: link the rorcc CLI into PATH ----------------------------------
+install_cli() {
+  local cli="$SRC/cli/rorcc"
+  if [ ! -f "$cli" ]; then
+    err "CLI not found at $cli"; exit 1
+  fi
+  chmod +x "$cli" 2>/dev/null || true
+
+  local bindir=""
+  for d in "$HOME/.local/bin" "/usr/local/bin"; do
+    if [ -d "$d" ] && [ -w "$d" ]; then bindir="$d"; break; fi
+  done
+  if [ -z "$bindir" ]; then
+    bindir="$HOME/.local/bin"
+    mkdir -p "$bindir"
+  fi
+
+  ln -sf "$cli" "$bindir/rorcc"
+  info "Linked rorcc → ${C_DIM}$bindir/rorcc${C_RESET}"
+  case ":$PATH:" in
+    *":$bindir:"*) log "  ${C_GREEN}rorcc${C_RESET} is on your PATH. Try: rorcc doctor" ;;
+    *) warn "add $bindir to your PATH, then run: rorcc doctor" ;;
+  esac
+}
+
+if [ "$INSTALL_CLI" -eq 1 ]; then
+  log "${C_BOLD}RoR Command Center — CLI install${C_RESET}"
+  install_cli
+  exit 0
+fi
 
 if [ -z "$TARGET" ]; then
   err "missing <target-dir>"; echo; usage; exit 2

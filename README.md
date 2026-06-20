@@ -129,6 +129,26 @@ plan is approved.
 | **ChatGPT** | `docs/integrations/chatgpt.md` | Custom GPT or project instructions |
 | **GitHub Copilot** | `docs/integrations/copilot.md` | `.github/copilot-instructions.md` pattern |
 | **Gemini** | `docs/integrations/gemini.md` | Workspace instructions |
+| **Ollama (local)** | `docs/integrations/ollama.md` | `rorcc` CLI runs agents on your own PC |
+
+---
+
+## Local AI with Ollama (run on your own PC)
+
+Prefer no cloud, no API keys, zero per-token cost? The `rorcc` CLI compiles the
+specialist agents into local [Ollama](https://ollama.com/) models. Ollama is a
+runtime dependency you install separately — it is not part of this repo.
+
+```bash
+./install.sh --install-cli          # link the 'rorcc' command into your PATH
+rorcc doctor                        # check Ollama, models, environment
+rorcc build-agent rails-architect   # compile .ai/agents/rails-architect.yaml → local model
+rorcc agent rails-architect         # chat locally
+```
+
+`rorcc init <project>` scaffolds a new project (same as `install.sh`). Local
+7–14B models trade quality for privacy and offline use — see
+[docs/integrations/ollama.md](docs/integrations/ollama.md) for model tiers and caveats.
 
 ---
 

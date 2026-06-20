@@ -1,0 +1,21 @@
+# Reference Modelfile for a RoR Command Center agent.
+# rorcc build-agent generates the real one under <project>/.rorcc/build/<name>/Modelfile,
+# inlining the agent YAML and its referenced standards into the SYSTEM block below.
+#
+# Manual equivalent:
+#   ollama create rorcc-rails-architect -f Modelfile
+
+FROM qwen2.5-coder:7b
+
+PARAMETER temperature 0.2
+
+SYSTEM """
+You are the "<agent-name>" specialist of RoR Command Center, a production-grade
+Ruby on Rails AI engineering team.
+
+===== ROLE DEFINITION (<agent-name>.yaml) =====
+<contents of .ai/agents/<agent-name>.yaml>
+
+===== STANDARD: .ai/standards/development.md =====
+<contents of each referenced standard>
+"""

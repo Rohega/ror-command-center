@@ -1,0 +1,23 @@
+# RoR Command Center — recommended local models for Ollama.
+# Reference for `rorcc doctor` recommendations. Pick a base model by available RAM.
+# Override at runtime with: RORCC_MODEL=<model> rorcc build-agent <name>
+
+default: qwen2.5-coder:7b
+
+tiers:
+  - ram_gb: 8        # 8-16 GB: entry point, decent for everyday Rails tasks
+    model: qwen2.5-coder:7b
+  - ram_gb: 24       # 24-32 GB: noticeably better reasoning on complex code
+    model: qwen2.5-coder:14b
+  - ram_gb: 48       # 48 GB+: closest local quality to cloud models
+    model: qwen2.5-coder:32b
+
+alternatives:
+  - llama3.1:8b          # general-purpose fallback
+  - deepseek-coder-v2:16b
+  - codellama:13b
+
+notes: |
+  Local 7-14B models are below Claude/GPT for complex architecture work.
+  The value of local is privacy, zero cost, and offline use.
+  Pull a model before building agents, e.g.: ollama pull qwen2.5-coder:7b
