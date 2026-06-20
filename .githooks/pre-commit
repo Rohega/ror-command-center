@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# RoR Command Center — pre-commit guardrail.
+# Blocks direct commits to protected branches (main/master/develop), enforcing
+# the "PR only" rule in .ai/standards/git-workflow.md.
+#
+# Enable once per clone:   git config core.hooksPath .githooks
+# Emergency override:      RORCC_ALLOW_PROTECTED_COMMIT=1 git commit ...
+
+branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
+
+case "$branch" in
+  main|master|develop)
+    if [ "${RORCC_ALLOW_PROTECTED_COMMIT:-0}" = "1" ]; then
+      printf '\033[33m!\033[0m  committing directly to protected branch "%s" (override set)\n' "$branch" >&2
+      exit 0
+    fi
+    printf '\033[31merror:\033[0m direct commits to "%s" are not allowed (PR only).\n' "$branch" >&2
+    printf '       Create a feature branch first:\n' >&2
+    printf '         git switch -c feat/<slug>\n' >&2
+    printf '       See .ai/standards/git-workflow.md. Override (not recommended):\n' >&2
+    printf '         RORCC_ALLOW_PROTECTED_COMMIT=1 git commit ...\n' >&2
+    exit 1
+    ;;
+esac
+
+exit 0

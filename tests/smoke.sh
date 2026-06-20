@@ -22,7 +22,7 @@ assert_exit() {
 printf '\033[1mrorcc smoke tests\033[0m\n\n'
 
 printf 'syntax (bash -n):\n'
-for f in "$RORCC" "$ROOT"/lib/rorcc/*.sh "$ROOT/install.sh" "$ROOT/setup.sh"; do
+for f in "$RORCC" "$ROOT"/lib/rorcc/*.sh "$ROOT/install.sh" "$ROOT/setup.sh" "$ROOT/.githooks/pre-commit"; do
   if bash -n "$f" 2>/dev/null; then ok "$(basename "$f")"; else bad "$(basename "$f")"; fi
 done
 

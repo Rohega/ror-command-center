@@ -37,11 +37,15 @@ for branch in develop main master; do
 done
 
 if [ -n "$MATCHED_BRANCH" ]; then
-    echo "Push to protected branch '$MATCHED_BRANCH' detected." >&2
-    echo "Reminder: Ensure build passes, unit tests pass, and no S1/S2 bugs exist." >&2
-    # Allow the push but warn -- uncomment below to block instead:
-    # echo "BLOCKED: Run tests before pushing to $CURRENT_BRANCH" >&2
-    # exit 2
+    # Emergency override: RORCC_ALLOW_PROTECTED_PUSH=1
+    if [ "${RORCC_ALLOW_PROTECTED_PUSH:-0}" = "1" ]; then
+        echo "Push to protected branch '$MATCHED_BRANCH' allowed (override set)." >&2
+        exit 0
+    fi
+    echo "BLOCKED: direct push to protected branch '$MATCHED_BRANCH' is not allowed (PR only)." >&2
+    echo "Open a pull request instead. See .ai/standards/git-workflow.md." >&2
+    echo "Override (not recommended): RORCC_ALLOW_PROTECTED_PUSH=1" >&2
+    exit 2
 fi
 
 exit 0

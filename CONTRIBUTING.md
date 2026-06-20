@@ -30,6 +30,19 @@ Feature requests: open an issue first.
 1. Create `.ai/agents/<slug>.yaml` with full schema (name, purpose, responsibilities, inputs, outputs, rules, anti_patterns, success_criteria)
 2. Add thin Claude adapter: `.claude/agents/<slug>.md`
 
+## Branching (required)
+
+`main` is protected: **no direct commits or pushes — PR only.** After cloning,
+enable the local guardrail once:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+This installs a `pre-commit` hook that blocks commits on `main`/`master`/`develop`.
+Always work on a feature branch (`git switch -c feat/<slug>`). See
+`.ai/standards/git-workflow.md`.
+
 ## Collaboration Protocol
 
 All agents follow `.ai/standards/collaboration.md` — user approves before file writes.

@@ -19,7 +19,7 @@ jobs:
           # so SC2154 (unassigned) and SC1091 (can't follow dynamic source) are
           # expected. SC2034 covers shared color vars unused within a single file.
           shellcheck -S warning -e SC2034 -e SC2154 -e SC1091 \
-            cli/rorcc lib/rorcc/*.sh install.sh setup.sh tests/smoke.sh
+            cli/rorcc lib/rorcc/*.sh install.sh setup.sh tests/smoke.sh .githooks/pre-commit
 
       - name: Smoke tests
         run: bash tests/smoke.sh

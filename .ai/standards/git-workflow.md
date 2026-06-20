@@ -31,6 +31,20 @@
 - No force push to `main`
 - No direct commits to `main` (PR only)
 
+## Enforcement
+
+These rules are enforced, not just documented:
+
+- **GitHub branch protection** on `main`: requires a PR and a green CI check
+  (`Shell lint + smoke tests`); blocks force-push and deletion.
+- **Local pre-commit hook** (`.githooks/pre-commit`): blocks commits on
+  `main`/`master`/`develop`. Enable once per clone:
+  `git config core.hooksPath .githooks`
+- **Claude Code push hook** (`.claude/hooks/validate-push.sh`): blocks direct
+  pushes to protected branches during agent sessions.
+- Emergency overrides (discouraged): `RORCC_ALLOW_PROTECTED_COMMIT=1` (commit),
+  `RORCC_ALLOW_PROTECTED_PUSH=1` (push).
+
 ## References
 
 - Standard: `.ai/standards/code-review.md`
