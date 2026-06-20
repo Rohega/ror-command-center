@@ -86,6 +86,17 @@ by hand. Generated files live in `<project>/.rorcc/build/<name>/`.
 |----------|---------|---------|
 | `RORCC_MODEL` | `qwen2.5-coder:7b` | Base model used by `build-agent` |
 | `OLLAMA_HOST` | `http://localhost:11434` | Ollama endpoint |
+| `RORCC_MAX_CHARS` | _(unset)_ | Hard-cap the system prompt size (truncate) for small models |
+| `RORCC_WARN_CHARS` | `32000` | Warn when the assembled prompt exceeds this size |
+
+After editing anything under `.ai/`, recompile so the change reaches the models:
+
+```bash
+rorcc update                 # rebuild every compiled agent
+rorcc update rails-architect # or just one
+```
+
+Replies stream token-by-token in `rorcc agent`, so you see output as it's generated.
 
 ```bash
 RORCC_MODEL=qwen2.5-coder:14b rorcc build-agent backend-rails-developer

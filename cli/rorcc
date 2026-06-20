@@ -30,6 +30,7 @@ COMMANDS:
   init <project>          Scaffold a new project with the .ai/ framework
   doctor                  Check Ollama, models, and environment
   build-agent <name>      Compile a .ai/agents/<name>.yaml into an Ollama model
+  update [name]           Recompile agents after editing .ai/ (all, or just <name>)
   agent <name>            Chat locally with a compiled agent (needs build-agent first)
   help                    Show this help
 
@@ -71,6 +72,7 @@ main() {
     init)         cmd_init "$@" ;;
     doctor)       . "$RORCC_LIB_DIR/doctor.sh";      cmd_doctor "$@" ;;
     build-agent)  . "$RORCC_LIB_DIR/build_agent.sh"; cmd_build_agent "$@" ;;
+    update)       . "$RORCC_LIB_DIR/build_agent.sh"; cmd_update "$@" ;;
     agent)        . "$RORCC_LIB_DIR/agent.sh";       cmd_agent "$@" ;;
     help|-h|--help) usage ;;
     *) err "unknown command: $cmd"; printf '\n'; usage; exit 2 ;;

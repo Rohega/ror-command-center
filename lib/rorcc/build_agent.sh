@@ -51,6 +51,21 @@ cmd_build_agent() {
     info "inlined $count referenced standard(s)" >&2
   } > "$sys"
 
+  # Guard the context budget. Small local models (7-14B) have limited windows;
+  # a huge SYSTEM prompt degrades quality. Warn, and optionally hard-cap with
+  # RORCC_MAX_CHARS (the prompt is truncated to that many characters).
+  local chars; chars="$(wc -c < "$sys" | tr -d ' ')"
+  local soft_limit="${RORCC_WARN_CHARS:-32000}"   # ~8k tokens, a safe default
+  if [ -n "${RORCC_MAX_CHARS:-}" ] && [ "$chars" -gt "$RORCC_MAX_CHARS" ]; then
+    head -c "$RORCC_MAX_CHARS" "$sys" > "$sys.cut" && mv "$sys.cut" "$sys"
+    printf '\n[...context truncated to %s chars by RORCC_MAX_CHARS...]\n' "$RORCC_MAX_CHARS" >> "$sys"
+    warn "system prompt truncated to $RORCC_MAX_CHARS chars (was $chars)"
+    chars="$RORCC_MAX_CHARS"
+  elif [ "$chars" -gt "$soft_limit" ]; then
+    warn "system prompt is large (${chars} chars) — may exceed small models' context."
+    warn "set RORCC_MAX_CHARS=<n> to cap it, or use a larger base model."
+  fi
+
   # Write the Modelfile. Ollama reads SYSTEM as a quoted block.
   {
     printf 'FROM %s\n' "$base_model"
@@ -80,4 +95,32 @@ cmd_build_agent() {
     err "ollama create failed (is the base model '$base_model' pulled? try: ollama pull $base_model)"
     return 1
   fi
+}
+
+# rorcc update [name] — recompile agents after editing .ai/.
+# With a name: rebuild that one. Without: rebuild every already-compiled agent
+# (rorcc-* models), or all .ai/agents if none are compiled yet.
+cmd_update() {
+  local name="${1:-}"
+  if [ -n "$name" ]; then
+    cmd_build_agent "$name"
+    return $?
+  fi
+
+  ollama_running || { err "ollama daemon not reachable at $OLLAMA_HOST — start it with 'ollama serve'"; return 1; }
+
+  local root; root="$(find_ai_root)" || { err "no .ai/ framework found"; return 1; }
+
+  local slugs
+  slugs="$(ollama list 2>/dev/null | awk '$1 ~ /^rorcc-/ {print $1}' | sed 's/^rorcc-//')"
+  if [ -z "$slugs" ]; then
+    info "no compiled agents found — building all from .ai/agents/"
+    slugs="$(ls "$root/.ai/agents/" | sed 's/\.yaml$//')"
+  fi
+
+  local s rc=0
+  for s in $slugs; do
+    cmd_build_agent "$s" || rc=1
+  done
+  return "$rc"
 }
