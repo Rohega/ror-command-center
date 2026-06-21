@@ -43,6 +43,7 @@ All rules reference a canonical standard in `.ai/` — they never duplicate it.
 | Cursor Rule | Canonical Standard |
 |-------------|-------------------|
 | `project-structure.mdc` | `.ai/` layout |
+| `workflow-gates.mdc` | `.ai/workflows/new-feature.yaml`, `.ai/standards/project-bootstrap.md` |
 | `rails.mdc` | `.ai/standards/development.md` |
 | `frontend.mdc` | `.ai/standards/frontend.md` |
 | `ux-accessibility.mdc` | `.ai/standards/ux-accessibility.md` |
@@ -59,9 +60,17 @@ All rules reference a canonical standard in `.ai/` — they never duplicate it.
 | `documentation.mdc` | `.ai/standards/documentation.md` |
 
 **Why some rules always apply and others don't:**
-`project-structure.mdc` is `alwaysApply: true`, so it loads in every chat.
-The rest activate by file glob (e.g. `rails.mdc` activates when you touch
-`app/**/*.rb`). You can also force any rule by `@`-mentioning its file.
+`project-structure.mdc`, `minimalism.mdc`, and `workflow-gates.mdc` are
+`alwaysApply: true`, so they load in every chat — `workflow-gates.mdc` keeps the
+Definition of Done (RSpec tests, review, QA, docs) in scope even on greenfield
+projects where no files match the globs yet. The rest activate by file glob
+(e.g. `rails.mdc` activates when you touch `app/**/*.rb`). You can also force any
+rule by `@`-mentioning its file.
+
+**Hard gates (`.cursor/hooks.json`):** beyond advisory rules, Cursor hooks
+deterministically block direct pushes to `main`/`master`/`develop`, flag staged
+secrets before commits, and surface bootstrap gaps (missing RSpec) at session
+start. See **Settings > Hooks** to inspect them.
 
 ## Copy-paste recipes
 

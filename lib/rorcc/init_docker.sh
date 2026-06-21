@@ -36,7 +36,7 @@ cmd_init_docker() {
     -e ASSETS_DIR=/assets \
     -e "HOST_UID=$(id -u)" \
     -e "HOST_GID=$(id -g)" \
-    -e "RAILS_NEW_ARGS=--database=mysql --css=tailwind --javascript=esbuild --skip-git" \
+    -e "RAILS_NEW_ARGS=--database=mysql --css=tailwind --javascript=esbuild --skip-git --skip-test" \
     -w /output \
     ruby:3.3-bookworm \
     bash /assets/rails-new.sh
