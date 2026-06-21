@@ -34,8 +34,9 @@ This runs end to end (a few minutes on first run):
 
 1. Generates the Rails app inside a throwaway `ruby:3.3` container — nothing is installed on your host.
 2. Drops in the generic **MySQL** dev stack (`Dockerfile.dev`, `docker-compose.yml`, `config/database.yml`, `bin/docker-entrypoint.sh`, `.env`, `.dockerignore`).
-3. Installs the `.ai/` framework (`.ai/`, `.cursor/`, `.claude/`, `AGENTS.md`, `CLAUDE.md`).
-4. Builds the dev image, runs `bundle install`, and initializes a git repo with an initial commit.
+3. Wires the mandatory **RSpec** test stack (RSpec + FactoryBot + SimpleCov + `config.generators :rspec`) instead of Minitest — see `.ai/standards/project-bootstrap.md`.
+4. Installs the `.ai/` framework (`.ai/`, `.cursor/`, `.claude/`, `AGENTS.md`, `CLAUDE.md`).
+5. Builds the dev image, runs `bundle install`, and initializes a git repo with an initial commit.
 
 The database name is derived from the project directory (e.g. `tallerflow_development`). Override it via `DATABASE_NAME` in the generated `.env`.
 
@@ -139,8 +140,9 @@ Esto corre de principio a fin (unos minutos la primera vez):
 
 1. Genera la app Rails dentro de un contenedor `ruby:3.3` desechable — no se instala nada en tu host.
 2. Coloca el stack de desarrollo genérico con **MySQL** (`Dockerfile.dev`, `docker-compose.yml`, `config/database.yml`, `bin/docker-entrypoint.sh`, `.env`, `.dockerignore`).
-3. Instala el framework `.ai/` (`.ai/`, `.cursor/`, `.claude/`, `AGENTS.md`, `CLAUDE.md`).
-4. Construye la imagen, ejecuta `bundle install` e inicializa git con un commit inicial.
+3. Configura el stack de pruebas **RSpec** obligatorio (RSpec + FactoryBot + SimpleCov + `config.generators :rspec`) en lugar de Minitest — ver `.ai/standards/project-bootstrap.md`.
+4. Instala el framework `.ai/` (`.ai/`, `.cursor/`, `.claude/`, `AGENTS.md`, `CLAUDE.md`).
+5. Construye la imagen, ejecuta `bundle install` e inicializa git con un commit inicial.
 
 El nombre de la BD se deriva del directorio del proyecto (p. ej. `tallerflow_development`). Cámbialo con `DATABASE_NAME` en el `.env` generado.
 

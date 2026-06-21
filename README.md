@@ -80,7 +80,9 @@ Idea → Specification → Architecture → Implementation Plan → Development 
 | Documentation | `document-module` | Documentation Engineer |
 | Deployment | `release-checklist`, `capistrano-review` | DevOps AWS Engineer |
 
-Standards: `.ai/standards/development.md`, `.ai/standards/postgresql.md`, `.ai/standards/mysql.md`, `.ai/standards/testing.md`, `.ai/standards/legacy-rails.md`
+**Definition of Done** (enforced by `.cursor/rules/workflow-gates.mdc`, always applied): no feature ships without RSpec tests, review, QA sign-off, and documentation — even on greenfield projects. New apps bootstrap RSpec first (`.ai/standards/project-bootstrap.md`).
+
+Standards: `.ai/standards/development.md`, `.ai/standards/project-bootstrap.md`, `.ai/standards/postgresql.md`, `.ai/standards/mysql.md`, `.ai/standards/testing.md`, `.ai/standards/legacy-rails.md`
 
 ---
 
@@ -109,6 +111,7 @@ plan is approved.
 ## Operating Rules
 
 - Follow Rails conventions whenever possible.
+- Bootstrap RSpec first on new apps; no feature is done without tests, review, QA, and docs.
 - Avoid unnecessary abstractions.
 - Prefer Service Objects over fat controllers.
 - Prefer ActiveJob for async work.

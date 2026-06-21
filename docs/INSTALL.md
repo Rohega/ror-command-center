@@ -6,7 +6,7 @@ This guide explains how to add the framework to a new or existing project using 
 
 - Git and Bash
 - (Optional) `@anthropic-ai/claude-code` for Claude Code
-- (Optional) `jq` and Python 3 for the git hooks — they degrade gracefully if missing
+- (Optional) Python 3 (and `jq` for the Claude hooks) — both the Cursor (`.cursor/hooks.json`) and Claude hooks degrade gracefully if missing
 
 ## Step 1 — Clone the framework
 
@@ -37,7 +37,7 @@ The target directory is created if it does not exist. Existing files are **skipp
 cd /path/to/your-project
 ```
 
-- **Cursor:** rules in `.cursor/rules/` load automatically. `project-structure.mdc` is always applied.
+- **Cursor:** rules in `.cursor/rules/` load automatically. `project-structure.mdc`, `minimalism.mdc`, and `workflow-gates.mdc` are always applied (the last keeps the Definition of Done — RSpec tests, review, QA, docs — in scope even before any code exists). `.cursor/hooks.json` adds hard gates (blocks direct push to `main`, flags staged secrets).
 - **Claude Code:** run `claude` — `CLAUDE.md` loads the standards and collaboration protocol.
 - **Other platforms:** see [integrations/](integrations/) (Codex, ChatGPT, Copilot, Gemini).
 
@@ -69,7 +69,7 @@ cd /path/to/your-project
 **Framework core (generic, reusable):**
 
 - `.ai/` — single source of truth (agents, skills, workflows, standards, templates)
-- `.cursor/` — Cursor adapter (`rules/`)
+- `.cursor/` — Cursor adapter (`rules/`, `hooks.json`, `hooks/`)
 - `.claude/` — Claude Code adapter (`agents/`, `hooks/`, `skills/`, `settings.json`)
 - `CLAUDE.md` — Claude Code entry point
 - `docs/integrations/` — per-platform setup guides

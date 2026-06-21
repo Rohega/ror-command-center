@@ -18,6 +18,19 @@ This directory is the **single source of truth** for all Ruby on Rails AI engine
 2. Load collaboration rules: [standards/collaboration.md](standards/collaboration.md)
 3. Invoke the first skill: [skills/create-feature-spec/SKILL.md](skills/create-feature-spec/SKILL.md)
 
+## Non-negotiable gates (Definition of Done)
+
+Every task — even greenfield — must satisfy these before it is "done". The Cursor
+adapter enforces them via the always-applied rule `.cursor/rules/workflow-gates.mdc`.
+
+- **Tests (RSpec)** cover the critical paths — [standards/testing.md](standards/testing.md)
+- **Review** — `ponytail-review`, `review-rails-models`, `review-db-migrations`
+- **QA sign-off** — skill `qa-plan`, no BLOCKING findings
+- **Documentation** — skill `document-module`
+
+**New apps bootstrap the test stack first** (RSpec + FactoryBot + SimpleCov +
+generators): [standards/project-bootstrap.md](standards/project-bootstrap.md).
+
 ## Agent Roster (8 specialists)
 
 - product-owner, rails-architect, backend-rails-developer

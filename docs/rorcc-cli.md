@@ -28,7 +28,7 @@ Runtime dependencies (verified by `rorcc doctor`): [Ollama](https://ollama.com/)
 |---------|-------------|
 | `rorcc` | Interactive menu — pick a specialist by number (best for non-devs) |
 | `rorcc init <project>` | Scaffold a new project with the `.ai/` framework |
-| `rorcc init --docker <project>` | Scaffold a full Dockerized Rails app (MySQL, no local Ruby/Rails) + framework |
+| `rorcc init --docker <project>` | Scaffold a full Dockerized Rails app (MySQL, no local Ruby/Rails) with the RSpec test stack pre-wired + framework |
 | `rorcc doctor` | Check Ollama, models, RAM, and cloud-key readiness |
 | `rorcc build-agent <name>` | Compile `.ai/agents/<name>.yaml` (+ standards) into model `rorcc-<name>` |
 | `rorcc update [name]` | Recompile agents after editing `.ai/` (all, or just one) |
@@ -70,7 +70,9 @@ rorcc update                     # rebuild every compiled agent
 Docker on the host — no Ruby, Rails, or Node installed locally. It generates the
 app inside a throwaway `ruby:3.3` container, drops in a generic **MySQL** dev
 stack (`Dockerfile.dev`, `docker-compose.yml`, entrypoint, `config/database.yml`),
-installs the `.ai/` framework, and initializes git.
+wires the mandatory **RSpec** test stack (RSpec + FactoryBot + SimpleCov +
+`config.generators :rspec`, per `.ai/standards/project-bootstrap.md`) instead of
+Minitest, installs the `.ai/` framework, and initializes git.
 
 ```bash
 rorcc init --docker tallerflow
