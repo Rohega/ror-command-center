@@ -1,0 +1,52 @@
+---
+description: Non-negotiable engineering gates and Definition of Done for every task (RoR Command Center)
+alwaysApply: true
+---
+
+# Engineering Gates — Definition of Done
+
+These rules are **non-negotiable** and apply to every task, including greenfield
+projects where no `app/`, `spec/`, or `db/` files exist yet (so the glob-scoped
+rules in `.cursor/rules/` do not auto-attach).
+
+## When you plan
+
+Any implementation plan (TodoWrite, Plan mode, or prose) **MUST** mirror the phases
+of `.ai/workflows/new-feature.yaml` and explicitly include, as separate steps:
+
+1. **Tests (RSpec)** — see `.ai/standards/testing.md`
+2. **Review** — `ponytail-review`, `review-rails-models`, `review-db-migrations`
+3. **QA sign-off** — skill `qa-plan`, no BLOCKING findings
+4. **Documentation** — skill `document-module`
+
+Never collapse these into "implementation" and never defer them to "later".
+
+## Definition of Done
+
+A feature, fix, or module is **NOT complete** until all of the following hold:
+
+- [ ] **RSpec tests** cover the critical paths (happy path + auth failure +
+      validation errors for endpoints; success + retryable failure for jobs).
+- [ ] **No skipped/pending specs** without a ticket reference.
+- [ ] **ponytail-review** passed — no unaddressed over-engineering.
+- [ ] **QA** plan maps stories to tests; no BLOCKING findings.
+- [ ] **Documentation** for the module/module change exists under `docs/`.
+- [ ] Work happened on a `feature/<ticket>-<slug>` branch (never `main`).
+
+## New project bootstrap
+
+When creating a Rails app **from scratch**, the FIRST implementation step is to set
+up the test stack. Follow `.ai/standards/project-bootstrap.md` (RSpec + FactoryBot +
+SimpleCov + `config.generators` → `:rspec`) before writing application code.
+
+## Canonical sources
+
+Read the canonical standards when relevant — they are authoritative even if their
+Cursor adapter rule did not auto-attach:
+
+- Testing → `.ai/standards/testing.md`
+- Rails → `.ai/standards/development.md`
+- Security → `.ai/standards/security.md`
+- Bootstrap → `.ai/standards/project-bootstrap.md`
+- Workflow → `.ai/workflows/new-feature.yaml`
+- Collaboration → `.ai/standards/collaboration.md`

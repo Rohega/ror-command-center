@@ -7,8 +7,26 @@ Do not duplicate content here; reference the source of truth.
 ## Always apply
 
 - **Standards** in `.ai/standards/` govern every change. Minimalism (`.ai/standards/minimalism.md`) and the project structure are non-negotiable defaults.
+- **Engineering gates / Definition of Done** (`.cursor/rules/workflow-gates.mdc`): no feature is complete without RSpec tests, review, QA sign-off, and documentation.
 - **Collaboration protocol** (`.ai/standards/collaboration.md`): Question → Options → Decision → Draft → Approval. Ask before writing files; no commits without explicit instruction.
 - **Git workflow** (`.ai/standards/git-workflow.md`): work on `feature/<ticket>-<slug>` branches, Conventional Commits, never commit directly to `main`.
+
+## Definition of Done (MUST)
+
+For any implementation work you **MUST**:
+
+- Produce a plan that explicitly lists **tests, review, QA, and documentation** as
+  separate steps — never fold them into "implementation" or defer them.
+- Write **RSpec** tests covering the critical paths before considering work done.
+- Run **review** (`ponytail-review`, `review-rails-models`/`review-db-migrations`)
+  and **QA** (`qa-plan`) with no BLOCKING findings.
+- Add **documentation** (`document-module`) for new or changed modules.
+
+When creating a Rails app **from scratch**, the first step is the test stack:
+follow `.ai/standards/project-bootstrap.md` (RSpec + FactoryBot + SimpleCov +
+generators) **before** writing application code. Do not skip these because no
+`spec/`/`app/` files exist yet — the gates in `.cursor/rules/workflow-gates.mdc`
+apply regardless.
 
 ## Use the roles
 
@@ -27,7 +45,9 @@ When a task matches a role, adopt the matching definition in `.ai/agents/`:
 
 ## Follow the workflows
 
-For multi-step work, follow the matching process in `.ai/workflows/`:
+For multi-step work, you **MUST** follow the matching process in `.ai/workflows/`.
+Do not invent an ad-hoc plan that skips its phases (testing, QA, documentation,
+deployment). Available workflows:
 
 - New feature → `.ai/workflows/new-feature.yaml`
 - AWS deployment → `.ai/workflows/aws-deployment.yaml`
@@ -40,6 +60,7 @@ Reusable capabilities live in `.ai/skills/` (e.g. `create-feature-spec`, `ponyta
 
 ## Notes
 
-- `.cursor/rules/` adapts these standards for Cursor (glob-scoped auto-attach).
+- `.cursor/rules/` adapts these standards for Cursor. Most are glob-scoped; `workflow-gates.mdc`, `minimalism.mdc`, and `project-structure.mdc` are always applied.
+- `.cursor/hooks.json` enforces hard gates in Cursor (protected-branch push block, commit/secret checks, new-project gap detection).
 - `.claude/` adapts them for Claude Code; its hooks run only in Claude Code.
 - Standards are vendor-neutral — they apply regardless of the agent tool.

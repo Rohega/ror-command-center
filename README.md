@@ -212,7 +212,9 @@ Full step-by-step guide: [docs/INSTALL.md](docs/INSTALL.md).
   standards/            # Engineering rules (Rails, AWS, PostgreSQL/MySQL, …)
   templates/            # Document templates
 
-.cursor/rules/          # Cursor adapter → .ai/standards/
+.cursor/rules/          # Cursor adapter → .ai/standards/ (workflow-gates.mdc always applies)
+.cursor/hooks.json      # Cursor hard gates (protected-branch push block, secret/commit checks)
+.cursor/hooks/          # Cursor hook scripts
 .claude/                # Claude Code adapter → .ai/
 
 docs/
@@ -227,9 +229,10 @@ archive/game-studio-original/   # Previous game-studio framework (preserved)
 ## How to Use with Cursor
 
 1. Open the project in Cursor — rules in `.cursor/rules/` load automatically.
-2. `project-structure.mdc` always applies; others activate by file glob.
-3. **New to this?** Follow the 5-minute quickstart in [docs/integrations/cursor.md](docs/integrations/cursor.md#quickstart-5-minutes).
-4. Plan in **Ask mode**, then switch to **Agent mode** to implement.
+2. `project-structure.mdc`, `minimalism.mdc`, and `workflow-gates.mdc` always apply; others activate by file glob.
+3. `workflow-gates.mdc` enforces the Definition of Done (RSpec tests, review, QA, docs) even on greenfield projects; `.cursor/hooks.json` adds hard gates (e.g. blocks direct push to `main`).
+4. **New to this?** Follow the 5-minute quickstart in [docs/integrations/cursor.md](docs/integrations/cursor.md#quickstart-5-minutes).
+5. Plan in **Ask mode**, then switch to **Agent mode** to implement.
 
 See [docs/integrations/cursor.md](docs/integrations/cursor.md) for concepts, copy-paste recipes, and troubleshooting.
 

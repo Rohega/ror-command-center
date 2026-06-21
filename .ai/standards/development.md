@@ -36,6 +36,7 @@
 
 ## Tooling
 
+- New apps: bootstrap the test stack first — see `.ai/standards/project-bootstrap.md`
 - Tests: RSpec (see `.ai/standards/testing.md` for the agnostic principles)
 - Lint: RuboCop — no new offenses in changed files
 - Dependencies: Bundler + `bundle audit`

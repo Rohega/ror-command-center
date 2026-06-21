@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "hooks": {
+    "sessionStart": [
+      {
+        "command": ".cursor/hooks/detect-gaps.sh",
+        "timeout": 10
+      }
+    ],
+    "beforeShellExecution": [
+      {
+        "command": ".cursor/hooks/validate-push.sh",
+        "matcher": "git\\s+push",
+        "timeout": 10,
+        "failClosed": true
+      },
+      {
+        "command": ".cursor/hooks/validate-commit.sh",
+        "matcher": "git\\s+commit",
+        "timeout": 15
+      }
+    ]
+  }
+}

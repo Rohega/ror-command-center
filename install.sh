@@ -84,7 +84,7 @@ OPTIONS:
   -h, --help        Show this help.
 
 WHAT GETS COPIED (core):
-  .ai/  .cursor/  .claude/{agents,hooks,skills,settings.json}
+  .ai/  .cursor/ (rules + hooks.json + hooks/)  .claude/{agents,hooks,skills,settings.json}
   AGENTS.md  CLAUDE.md  docs/integrations/  docs/CLAUDE.md
   docs/COLLABORATIVE-DESIGN-PRINCIPLE.md
   .github/copilot-instructions.md

@@ -27,6 +27,7 @@ Full examples: `docs/COLLABORATIVE-DESIGN-PRINCIPLE.md`
 ## Standards
 
 @.ai/standards/development.md
+@.ai/standards/project-bootstrap.md
 @.ai/standards/minimalism.md
 @.ai/standards/frontend.md
 @.ai/standards/hotwire.md
