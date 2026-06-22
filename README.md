@@ -13,158 +13,75 @@ adapters only.
 
 ---
 
-## Core Philosophy
+## Quick start — what do you want to do?
 
-- **Rails First**
-- **Convention Over Configuration**
-- **Production Ready**
-- **AWS Native**
-- **Maintainable Code**
-- **Testable Code**
-- **Senior Engineer Standards**
+New here? This table sends you straight to the right setup. Beginner-friendly
+walkthrough: **[User Manual](docs/USER-MANUAL.md)**.
 
----
+| I want to… | Go to | Needs Ollama? |
+|------------|-------|---------------|
+| Use the framework in my existing Rails project with Cursor / Claude | [Installation](#installation) | No |
+| Run the AI specialists locally — no cloud, no API keys | [Local AI with Ollama](#local-ai-with-ollama-run-on-your-own-pc) | Yes |
+| Start a brand-new project with no local Ruby/Rails | [New project with Docker](#start-a-new-project-with-docker-only-docker-required) | No |
 
-## Specialization
+These setups are **independent**. There are two separate choices, easy to confuse:
 
-Ruby on Rails 7+ and 8+ · PostgreSQL & MySQL · Sidekiq · ActiveJob · Devise ·
-ActiveAdmin · Hotwire · React + Inertia · AWS · Docker · Capistrano · Kamal ·
-REST APIs · Background Processing · OCR Pipelines · WhatsApp Integrations ·
-Enterprise Applications.
+- **How you create the project:** local Ruby/Rails · Docker only (`rorcc init --docker`).
+- **How the AI runs:** Cursor / Claude (cloud IDE) · Ollama (local) · API key (`rorcc … --cloud`).
 
----
-
-## What Is This?
-
-RoR Command Center structures AI-assisted Rails engineering like a real senior team:
-
-- **8 specialists** (Product Owner, Rails Architect, Backend, Frontend, DevOps AWS, QA, Documentation, Security)
-- **Reusable skills** (feature specs, architecture, code review, UX specs, deployments, …)
-- **End-to-end workflows** (new feature, legacy onboarding, production incident, AWS deploy)
-- **Engineering standards** (Rails, frontend, UX/accessibility, AWS, PostgreSQL/MySQL, API, security, testing, …)
-- **Document templates** (feature spec, ADR, UX spec, QA plan, release checklist, …)
-
-You stay in control. Agents ask questions, present options, draft artifacts, and wait for approval before writing files.
-
-### How it stays in effect
-
-Everything lives in **`.ai/` — the single source of truth**. Platform folders
-(`.cursor/`, `.claude/`, `AGENTS.md`, `.github/`) are thin adapters that point to
-it, never copies. A **router** guarantees `.ai/` is always considered: the 9 core
-standards (collaboration, minimalism, development, project-bootstrap, testing,
-security, git-workflow, code-review, documentation) load in every session, and
-domain standards (frontend, API, data, async, auth, infra, legacy) load on demand
-when you touch their area. In Cursor this is `.cursor/rules/ai-index.mdc`; in
-Claude `CLAUDE.md`; in Codex/Copilot `AGENTS.md` / `copilot-instructions.md`.
-
-New here? Start with the **[User Manual](docs/USER-MANUAL.md)**.
+Ollama is **only** for running agents locally — it is never required just to install
+the framework or scaffold a project. You can also do both: run locally with Ollama
+*and* add the framework to a project for your cloud IDE.
 
 ---
 
-## Available Specialists
+## Installation
 
-1. **Product Owner** — scope, specs, acceptance criteria
-2. **Rails Architect** — architecture, data modeling, migrations & rollback strategy
-3. **Backend Engineer** — models, service objects, jobs, REST APIs
-4. **Frontend Engineer** — Hotwire and React + Inertia, UX/accessibility
-5. **DevOps AWS Engineer** — AWS, Docker, Capistrano/Kamal, releases
-6. **QA Engineer** — test plans, code review, quality gates
-7. **Documentation Engineer** — module docs, ADRs, runbooks
-8. **Security Engineer** — security review across every feature
+> **This is Path A** (use with a cloud IDE). It copies the framework into an
+> existing project; it does **not** install Ollama. For local AI, see
+> [Local AI with Ollama](#local-ai-with-ollama-run-on-your-own-pc).
 
----
+Clone this framework, then run `install.sh` pointing at your project:
 
-## Feature Pipeline
-
-Every feature request follows:
-
-```text
-Idea → Specification → Architecture → Implementation Plan → Development → Testing → Documentation → Deployment
+```bash
+git clone https://github.com/Rohega/ror-command-center.git
+cd ror-command-center
+./install.sh /path/to/your-project
 ```
 
-| Phase | Skill | Specialist |
-|-------|-------|-----------|
-| Idea | `create-feature-spec` | Product Owner |
-| Specification | `create-user-stories` | Product Owner |
-| Architecture | `create-architecture-plan` | Rails Architect |
-| Implementation Plan | `create-architecture-plan` | Rails Architect |
-| Development | `create-api-endpoints`, `review-db-migrations` | Backend & Frontend Engineers |
-| Testing | `qa-plan` | QA Engineer |
-| Documentation | `document-module` (developer), `document-user-guide` (user) | Documentation Engineer |
-| Deployment | `release-checklist`, `capistrano-review` | DevOps AWS Engineer |
+The script copies the framework **core** into your project and creates an empty `docs/` scaffolding — it does **not** copy example-specific content. Existing files are skipped unless you pass `--force`.
 
-**Definition of Done** (enforced by `.cursor/rules/workflow-gates.mdc`, always applied): no feature ships without RSpec tests, review, QA sign-off, and documentation — even on greenfield projects. New apps bootstrap RSpec first (`.ai/standards/project-bootstrap.md`).
+| Flag | Effect |
+|------|--------|
+| `--dry-run` | Show what would be copied without writing anything |
+| `--force` | Overwrite files that already exist in the target |
+| `--backup` | Save conflicting files as `<file>.bak` before overwriting |
+| `--with-examples` | Also copy `examples/` and the warehouse example docs |
+| `-h`, `--help` | Show usage |
 
-Standards: `.ai/standards/development.md`, `.ai/standards/project-bootstrap.md`, `.ai/standards/postgresql.md`, `.ai/standards/mysql.md`, `.ai/standards/testing.md`, `.ai/standards/legacy-rails.md`
+### Updating
 
----
+`.ai/` is the **single source of truth**; `.cursor/`, `.claude/`, and `AGENTS.md`
+are thin adapters that point to it. To update an installed project, pull the
+latest framework and re-run the installer:
 
-## Legacy & Reverse-Documentation
-
-Inherited a Rails app with missing or stale specs? RoR Command Center can
-reverse-document it and plan safe, incremental modernization.
-
-```text
-Discovery → Inventory → Risk Assessment → Reverse Documentation → Modernization Plan
+```bash
+cd ror-command-center && git pull
+./install.sh --force --backup /path/to/your-project   # --force refreshes files; --backup keeps .bak copies
 ```
 
-| Artifact | Path |
-|----------|------|
-| Standard | `.ai/standards/legacy-rails.md` (characterization tests, seams, strangler fig, Rails upgrades) |
-| Skill | `.ai/skills/reverse-document-legacy/SKILL.md` (audit app → system map, module docs, retrospective ADRs, risks) |
-| Workflow | `.ai/workflows/legacy-onboarding.yaml` |
-| Templates | `.ai/templates/legacy-module-audit.md`, `.ai/templates/modernization-plan.md`, `.ai/templates/retrospective-adr.md` |
+Only edit files under `.ai/` (and project-specific docs); never hand-edit the
+adapters — they are regenerated from `.ai/` on each install.
 
-Start by running the `reverse-document-legacy` skill in `map` mode, then follow the
-`legacy-onboarding` workflow. All changes stay documentation-only until a modernization
-plan is approved.
+Full step-by-step guide: [docs/INSTALL.md](docs/INSTALL.md). New to the framework?
+Read the [User Manual](docs/USER-MANUAL.md).
 
----
+**Prerequisites (recommended):**
+- Git, Bash
+- For Claude Code: `@anthropic-ai/claude-code`
+- For hooks: `jq`, Python 3 (optional, hooks degrade gracefully)
 
-## Operating Rules
-
-- Follow Rails conventions whenever possible.
-- Bootstrap RSpec first on new apps; no feature is done without tests, review, QA, and docs.
-- Avoid unnecessary abstractions.
-- Prefer Service Objects over fat controllers.
-- Prefer ActiveJob for async work.
-- Generate migration strategies and rollback plans.
-- Include security, monitoring, and deployment considerations.
-- Assume production deployment on AWS.
-- Output must always be actionable and production-focused.
-
----
-
-## Supported AI Platforms
-
-| Platform | Integration | Entry Point |
-|----------|-------------|-------------|
-| **Cursor** | `.cursor/rules/` + `AGENTS.md` | Rules reference `.ai/standards/`; `AGENTS.md` binds agents/workflows |
-| **Claude Code** | `.claude/` | `CLAUDE.md` + slash skills |
-| **OpenAI Codex** | `docs/integrations/codex.md` + `AGENTS.md` | `AGENTS.md` auto-loads; `.ai/` for deep context |
-| **ChatGPT** | `docs/integrations/chatgpt.md` | Custom GPT or project instructions |
-| **GitHub Copilot** | `docs/integrations/copilot.md` | `.github/copilot-instructions.md` pattern |
-| **Gemini** | `docs/integrations/gemini.md` | Workspace instructions |
-| **Ollama (local)** | `docs/integrations/ollama.md` | `rorcc` CLI runs agents on your own PC |
-
----
-
-## Two ways to use it — pick your path
-
-These are **independent** setups. They are easy to confuse, so here is the map:
-
-| Path | What you get | How | What it installs |
-|------|--------------|-----|------------------|
-| **A · Cloud IDE** (most common) | Use the framework inside your Rails project with Cursor, Claude Code, Codex, … | Copy the core into your project → [Installation](#installation) (`install.sh`) | Nothing heavy — just config files (`.ai/`, `.cursor/`, `.claude/`, …) |
-| **B · Local AI** (no cloud, no API keys) | Run the specialist team on your own machine via the `rorcc` CLI | Install Ollama + a model → [Local AI with Ollama](#local-ai-with-ollama-run-on-your-own-pc) (`setup.sh`) | Ollama + a multi-GB local model |
-
-- **Path A does NOT install Ollama.** It only drops the framework files into your project so a cloud AI (Cursor/Claude) reads them.
-- **Path B is the only one that installs an AI engine** (Ollama) on your computer.
-- You can do **both**: run locally with Ollama *and* add the framework to a project for your cloud IDE.
-
-> Going local (Path B)? First confirm your machine can run the models — see
-> [Local model requirements](#local-model-requirements) below, then run
-> `rorcc doctor` after install to re-check.
+> Prefer manual control? You can still copy or merge `.ai/`, `.cursor/`, and `.claude/` into your application repository by hand.
 
 ---
 
@@ -248,53 +165,137 @@ Step-by-step onboarding (EN/ES): [docs/runbooks/new-project-docker-bootstrap.md]
 
 ---
 
-## Installation
+## What Is This?
 
-> **This is Path A** (use with a cloud IDE). It copies the framework into an
-> existing project; it does **not** install Ollama. For local AI, see
-> [Local AI with Ollama](#local-ai-with-ollama-run-on-your-own-pc).
+RoR Command Center structures AI-assisted Rails engineering like a real senior team:
 
-Clone this framework, then run `install.sh` pointing at your project:
+- **8 specialists** (Product Owner, Rails Architect, Backend, Frontend, DevOps AWS, QA, Documentation, Security)
+- **Reusable skills** (feature specs, architecture, code review, UX specs, deployments, …)
+- **End-to-end workflows** (new feature, legacy onboarding, production incident, AWS deploy)
+- **Engineering standards** (Rails, frontend, UX/accessibility, AWS, PostgreSQL/MySQL, API, security, testing, …)
+- **Document templates** (feature spec, ADR, UX spec, QA plan, release checklist, …)
 
-```bash
-git clone https://github.com/Rohega/ror-command-center.git
-cd ror-command-center
-./install.sh /path/to/your-project
+You stay in control. Agents ask questions, present options, draft artifacts, and wait for approval before writing files.
+
+### How it stays in effect
+
+Everything lives in **`.ai/` — the single source of truth**. Platform folders
+(`.cursor/`, `.claude/`, `AGENTS.md`, `.github/`) are thin adapters that point to
+it, never copies. A **router** guarantees `.ai/` is always considered: the 9 core
+standards (collaboration, minimalism, development, project-bootstrap, testing,
+security, git-workflow, code-review, documentation) load in every session, and
+domain standards (frontend, API, data, async, auth, infra, legacy) load on demand
+when you touch their area. In Cursor this is `.cursor/rules/ai-index.mdc`; in
+Claude `CLAUDE.md`; in Codex/Copilot `AGENTS.md` / `copilot-instructions.md`.
+
+---
+
+## Available Specialists
+
+1. **Product Owner** — scope, specs, acceptance criteria
+2. **Rails Architect** — architecture, data modeling, migrations & rollback strategy
+3. **Backend Engineer** — models, service objects, jobs, REST APIs
+4. **Frontend Engineer** — Hotwire and React + Inertia, UX/accessibility
+5. **DevOps AWS Engineer** — AWS, Docker, Capistrano/Kamal, releases
+6. **QA Engineer** — test plans, code review, quality gates
+7. **Documentation Engineer** — module docs, ADRs, runbooks
+8. **Security Engineer** — security review across every feature
+
+---
+
+## Feature Pipeline
+
+Every feature request follows:
+
+```text
+Idea → Specification → Architecture → Implementation Plan → Development → Testing → Documentation → Deployment
 ```
 
-The script copies the framework **core** into your project and creates an empty `docs/` scaffolding — it does **not** copy example-specific content. Existing files are skipped unless you pass `--force`.
+| Phase | Skill | Specialist |
+|-------|-------|-----------|
+| Idea | `create-feature-spec` | Product Owner |
+| Specification | `create-user-stories` | Product Owner |
+| Architecture | `create-architecture-plan` | Rails Architect |
+| Implementation Plan | `create-architecture-plan` | Rails Architect |
+| Development | `create-api-endpoints`, `review-db-migrations` | Backend & Frontend Engineers |
+| Testing | `qa-plan` | QA Engineer |
+| Documentation | `document-module` (developer), `document-user-guide` (user) | Documentation Engineer |
+| Deployment | `release-checklist`, `capistrano-review` | DevOps AWS Engineer |
 
-| Flag | Effect |
-|------|--------|
-| `--dry-run` | Show what would be copied without writing anything |
-| `--force` | Overwrite files that already exist in the target |
-| `--backup` | Save conflicting files as `<file>.bak` before overwriting |
-| `--with-examples` | Also copy `examples/` and the warehouse example docs |
-| `-h`, `--help` | Show usage |
+**Definition of Done** (enforced by `.cursor/rules/workflow-gates.mdc`, always applied): no feature ships without RSpec tests, review, QA sign-off, and documentation — even on greenfield projects. New apps bootstrap RSpec first (`.ai/standards/project-bootstrap.md`).
 
-### Updating
+Standards: `.ai/standards/development.md`, `.ai/standards/project-bootstrap.md`, `.ai/standards/postgresql.md`, `.ai/standards/mysql.md`, `.ai/standards/testing.md`, `.ai/standards/legacy-rails.md`
 
-`.ai/` is the **single source of truth**; `.cursor/`, `.claude/`, and `AGENTS.md`
-are thin adapters that point to it. To update an installed project, pull the
-latest framework and re-run the installer:
+---
 
-```bash
-cd ror-command-center && git pull
-./install.sh --force --backup /path/to/your-project   # --force refreshes files; --backup keeps .bak copies
+## Core Philosophy
+
+- **Rails First**
+- **Convention Over Configuration**
+- **Production Ready**
+- **AWS Native**
+- **Maintainable Code**
+- **Testable Code**
+- **Senior Engineer Standards**
+
+---
+
+## Specialization
+
+Ruby on Rails 7+ and 8+ · PostgreSQL & MySQL · Sidekiq · ActiveJob · Devise ·
+ActiveAdmin · Hotwire · React + Inertia · AWS · Docker · Capistrano · Kamal ·
+REST APIs · Background Processing · OCR Pipelines · WhatsApp Integrations ·
+Enterprise Applications.
+
+---
+
+## Legacy & Reverse-Documentation
+
+Inherited a Rails app with missing or stale specs? RoR Command Center can
+reverse-document it and plan safe, incremental modernization.
+
+```text
+Discovery → Inventory → Risk Assessment → Reverse Documentation → Modernization Plan
 ```
 
-Only edit files under `.ai/` (and project-specific docs); never hand-edit the
-adapters — they are regenerated from `.ai/` on each install.
+| Artifact | Path |
+|----------|------|
+| Standard | `.ai/standards/legacy-rails.md` (characterization tests, seams, strangler fig, Rails upgrades) |
+| Skill | `.ai/skills/reverse-document-legacy/SKILL.md` (audit app → system map, module docs, retrospective ADRs, risks) |
+| Workflow | `.ai/workflows/legacy-onboarding.yaml` |
+| Templates | `.ai/templates/legacy-module-audit.md`, `.ai/templates/modernization-plan.md`, `.ai/templates/retrospective-adr.md` |
 
-Full step-by-step guide: [docs/INSTALL.md](docs/INSTALL.md). New to the framework?
-Read the [User Manual](docs/USER-MANUAL.md).
+Start by running the `reverse-document-legacy` skill in `map` mode, then follow the
+`legacy-onboarding` workflow. All changes stay documentation-only until a modernization
+plan is approved.
 
-**Prerequisites (recommended):**
-- Git, Bash
-- For Claude Code: `@anthropic-ai/claude-code`
-- For hooks: `jq`, Python 3 (optional, hooks degrade gracefully)
+---
 
-> Prefer manual control? You can still copy or merge `.ai/`, `.cursor/`, and `.claude/` into your application repository by hand.
+## Operating Rules
+
+- Follow Rails conventions whenever possible.
+- Bootstrap RSpec first on new apps; no feature is done without tests, review, QA, and docs.
+- Avoid unnecessary abstractions.
+- Prefer Service Objects over fat controllers.
+- Prefer ActiveJob for async work.
+- Generate migration strategies and rollback plans.
+- Include security, monitoring, and deployment considerations.
+- Assume production deployment on AWS.
+- Output must always be actionable and production-focused.
+
+---
+
+## Supported AI Platforms
+
+| Platform | Integration | Entry Point |
+|----------|-------------|-------------|
+| **Cursor** | `.cursor/rules/` + `AGENTS.md` | Rules reference `.ai/standards/`; `AGENTS.md` binds agents/workflows |
+| **Claude Code** | `.claude/` | `CLAUDE.md` + slash skills |
+| **OpenAI Codex** | `docs/integrations/codex.md` + `AGENTS.md` | `AGENTS.md` auto-loads; `.ai/` for deep context |
+| **ChatGPT** | `docs/integrations/chatgpt.md` | Custom GPT or project instructions |
+| **GitHub Copilot** | `docs/integrations/copilot.md` | `.github/copilot-instructions.md` pattern |
+| **Gemini** | `docs/integrations/gemini.md` | Workspace instructions |
+| **Ollama (local)** | `docs/integrations/ollama.md` | `rorcc` CLI runs agents on your own PC |
 
 ---
 

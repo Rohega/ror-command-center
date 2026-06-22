@@ -8,6 +8,26 @@
 
 ---
 
+## Inicio rápido — ¿qué quieres hacer?
+
+¿Nuevo aquí? Esta tabla te lleva directo a la sección correcta (detalle en §3):
+
+| Quiero… | Ve a | ¿Necesita Ollama? |
+|---------|------|-------------------|
+| Usar el framework en mi proyecto Rails con Cursor/Claude | §3.1 (Ruta A) | No |
+| Correr los agentes en local, sin nube ni API keys | §3.2 (Ruta B, Ollama) | Sí |
+| Arrancar un proyecto nuevo sin Ruby/Rails local | §3.3 (Docker) | No |
+
+Son **decisiones independientes**, fáciles de confundir:
+
+- **Cómo creas el proyecto:** Ruby/Rails local · solo Docker (`rorcc init --docker`).
+- **Cómo corres los agentes:** Cursor/Claude (nube) · Ollama (local) · API key (`--cloud`).
+
+Ollama es **solo** para correr agentes en local; nunca hace falta para instalar el
+framework ni para crear el proyecto.
+
+---
+
 ## 1. Qué es (en 30 segundos)
 
 RoR Command Center convierte tu repo en un **equipo senior de Rails** dirigido por
