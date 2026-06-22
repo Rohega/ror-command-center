@@ -149,11 +149,54 @@ plan is approved.
 
 ---
 
+## Two ways to use it — pick your path
+
+These are **independent** setups. They are easy to confuse, so here is the map:
+
+| Path | What you get | How | What it installs |
+|------|--------------|-----|------------------|
+| **A · Cloud IDE** (most common) | Use the framework inside your Rails project with Cursor, Claude Code, Codex, … | Copy the core into your project → [Installation](#installation) (`install.sh`) | Nothing heavy — just config files (`.ai/`, `.cursor/`, `.claude/`, …) |
+| **B · Local AI** (no cloud, no API keys) | Run the specialist team on your own machine via the `rorcc` CLI | Install Ollama + a model → [Local AI with Ollama](#local-ai-with-ollama-run-on-your-own-pc) (`setup.sh`) | Ollama + a multi-GB local model |
+
+- **Path A does NOT install Ollama.** It only drops the framework files into your project so a cloud AI (Cursor/Claude) reads them.
+- **Path B is the only one that installs an AI engine** (Ollama) on your computer.
+- You can do **both**: run locally with Ollama *and* add the framework to a project for your cloud IDE.
+
+> Going local (Path B)? First confirm your machine can run the models — see
+> [Local model requirements](#local-model-requirements) below, then run
+> `rorcc doctor` after install to re-check.
+
+---
+
 ## Local AI with Ollama (run on your own PC)
 
 Prefer no cloud, no API keys, zero per-token cost? The `rorcc` CLI compiles the
 specialist agents into local [Ollama](https://ollama.com/) models. Ollama is a
 runtime dependency you install separately — it is not part of this repo.
+
+### Local model requirements
+
+Local models are RAM-bound. Before installing, check what your machine can run:
+
+| RAM | Model tier | Disk (model) | Experience |
+|-----|-----------|--------------|------------|
+| 8–16 GB | `qwen2.5-coder:7b` | ~5 GB | Works — everyday tasks |
+| 24–32 GB | `qwen2.5-coder:14b` | ~9 GB | Better reasoning |
+| 48 GB+ | `qwen2.5-coder:32b` | ~20 GB | Best local quality |
+| < 8 GB | — | — | Not recommended (slow / limited) |
+
+Check your machine in one command (works on **any** machine, even before
+cloning/installing — reports RAM, CPU, disk, GPU and the recommended tier):
+
+```bash
+bash scripts/check-machine.sh
+```
+
+`setup.sh` runs this same check automatically and picks the tier for you;
+`rorcc doctor` re-checks the full environment (RAM, Ollama, model, daemon) after
+install. A GPU is optional but speeds inference up significantly. On **Windows +
+WSL2**, raise the WSL memory limit in `.wslconfig` if needed (models need their
+full size free in RAM).
 
 Non-technical? One command sets up everything:
 
@@ -189,6 +232,10 @@ Local 7–14B models trade quality for privacy and offline use.
 
 ## Installation
 
+> **This is Path A** (use with a cloud IDE). It copies the framework into an
+> existing project; it does **not** install Ollama. For local AI, see
+> [Local AI with Ollama](#local-ai-with-ollama-run-on-your-own-pc).
+
 Clone this framework, then run `install.sh` pointing at your project:
 
 ```bash
@@ -206,6 +253,20 @@ The script copies the framework **core** into your project and creates an empty 
 | `--backup` | Save conflicting files as `<file>.bak` before overwriting |
 | `--with-examples` | Also copy `examples/` and the warehouse example docs |
 | `-h`, `--help` | Show usage |
+
+### Updating
+
+`.ai/` is the **single source of truth**; `.cursor/`, `.claude/`, and `AGENTS.md`
+are thin adapters that point to it. To update an installed project, pull the
+latest framework and re-run the installer:
+
+```bash
+cd ror-command-center && git pull
+./install.sh --backup /path/to/your-project   # --backup keeps .bak copies of changes
+```
+
+Only edit files under `.ai/` (and project-specific docs); never hand-edit the
+adapters — they are regenerated from `.ai/` on each install.
 
 Full step-by-step guide: [docs/INSTALL.md](docs/INSTALL.md). New to the framework?
 Read the [User Manual](docs/USER-MANUAL.md).
