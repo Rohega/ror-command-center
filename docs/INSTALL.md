@@ -2,6 +2,11 @@
 
 This guide explains how to add the framework to a new or existing project using the `install.sh` script.
 
+> This is **Path A** (use with a cloud IDE like Cursor or Claude Code). It does
+> **not** install Ollama. To run the specialist team locally with no cloud and no
+> API keys, see [Local AI with Ollama](integrations/ollama.md) (`setup.sh` + the
+> `rorcc` CLI) — and check your machine first with `bash scripts/check-machine.sh`.
+
 ## Prerequisites
 
 - Git and Bash

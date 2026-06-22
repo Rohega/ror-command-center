@@ -15,6 +15,10 @@ rorcc (Bash + .ai/ knowledge)  ──HTTP──►  Ollama daemon (localhost:114
 
 ## Prerequisites
 
+> **Check your machine first.** Run `bash scripts/check-machine.sh` on any machine
+> (even before installing anything) to see RAM, CPU, free disk, and GPU, plus the
+> recommended model tier. `setup.sh` runs this same check automatically.
+
 | Tool | Why | Install |
 |------|-----|---------|
 | Ollama | Runs the local model | `curl -fsSL https://ollama.com/install.sh \| sh` |

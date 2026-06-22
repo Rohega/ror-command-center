@@ -35,6 +35,13 @@ else
   ROOT="$SCRIPT_DIR"
 fi
 
+# Reuse the standalone machine check when available (defines mc_* helpers and
+# mc_report). Sourcing does not run the report — we call it in the intro below.
+if [ -f "$ROOT/scripts/check-machine.sh" ]; then
+  # shellcheck source=/dev/null
+  . "$ROOT/scripts/check-machine.sh"
+fi
+
 # --- OS / package manager detection -------------------------------------------
 OS="$(uname -s)"
 detect_pkg() {
@@ -90,11 +97,15 @@ Esto preparará tu PC para usar IA local (sin nube, sin costo):
   • Instala 'jq' (utilidad pequeña) si falta
   • Descarga un modelo de IA — ${C_BOLD}varios GB${C_RESET}, puede tardar
   • Deja listo el comando 'rorcc' y a los especialistas
-
-Sistema:  $OS   ·   RAM: ${RAM}GB   ·   Modelo elegido: $MODEL
 EOF
-if [ "$RAM" -gt 0 ] && [ "$RAM" -lt 8 ]; then
-  printf '\n'; warn "Tu RAM (${RAM}GB) es baja; la IA puede ir lenta. Recomendado: 8GB+."
+printf '\n'
+if command -v mc_report >/dev/null 2>&1; then
+  mc_report || true
+else
+  printf '%b\n' "Sistema:  $OS   ·   RAM: ${RAM}GB   ·   Modelo elegido: $MODEL"
+  if [ "$RAM" -gt 0 ] && [ "$RAM" -lt 8 ]; then
+    warn "Tu RAM (${RAM}GB) es baja; la IA puede ir lenta. Recomendado: 8GB+."
+  fi
 fi
 case "$OS" in
   Linux|Darwin) : ;;

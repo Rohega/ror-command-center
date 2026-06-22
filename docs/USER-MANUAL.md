@@ -4,7 +4,7 @@
 > agente de IA (Cursor, Claude Code, Codex, Copilot…). Pensada para ponerte a
 > producir en una sola sesión.
 
-Última actualización: 2026-06-21
+Última actualización: 2026-06-22
 
 ---
 
@@ -58,7 +58,19 @@ Cómo se materializa en cada plataforma:
 
 ---
 
-## 3. Instalación
+## 3. Instalación — elige tu ruta
+
+Hay **dos formas independientes** de usar el framework. Es fácil confundirlas:
+
+| Ruta | Para qué | Cómo | Qué instala |
+|------|----------|------|-------------|
+| **A · IDE en la nube** (la más común) | Usar el framework dentro de tu proyecto Rails con Cursor, Claude Code, Codex… | `install.sh` copia el core a tu proyecto | Nada pesado: solo archivos de config (`.ai/`, `.cursor/`, `.claude/`…) |
+| **B · IA local** (sin nube, sin API keys) | Correr el equipo de especialistas en tu propia máquina con el CLI `rorcc` | `setup.sh` instala Ollama + un modelo | Ollama + un modelo local de varios GB |
+
+> La Ruta A **no** instala Ollama. La Ruta B es la única que instala un motor de
+> IA en tu equipo. Puedes hacer ambas.
+
+### 3.1 Ruta A — añadir el framework a un proyecto (nube)
 
 Clona el framework y ejecútalo apuntando a tu proyecto:
 
@@ -88,6 +100,58 @@ ls .ai/standards | wc -l   # debería listar los standards
 
 Si abres el proyecto en Cursor, el hook de inicio (`detect-gaps.sh`) avisa si
 falta `.ai/` o el router.
+
+**Actualizar más adelante:** `.ai/` es la fuente única de verdad; los adaptadores
+(`.cursor/`, `.claude/`, `AGENTS.md`) se regeneran. Para refrescar un proyecto ya
+instalado, necesitas `--force` (sin él, los archivos existentes se omiten):
+
+```bash
+cd ror-command-center && git pull
+./install.sh --force --backup /ruta/a/tu-proyecto
+```
+
+### 3.2 Ruta B — IA local con Ollama (`rorcc`)
+
+Corre los especialistas en tu propia PC, sin nube ni costo por token.
+
+**Antes de instalar, comprueba que tu equipo aguanta los modelos** (funciona en
+cualquier máquina, incluso antes de instalar nada):
+
+```bash
+bash scripts/check-machine.sh
+```
+
+Reporta SO, RAM, CPU, disco y GPU, y recomienda el modelo según tu RAM:
+
+| RAM | Modelo | Experiencia |
+|-----|--------|-------------|
+| 8–16 GB | `qwen2.5-coder:7b` | Funciona; tareas del día a día |
+| 24–32 GB | `qwen2.5-coder:14b` | Mejor razonamiento |
+| 48 GB+ | `qwen2.5-coder:32b` | Mejor calidad local |
+| < 8 GB | — | No recomendado (lento/limitado) |
+
+Instala todo con un comando — instala Ollama, descarga el modelo, deja listo el
+CLI `rorcc` y compila los especialistas (`setup.sh` corre el chequeo de equipo
+automáticamente y elige el modelo por ti):
+
+```bash
+cd ror-command-center
+./setup.sh
+rorcc              # menú interactivo: elige un especialista por número
+```
+
+Comandos útiles después de instalar:
+
+```bash
+rorcc doctor                  # diagnóstico: Ollama, modelos, daemon, entorno
+rorcc agent rails-architect   # chatear con un especialista
+rorcc skill create-feature-spec
+rorcc workflow new-feature
+```
+
+En **Windows + WSL2**, sube el límite de memoria de WSL en `.wslconfig` si hace
+falta (el modelo necesita su tamaño completo libre en RAM). Guía completa de la
+ruta local: `docs/integrations/ollama.md`.
 
 ---
 
@@ -207,6 +271,7 @@ Detalle: `.cursor/rules/workflow-gates.mdc` y `.ai/workflows/new-feature.yaml`.
 - Índice de `.ai/`: `.ai/README.md`
 - Guía Cursor: `docs/integrations/cursor.md`
 - Guía Claude Code: `docs/integrations/claude-code.md`
+- Guía IA local (Ollama): `docs/integrations/ollama.md`
 - Protocolo de colaboración: `.ai/standards/collaboration.md`
 - Gates de ingeniería: `.cursor/rules/workflow-gates.mdc`
 - Instalación detallada: `docs/INSTALL.md`
