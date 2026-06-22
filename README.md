@@ -90,7 +90,7 @@ Idea → Specification → Architecture → Implementation Plan → Development 
 | Implementation Plan | `create-architecture-plan` | Rails Architect |
 | Development | `create-api-endpoints`, `review-db-migrations` | Backend & Frontend Engineers |
 | Testing | `qa-plan` | QA Engineer |
-| Documentation | `document-module` | Documentation Engineer |
+| Documentation | `document-module` (developer), `document-user-guide` (user) | Documentation Engineer |
 | Deployment | `release-checklist`, `capistrano-review` | DevOps AWS Engineer |
 
 **Definition of Done** (enforced by `.cursor/rules/workflow-gates.mdc`, always applied): no feature ships without RSpec tests, review, QA sign-off, and documentation — even on greenfield projects. New apps bootstrap RSpec first (`.ai/standards/project-bootstrap.md`).
@@ -216,17 +216,35 @@ rorcc skill create-feature-spec     # run a skill with its responsible agent
 rorcc workflow new-feature          # run a full workflow, phase by phase
 ```
 
-Start a brand-new project with **only Docker** (no local Ruby/Rails):
-
-```bash
-rorcc init --docker tallerflow      # generates a Dockerized Rails app + framework
-```
-
-Step-by-step onboarding: [docs/runbooks/new-project-docker-bootstrap.md](docs/runbooks/new-project-docker-bootstrap.md).
-
 Full command reference: [docs/rorcc-cli.md](docs/rorcc-cli.md). Ollama setup,
 model tiers, hybrid mode, and IDE bridge: [docs/integrations/ollama.md](docs/integrations/ollama.md).
 Local 7–14B models trade quality for privacy and offline use.
+
+---
+
+## Start a new project with Docker (only Docker required)
+
+Want a brand-new, runnable Rails app with the framework already wired in, without
+installing Ruby/Rails/Node on your machine? `rorcc init --docker` generates one
+inside throwaway containers — **the only requirement is Docker**.
+
+```bash
+./install.sh --install-cli                 # one time: link the 'rorcc' command
+rorcc init --docker tallerflow             # generates a Dockerized Rails app + framework
+```
+
+This is **independent from how you run the AI specialists**. They are two separate
+choices:
+
+| Choice | Options | Needs Ollama? |
+|--------|---------|---------------|
+| **How you create the project** | Local Ruby/Rails · **Docker only** (`rorcc init --docker`) | No |
+| **How the AI specialists run** | Cursor / Claude (cloud IDE) · **Ollama** (local) · API key (`rorcc … --cloud`) | Only for the Ollama option |
+
+So you can scaffold with Docker and then use Cursor (cloud) with **no Ollama at
+all** — Ollama is only needed if you choose to run the agents locally.
+
+Step-by-step onboarding (EN/ES): [docs/runbooks/new-project-docker-bootstrap.md](docs/runbooks/new-project-docker-bootstrap.md).
 
 ---
 

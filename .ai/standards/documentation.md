@@ -9,6 +9,11 @@
 | API | `docs/api/` or OpenAPI | Public or partner APIs |
 | Runbook | `docs/runbooks/` | Deploy, incident, integration ops |
 | Feature spec | `docs/specs/` | Before implementation |
+| User guide / onboarding | `docs/` (README, `docs/USER-MANUAL.md`, runbooks) | Onboarding, install, or any setup/UX change a user follows |
+
+**Audience matters:** developer-facing docs (modules, APIs) use the
+`document-module` skill; user-facing docs (install/onboarding, how-tos) use the
+`document-user-guide` skill — lead with the user's task, not internals.
 
 ## Style
 
@@ -50,5 +55,5 @@ breaking cross-references) using this layout:
 ## References
 
 - Agent: `.ai/agents/documentation-writer.yaml`
-- Skill: `document-module`
-- Template: `.ai/templates/technical-design-document.md`
+- Skills: `document-module` (developer-facing), `document-user-guide` (user-facing)
+- Templates: `.ai/templates/technical-design-document.md`, `.ai/templates/user-guide.md`

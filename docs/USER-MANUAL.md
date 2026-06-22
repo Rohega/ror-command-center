@@ -153,6 +153,30 @@ En **Windows + WSL2**, sube el límite de memoria de WSL en `.wslconfig` si hace
 falta (el modelo necesita su tamaño completo libre en RAM). Guía completa de la
 ruta local: `docs/integrations/ollama.md`.
 
+### 3.3 Arrancar un proyecto NUEVO con Docker (`rorcc init --docker`)
+
+¿Quieres una app Rails nueva y ejecutable con el framework ya integrado, **sin
+instalar Ruby/Rails/Node** en tu equipo? `rorcc init --docker` la genera dentro de
+contenedores desechables — **el único requisito es Docker**.
+
+```bash
+./install.sh --install-cli       # una vez: enlaza el comando 'rorcc'
+rorcc init --docker tallerflow   # genera la app Rails dockerizada + framework
+```
+
+> **Docker ≠ Ollama.** Crear el proyecto con Docker **no** necesita Ollama. Son
+> dos decisiones separadas:
+>
+> | Decisión | Opciones | ¿Necesita Ollama? |
+> |----------|----------|-------------------|
+> | **Cómo creas el proyecto** | Ruby/Rails local · **solo Docker** (`rorcc init --docker`) | No |
+> | **Cómo corres los agentes IA** | Cursor/Claude (nube) · **Ollama** (local) · API key (`--cloud`) | Solo la opción Ollama |
+>
+> Puedes crear con Docker y luego usar Cursor (nube) **sin Ollama**.
+
+Guía paso a paso (EN/ES), con comandos, troubleshooting y rollback:
+`docs/runbooks/new-project-docker-bootstrap.md`.
+
 ---
 
 ## 4. Uso diario

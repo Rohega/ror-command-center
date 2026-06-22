@@ -5,7 +5,11 @@
 **Goal:** Create a brand-new, runnable Rails app with the `.ai/` framework using only Docker on the host.
 **Audience:** Any developer starting a fresh project (e.g. `tallerflow`).
 **Prerequisites:** Docker Desktop running (WSL integration enabled on Windows); Git. No Ruby/Rails/Node on the host.
-**Last updated:** 2026-06-20 · **Owner:** Documentation Writer
+**Last updated:** 2026-06-22 · **Owner:** Documentation Writer
+
+> **Docker only — Ollama is optional.** Creating the project needs just Docker.
+> Ollama is *not* required here; it is only one of the ways to run the AI
+> specialists afterward (see Step 4), alongside Cursor/Claude (cloud) and `--cloud`.
 
 ---
 
@@ -111,7 +115,11 @@ rm -rf ~/projects/tallerflow       # delete the generated app
 **Objetivo:** Crear una app Rails nueva y ejecutable con el framework `.ai/` usando solo Docker en el host.
 **Audiencia:** Cualquier desarrollador que inicia un proyecto desde cero (p. ej. `tallerflow`).
 **Requisitos:** Docker Desktop activo (integración WSL en Windows); Git. Sin Ruby/Rails/Node en el host.
-**Última actualización:** 2026-06-20 · **Responsable:** Documentation Writer
+**Última actualización:** 2026-06-22 · **Responsable:** Documentation Writer
+
+> **Solo Docker — Ollama es opcional.** Crear el proyecto solo necesita Docker.
+> Ollama *no* es requisito aquí; es solo una de las formas de correr a los
+> especialistas IA después (ver Paso 4), junto a Cursor/Claude (nube) y `--cloud`.
 
 ---
 

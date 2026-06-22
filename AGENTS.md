@@ -72,7 +72,7 @@ deployment). Available workflows:
 
 ## Invoke the skills
 
-Reusable capabilities live in `.ai/skills/` (e.g. `create-feature-spec`, `ponytail-review`, `security-audit`). Read and follow the relevant `SKILL.md` when the request matches its purpose.
+Reusable capabilities live in `.ai/skills/` (e.g. `create-feature-spec`, `ponytail-review`, `security-audit`, `document-user-guide`). Read and follow the relevant `SKILL.md` when the request matches its purpose.
 
 ## Notes
 
