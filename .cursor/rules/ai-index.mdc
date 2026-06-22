@@ -59,7 +59,7 @@ otros sitios — apunta a él.
 `create-feature-spec` · `create-user-stories` · `create-architecture-plan` ·
 `create-api-endpoints` · `create-ux-spec` · `review-rails-models` ·
 `review-db-migrations` · `sql-review` · `qa-plan` · `document-module` ·
-`security-audit` · `ponytail-review` · `ponytail-audit` · `ponytail-debt` ·
+`document-user-guide` · `security-audit` · `ponytail-review` · `ponytail-audit` · `ponytail-debt` ·
 `release-checklist` · `capistrano-review` · `nginx-puma-review` ·
 `aws-deploy-plan` · `reverse-document-legacy` · `tech-debt-analysis` ·
 `ocr-pipeline` · `whatsapp-integration`
@@ -69,7 +69,8 @@ otros sitios — apunta a él.
 `feature-specification` · `architecture-decision-record` ·
 `technical-design-document` · `ux-specification` · `qa-test-plan` ·
 `deployment-plan` · `release-checklist` · `incident-postmortem` ·
-`legacy-module-audit` · `modernization-plan` · `retrospective-adr`
+`legacy-module-audit` · `modernization-plan` · `retrospective-adr` ·
+`user-guide`
 
 ## Definition of Done (no negociable)
 
