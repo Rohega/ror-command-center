@@ -1,6 +1,6 @@
 ---
 name: nginx-puma-review
-description: ""
+description: "Review nginx and Puma configuration for production performance, security, and reliability. Use when auditing web/app server config, tuning workers/threads/timeouts, or before a production rollout."
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task, AskUserQuestion
 model: sonnet

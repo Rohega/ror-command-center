@@ -1,6 +1,6 @@
 ---
 name: whatsapp-integration
-description: ""
+description: "Design and review a WhatsApp integration in Rails (Cloud API or a BSP like Twilio): send/receive messages, templates, media, and secure webhooks. Use when adding WhatsApp notifications, conversational flows, or media handoff."
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task, AskUserQuestion
 model: sonnet

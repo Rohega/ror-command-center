@@ -4,6 +4,8 @@
 
 Review nginx and Puma configuration for production performance, security, and reliability.
 
+**Use when:** auditing web/app server config, tuning workers/threads/timeouts, or before a production rollout.
+
 ## Inputs
 
 - `config/nginx.conf` or site configs, `config/puma.rb`, systemd/capistrano deploy configs

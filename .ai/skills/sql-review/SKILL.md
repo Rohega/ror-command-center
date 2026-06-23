@@ -4,6 +4,8 @@
 
 Review SQL and ActiveRecord queries for correctness, performance, and index usage.
 
+**Use when:** diagnosing slow queries, reviewing complex queries, or investigating N+1 or missing indexes.
+
 ## Inputs
 
 - Query code, slow query log excerpt, or EXPLAIN output

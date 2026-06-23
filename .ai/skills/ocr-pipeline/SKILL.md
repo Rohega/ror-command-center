@@ -5,6 +5,8 @@
 Design and review a production OCR pipeline in Rails: ingest documents/images, extract
 text/data asynchronously, validate, and persist results with auditability.
 
+**Use when:** building document scanning/OCR with Tesseract, AWS Textract, or Google Vision.
+
 ## Inputs
 
 - Source of documents (upload, email, S3 drop, WhatsApp media)

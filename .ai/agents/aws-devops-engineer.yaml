@@ -35,3 +35,9 @@ success_criteria:
   - Deployments are reproducible and documented
   - Rollback tested or documented within one release cycle
   - No critical security findings in infrastructure review
+references:
+  - .ai/standards/aws-infrastructure.md
+  - .ai/standards/kamal-docker.md
+  - .ai/standards/security.md
+  - .ai/standards/minimalism.md
+  - .ai/templates/deployment-plan.md

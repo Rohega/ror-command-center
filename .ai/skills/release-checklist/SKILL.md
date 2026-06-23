@@ -4,6 +4,8 @@
 
 Generate and execute a pre-release validation checklist before production deployment.
 
+**Use when:** preparing a release, verifying readiness, or gating a production deploy.
+
 ## Inputs
 
 - Release version and scope

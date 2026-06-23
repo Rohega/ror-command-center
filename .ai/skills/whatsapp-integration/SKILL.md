@@ -5,6 +5,8 @@
 Design and review a WhatsApp integration in Rails (WhatsApp Cloud API or a BSP like
 Twilio): send/receive messages, handle templates, media, and webhooks securely and reliably.
 
+**Use when:** adding WhatsApp notifications, conversational flows, or media handoff.
+
 ## Inputs
 
 - Provider (WhatsApp Cloud API, Twilio, 360dialog, etc.) and credentials scope

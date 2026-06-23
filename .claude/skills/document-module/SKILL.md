@@ -1,6 +1,6 @@
 ---
 name: document-module
-description: ""
+description: "Create or update technical documentation for a code module, service, or integration, aimed at developers. Use when documenting how a module works internally, after building or changing a module, or writing docs/modules/*."
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task, AskUserQuestion
 model: sonnet

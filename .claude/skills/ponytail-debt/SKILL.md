@@ -1,6 +1,6 @@
 ---
 name: ponytail-debt
-description: ""
+description: "Harvest every ponytail: comment into a debt ledger so deliberate shortcuts get tracked instead of rotting. Use when asked for 'ponytail debt', 'what did we defer', or 'list the shortcuts'. One-shot report."
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write
 model: sonnet

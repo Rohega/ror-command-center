@@ -1,6 +1,6 @@
 ---
 name: capistrano-review
-description: ""
+description: "Review Capistrano deployment configuration for safety, rollback capability, and hook correctness. Use when auditing deploy.rb, Capistrano stages/tasks, or before a Capistrano-based release."
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task, AskUserQuestion
 model: sonnet

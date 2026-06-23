@@ -1,6 +1,6 @@
 ---
 name: qa-plan
-description: ""
+description: "Generate a structured QA test plan mapping user stories to automated and manual test coverage. Use when planning QA for a feature/release, defining test cases, or before QA sign-off."
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task, AskUserQuestion
 model: sonnet

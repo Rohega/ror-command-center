@@ -1,6 +1,6 @@
 ---
 name: create-api-endpoints
-description: ""
+description: "Implement REST API endpoints per user story, ADR, and API design standards. Use when building or extending a Rails API, adding controller actions or serializers, or wiring routes for a new endpoint."
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task, AskUserQuestion
 model: sonnet

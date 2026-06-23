@@ -1,6 +1,6 @@
 ---
 name: tech-debt-analysis
-description: ""
+description: "Scan and catalog technical debt, prioritize repayment, and maintain a debt register. Use when assessing codebase health, planning refactors, or building a tech-debt backlog."
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task, AskUserQuestion
 model: sonnet

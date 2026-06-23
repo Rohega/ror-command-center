@@ -29,3 +29,6 @@ success_criteria:
   - New modules have README or docs/modules entry before release
   - API docs match current routes and serializers
   - Onboarding doc enables new developer setup in one session
+references:
+  - .ai/standards/documentation.md
+  - .ai/standards/minimalism.md

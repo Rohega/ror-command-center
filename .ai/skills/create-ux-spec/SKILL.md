@@ -4,6 +4,8 @@
 
 Guide collaborative authoring of a UX specification from approved user stories to an implementable design ready for frontend development, covering flows, states, design tokens, and accessibility.
 
+**Use when:** designing UI/UX before frontend work or writing a UX spec.
+
 ## Inputs
 
 - Approved feature specification and user stories with acceptance criteria

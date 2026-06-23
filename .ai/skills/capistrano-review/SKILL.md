@@ -4,6 +4,8 @@
 
 Review Capistrano deployment configuration for safety, rollback capability, and hook correctness.
 
+**Use when:** auditing `deploy.rb`, Capistrano stages/tasks, or before a Capistrano-based release.
+
 ## Inputs
 
 - `Capfile`, `config/deploy.rb`, `config/deploy/*.rb`
