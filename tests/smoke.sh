@@ -65,6 +65,19 @@ INSTOUT="$(cd "$ROOT" && ./install.sh --dry-run "$(mktemp -d)" 2>&1)"
 printf '%s\n' "$INSTOUT" | grep -qi 'archive/' && bad "archive/ leaked into install" || ok "archive/ not copied"
 printf '%s\n' "$INSTOUT" | grep -q '\.ai/' && ok ".ai/ is copied (sanity)" || bad ".ai/ missing from install"
 
+printf '\nollama_has_model (matches with/without tag):\n'
+# Run in an isolated bash so common.sh's ok()/err() don't clobber this file's.
+# Stub `ollama list` with a fixture mimicking real output (header + "name:latest").
+check_model() {
+  OLLAMA_FIXTURE='NAME	ID	SIZE
+rorcc-product-owner:latest	a1	4.7 GB
+qwen2.5-coder:7b	b2	4.7 GB' \
+  bash -c '. "$1/lib/rorcc/common.sh"; ollama() { printf "%s\n" "$OLLAMA_FIXTURE"; }; ollama_has_model "$2"' _ "$ROOT" "$1"
+}
+assert_exit 0 "untagged agent name matches :latest" -- check_model "rorcc-product-owner"
+assert_exit 0 "tagged base model matches"           -- check_model "qwen2.5-coder:7b"
+assert_exit 1 "absent model does not match"         -- check_model "rorcc-nope"
+
 printf '\nworkflow parsing:\n'
 WFOUT="$(cd "$ROOT" && bash -c '. lib/rorcc/workflow.sh; _parse_phases .ai/workflows/new-feature.yaml')"
 nlines="$(printf '%s\n' "$WFOUT" | grep -c .)"

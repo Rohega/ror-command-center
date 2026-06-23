@@ -309,6 +309,9 @@ Detalle: `.cursor/rules/workflow-gates.mdc` y `.ai/workflows/new-feature.yaml`.
   `CLAUDE.md` / `AGENTS.md`). Si es de dominio, añade su línea en la sección
   "Standards de dominio" y, opcionalmente, una regla `.mdc` por glob.
 - **Nuevo skill / agent / workflow:** créalo bajo `.ai/` y lístalo en el router.
+  Para compilar un **agente especialista** como modelo local (`rorcc-<nombre>`) y
+  chatear con él, sigue la guía paso a paso:
+  `docs/how-to/create-specialist-agent.md`.
 - **Regla específica del proyecto:** añade un `.mdc` en `.cursor/rules/` que
   **referencie** `.ai/standards/` — nunca copies el texto del standard.
 
@@ -348,6 +351,7 @@ Detalle: `.cursor/rules/workflow-gates.mdc` y `.ai/workflows/new-feature.yaml`.
 ## 9. Referencias
 
 - Índice de `.ai/`: `.ai/README.md`
+- Crear un agente especialista (modelo local): `docs/how-to/create-specialist-agent.md`
 - Guía Cursor: `docs/integrations/cursor.md`
 - Guía Claude Code: `docs/integrations/claude-code.md`
 - Guía IA local (Ollama): `docs/integrations/ollama.md`

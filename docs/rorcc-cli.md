@@ -55,6 +55,9 @@ It leaves `jq`/`zstd`/`git` alone and keeps your own files in `--project` mode.
 
 In a chat session: type your message, `/reset` clears history, `/exit` quits.
 
+Want to build your own specialist with `build-agent`? Step-by-step guide:
+[docs/how-to/create-specialist-agent.md](how-to/create-specialist-agent.md).
+
 ## Typical flows
 
 First-time local setup:

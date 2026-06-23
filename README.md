@@ -153,6 +153,7 @@ rorcc workflow new-feature          # run a full workflow, phase by phase
 
 Full command reference: [docs/rorcc-cli.md](docs/rorcc-cli.md). Ollama setup,
 model tiers, hybrid mode, and IDE bridge: [docs/integrations/ollama.md](docs/integrations/ollama.md).
+Want your own specialist? [How to create a specialist agent](docs/how-to/create-specialist-agent.md).
 Local 7–14B models trade quality for privacy and offline use.
 
 Changed your mind? Undo what `setup.sh` installed with `uninstall.sh` (or

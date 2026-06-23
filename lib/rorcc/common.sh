@@ -59,8 +59,13 @@ ollama_running() {
   curl -fsS "$OLLAMA_HOST/api/tags" >/dev/null 2>&1
 }
 
-# True if a model tag is present locally (matches the base name before ":").
+# True if a model is present locally. Matches whether or not "$1" carries a tag:
+# Ollama tags created models as "<name>:latest", so we compare against both the
+# full "name:tag" and the bare name. grep -Fxq keeps it a literal whole-line match
+# (model names like "qwen2.5-coder" contain regex metacharacters).
 ollama_has_model() {
   local model="$1"
-  ollama list 2>/dev/null | awk '{print $1}' | grep -qx "$model"
+  ollama list 2>/dev/null \
+    | awk 'NR > 1 { print $1; if (sub(/:.*/, "", $1)) print $1 }' \
+    | grep -Fxq "$model"
 }
