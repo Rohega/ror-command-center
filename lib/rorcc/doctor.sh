@@ -33,7 +33,7 @@ cmd_doctor() {
   if root="$(find_ai_root)"; then
     ok ".ai/ framework found at: ${C_DIM}$root${C_RESET}"
   else
-    err "no .ai/ framework found (run from a project created with 'rorcc init')"
+    err "no .ai/ framework found — run from a project created with 'rorcc init <name>' or from the cloned repo"
     problems=$((problems + 1))
   fi
 

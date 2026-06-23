@@ -40,6 +40,18 @@ find_ai_root() {
   return 1
 }
 
+# Resolve the framework root or fail with an actionable message. Commands that
+# read .ai/ must run inside a project created with 'rorcc init' or the cloned repo.
+require_ai_root() {
+  local root
+  if root="$(find_ai_root)"; then
+    printf '%s\n' "$root"
+    return 0
+  fi
+  err "no .ai/ framework found — run this inside your project folder (created with 'rorcc init <name>') or inside the cloned RoR Command Center repo."
+  return 1
+}
+
 # --- Ollama helpers -----------------------------------------------------------
 ollama_installed() { command -v ollama >/dev/null 2>&1; }
 

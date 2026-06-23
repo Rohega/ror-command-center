@@ -38,7 +38,7 @@ cmd_workflow() {
     return 2
   fi
 
-  local root; root="$(find_ai_root)" || { err "no .ai/ framework found"; return 1; }
+  local root; root="$(require_ai_root)" || return 1
   local wf="$root/.ai/workflows/$name.yaml"
   if [ ! -f "$wf" ]; then
     err "workflow not found: $name"

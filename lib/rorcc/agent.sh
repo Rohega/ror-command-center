@@ -27,7 +27,7 @@ cmd_agent() {
   if [ "$backend" = "cloud" ]; then
     . "$RORCC_LIB_DIR/cloud.sh"
     cloud_check || return 1
-    local root; root="$(find_ai_root)" || { err "no .ai/ framework found"; return 1; }
+    local root; root="$(require_ai_root)" || return 1
     [ -f "$root/.ai/agents/$name.yaml" ] || { err "agent not found: $name"; return 1; }
     . "$RORCC_LIB_DIR/assemble.sh"
     sysfile="$(mktemp)"

@@ -94,7 +94,8 @@ cat <<EOF
 Esto preparará tu PC para usar IA local (sin nube, sin costo):
 
   • Instala Ollama (motor de IA local) si falta
-  • Instala 'jq' (utilidad pequeña) si falta
+  • Instala utilidades pequeñas si faltan ('jq'; en Linux también 'zstd'/'git')
+  • Descarga los archivos del framework si ejecutas por internet (curl)
   • Descarga un modelo de IA — ${C_BOLD}varios GB${C_RESET}, puede tardar
   • Deja listo el comando 'rorcc' y a los especialistas
 EOF
@@ -122,6 +123,40 @@ elif [ ! -t 0 ] && [ "${RORCC_YES:-0}" != "1" ]; then
   warn "Ejecución no interactiva sin RORCC_YES=1. Re-ejecuta así para aceptar:"
   warn "  curl -fsSL <url>/setup.sh | RORCC_YES=1 bash"
   exit 0
+fi
+
+# --- Step 0: prerrequisitos + archivos del framework -------------------------
+# El instalador de Ollama descomprime un tarball con zstd; las imágenes Linux
+# mínimas (WSL recién instalado, contenedores) no traen 'zstd'. 'git' se usa para
+# descargar el framework cuando este script llega por 'curl | bash' (sin repo en
+# disco), que es lo que necesitan el paso 5/5 y los comandos 'rorcc' (leen .ai/).
+ensure_pkg() {
+  local bin="$1" pkg="${2:-$1}"
+  have "$bin" && return 0
+  if [ -z "$PKG" ]; then warn "instala '$pkg' manualmente (no detecté gestor de paquetes)"; return 1; fi
+  info "Instalando '$pkg'..."
+  install_pkg "$pkg" && ok "$pkg instalado" || warn "no se pudo instalar '$pkg' automáticamente"
+}
+
+if [ "$OS" = "Linux" ]; then
+  ensure_pkg zstd
+fi
+
+# Sin framework en disco (modo curl): clónalo a una ubicación estable y reapunta
+# ROOT ahí, para que 'rorcc' encuentre siempre .ai/ y el paso 5/5 funcione.
+if [ ! -d "$ROOT/.ai/agents" ]; then
+  RORCC_REPO="${RORCC_REPO:-https://github.com/Rohega/ror-command-center.git}"
+  CLONE_DIR="${RORCC_HOME_DIR:-$HOME/.ror-command-center}"
+  if [ -d "$CLONE_DIR/.ai/agents" ]; then
+    info "usando el framework ya descargado en $CLONE_DIR"
+  else
+    ensure_pkg git
+    have git || { err "necesito 'git' para descargar el framework; instálalo y reintenta"; exit 1; }
+    info "descargando el framework en $CLONE_DIR..."
+    git clone --depth 1 "$RORCC_REPO" "$CLONE_DIR" \
+      || { err "no se pudo clonar el repositorio ($RORCC_REPO)"; exit 1; }
+  fi
+  ROOT="$CLONE_DIR"
 fi
 
 # --- Step 1: Ollama -----------------------------------------------------------

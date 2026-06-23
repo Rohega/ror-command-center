@@ -22,7 +22,7 @@ cmd_skill() {
 
   command -v jq >/dev/null 2>&1 || { err "jq is required (apt install jq | brew install jq)"; return 1; }
 
-  local root; root="$(find_ai_root)" || { err "no .ai/ framework found"; return 1; }
+  local root; root="$(require_ai_root)" || return 1
   local skill_file="$root/.ai/skills/$name/SKILL.md"
   if [ ! -f "$skill_file" ]; then
     err "skill not found: $name"

@@ -10,7 +10,7 @@ cmd_build_agent() {
   fi
 
   local root
-  root="$(find_ai_root)" || { err "no .ai/ framework found"; return 1; }
+  root="$(require_ai_root)" || return 1
 
   local agent_file="$root/.ai/agents/$name.yaml"
   if [ ! -f "$agent_file" ]; then
@@ -76,7 +76,7 @@ cmd_update() {
 
   ollama_running || { err "ollama daemon not reachable at $OLLAMA_HOST — start it with 'ollama serve'"; return 1; }
 
-  local root; root="$(find_ai_root)" || { err "no .ai/ framework found"; return 1; }
+  local root; root="$(require_ai_root)" || return 1
 
   local slugs
   slugs="$(ollama list 2>/dev/null | awk '$1 ~ /^rorcc-/ {print $1}' | sed 's/^rorcc-//')"
