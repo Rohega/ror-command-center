@@ -1,6 +1,6 @@
 ---
 name: review-db-migrations
-description: ""
+description: "Review Rails database migrations for safety, reversibility, locking risk, and indexing on MySQL. Use when reviewing a migration before merge/deploy, or when a migration touches large tables."
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task, AskUserQuestion
 model: sonnet

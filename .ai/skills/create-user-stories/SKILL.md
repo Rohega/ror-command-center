@@ -4,6 +4,8 @@
 
 Break an approved feature specification into implementable user stories with acceptance criteria and traceability.
 
+**Use when:** turning a spec into a backlog, writing stories, or defining acceptance criteria.
+
 ## Inputs
 
 - Approved feature spec (`docs/specs/feature-*.md`)

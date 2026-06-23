@@ -1,6 +1,6 @@
 ---
 name: reverse-document-legacy
-description: ""
+description: "Audit an existing, spec-less Rails app and produce module docs, a system map, retrospective ADRs, and a prioritized risk list. Use when onboarding a legacy/undocumented codebase or starting the legacy-onboarding workflow."
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task, AskUserQuestion
 model: sonnet

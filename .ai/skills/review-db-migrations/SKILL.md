@@ -4,6 +4,8 @@
 
 Review Rails database migrations for safety, reversibility, locking risk, and indexing on MySQL.
 
+**Use when:** reviewing a migration before merge/deploy, or when a migration touches large tables.
+
 ## Inputs
 
 - Migration file(s) in `db/migrate/`

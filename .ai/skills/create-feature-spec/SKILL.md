@@ -4,6 +4,8 @@
 
 Guide collaborative authoring of a feature specification from a raw idea to an approved document ready for user stories.
 
+**Use when:** starting a new feature, capturing scope/goals/non-goals, or writing `docs/specs/feature-*.md`.
+
 ## Inputs
 
 - Business idea, problem statement, or stakeholder request

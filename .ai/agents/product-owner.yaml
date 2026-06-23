@@ -28,3 +28,7 @@ success_criteria:
   - Feature specs are approved before user stories are created
   - User stories are INVEST-compliant and traceable to business goals
   - No story enters implementation with open requirement questions
+references:
+  - .ai/standards/collaboration.md
+  - .ai/standards/minimalism.md
+  - .ai/templates/feature-specification.md

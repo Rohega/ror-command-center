@@ -4,6 +4,8 @@
 
 Systematically audit application and infrastructure for security vulnerabilities with prioritized remediation.
 
+**Use when:** asked for a security review/audit, before a release, or after handling auth, secrets, or PII.
+
 ## Inputs
 
 - Codebase paths or scope (`full`, `api`, `aws`, `auth`)

@@ -4,6 +4,8 @@
 
 Produce architecture decisions and technical design for a feature before implementation begins.
 
+**Use when:** a feature needs data modeling, integration design, or significant technical decisions captured as an ADR.
+
 ## Inputs
 
 - User stories and feature specification

@@ -4,6 +4,8 @@
 
 Create a deployment plan for AWS-hosted Rails applications including infrastructure changes and validation steps.
 
+**Use when:** planning or documenting an AWS deploy, preparing a staging/production release, or producing a deployment plan.
+
 ## Inputs
 
 - Release scope, migrations, and config changes

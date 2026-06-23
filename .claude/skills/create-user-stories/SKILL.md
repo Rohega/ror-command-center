@@ -1,6 +1,6 @@
 ---
 name: create-user-stories
-description: ""
+description: "Break an approved feature spec into implementable user stories with acceptance criteria and traceability. Use when turning a spec into a backlog, writing stories, or defining acceptance criteria."
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task, AskUserQuestion
 model: sonnet

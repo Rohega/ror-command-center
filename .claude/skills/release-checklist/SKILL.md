@@ -1,6 +1,6 @@
 ---
 name: release-checklist
-description: ""
+description: "Generate and execute a pre-release validation checklist before production deployment. Use when preparing a release, verifying readiness, or gating a production deploy."
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task, AskUserQuestion
 model: sonnet

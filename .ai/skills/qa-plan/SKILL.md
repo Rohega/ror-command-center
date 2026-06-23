@@ -4,6 +4,8 @@
 
 Generate a structured QA test plan mapping user stories to automated and manual test coverage.
 
+**Use when:** planning QA for a feature or release, defining test cases, or before QA sign-off.
+
 ## Inputs
 
 - User stories in scope (sprint or feature)

@@ -4,6 +4,8 @@
 
 Create or update technical documentation for a code module, service, or integration.
 
+**Use when:** documenting how a module works internally, after building or changing a module, or writing `docs/modules/*`.
+
 ## Inputs
 
 - Module path(s) in `app/`

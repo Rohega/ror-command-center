@@ -4,6 +4,8 @@
 
 Scan and catalog technical debt, prioritize repayment, and maintain a debt register.
 
+**Use when:** assessing codebase health, planning refactors, or building a tech-debt backlog.
+
 ## Inputs
 
 - Codebase (optional path scope)

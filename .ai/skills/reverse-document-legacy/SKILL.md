@@ -7,6 +7,8 @@ a team needs to work safely: module docs, a system map (models/routes/jobs/integ
 retrospective ADRs, and a prioritized risk list. This is the discovery and
 reverse-documentation capability behind `.ai/workflows/legacy-onboarding.yaml`.
 
+**Use when:** onboarding a legacy or undocumented codebase, or starting `.ai/workflows/legacy-onboarding.yaml`.
+
 ## Inputs
 
 - Read access to the target Rails application (path scope optional, e.g. one engine/module)

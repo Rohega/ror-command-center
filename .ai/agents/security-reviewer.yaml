@@ -28,3 +28,8 @@ success_criteria:
   - No critical/high findings open at release without documented acceptance
   - OWASP Top 10 categories addressed in audit scope
   - Remediation tracked to completion
+references:
+  - .ai/standards/security.md
+  - .ai/standards/devise-auth.md
+  - .ai/standards/aws-infrastructure.md
+  - .ai/standards/minimalism.md

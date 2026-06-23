@@ -1,6 +1,6 @@
 ---
 name: create-ux-spec
-description: ""
+description: "Guide collaborative authoring of a UX specification (flows, states, design tokens, accessibility) from approved user stories to an implementable design. Use when designing UI/UX before frontend work or writing a UX spec."
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task, AskUserQuestion
 model: sonnet
