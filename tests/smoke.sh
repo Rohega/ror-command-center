@@ -78,6 +78,16 @@ assert_exit 0 "untagged agent name matches :latest" -- check_model "rorcc-produc
 assert_exit 0 "tagged base model matches"           -- check_model "qwen2.5-coder:7b"
 assert_exit 1 "absent model does not match"         -- check_model "rorcc-nope"
 
+printf '\nchat thinking indicator (TTY-guarded, stderr-only):\n'
+# Critical: the hint must never reach stdout (it would pollute the saved reply),
+# and must stay silent when stderr is not a TTY (clean pipes/logs). Run isolated
+# so chat.sh helpers don't clobber this file's ok()/bad().
+THINK_ERR="$(mktemp)"
+THINK_OUT="$(bash -c '. "$1/lib/rorcc/chat.sh"; _chat_think_show; _chat_think_clear' _ "$ROOT" 2>"$THINK_ERR")"
+[ -z "$THINK_OUT" ] && ok "no stdout pollution" || bad "stdout polluted: $THINK_OUT"
+[ ! -s "$THINK_ERR" ] && ok "silent when stderr not a TTY" || bad "leaked to stderr off-TTY"
+rm -f "$THINK_ERR"
+
 printf '\nworkflow parsing:\n'
 WFOUT="$(cd "$ROOT" && bash -c '. lib/rorcc/workflow.sh; _parse_phases .ai/workflows/new-feature.yaml')"
 nlines="$(printf '%s\n' "$WFOUT" | grep -c .)"

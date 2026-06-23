@@ -58,6 +58,7 @@ cloud_stream() {
     jq_filter='.choices[0].delta.content // empty'
   fi
 
+  local first=1
   while IFS= read -r line; do
     case "$line" in
       "data: [DONE]") break ;;
@@ -65,6 +66,8 @@ cloud_stream() {
       *) continue ;;
     esac
     chunk="$(jq -rj "$jq_filter" <<<"$data" 2>/dev/null)" || continue
+    # Clear the "thinking" hint (defined in chat.sh) once real output starts.
+    [ -n "$chunk" ] && [ "$first" = 1 ] && { type _chat_think_clear >/dev/null 2>&1 && _chat_think_clear; first=0; }
     printf '%s' "$chunk"
     CLOUD_REPLY="$CLOUD_REPLY$chunk"
   done < <(curl -fsS --no-buffer -X POST "${curl_args[@]}" -d "$body" 2>/dev/null)
