@@ -240,6 +240,9 @@ con `--dry-run` antes de borrar nada.
 3. Para tareas grandes, deja que el agente siga un workflow y se detenga en cada
    fase para tu aprobación.
 
+> ¿Qué agente uso para cada tarea y cómo lo invoco en cada plataforma? Guía de
+> referencia de los 8 especialistas: `docs/how-to/use-agents.md`.
+
 ### 4.2 Recetas copy-paste
 
 **Redactar un feature spec (skill + agent):**
@@ -351,6 +354,7 @@ Detalle: `.cursor/rules/workflow-gates.mdc` y `.ai/workflows/new-feature.yaml`.
 ## 9. Referencias
 
 - Índice de `.ai/`: `.ai/README.md`
+- Usar cada agente (referencia de los 8 especialistas): `docs/how-to/use-agents.md`
 - Crear un agente especialista (modelo local): `docs/how-to/create-specialist-agent.md`
 - Guía Cursor: `docs/integrations/cursor.md`
 - Guía Claude Code: `docs/integrations/claude-code.md`

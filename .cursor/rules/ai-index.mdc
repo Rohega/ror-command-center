@@ -59,7 +59,7 @@ otros sitios — apunta a él.
 `create-feature-spec` · `create-user-stories` · `create-architecture-plan` ·
 `create-api-endpoints` · `create-ux-spec` · `review-rails-models` ·
 `review-db-migrations` · `sql-review` · `qa-plan` · `document-module` ·
-`document-user-guide` · `security-audit` · `ponytail-review` · `ponytail-audit` · `ponytail-debt` ·
+`document-user-guide` · `record-user-demo` · `security-audit` · `ponytail-review` · `ponytail-audit` · `ponytail-debt` ·
 `release-checklist` · `capistrano-review` · `nginx-puma-review` ·
 `aws-deploy-plan` · `reverse-document-legacy` · `tech-debt-analysis` ·
 `ocr-pipeline` · `whatsapp-integration`

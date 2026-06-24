@@ -37,6 +37,9 @@ generators): [standards/project-bootstrap.md](standards/project-bootstrap.md).
 - frontend-react-inertia-developer, aws-devops-engineer
 - qa-engineer, documentation-writer, security-reviewer
 
+How to use each one (what/when/how to invoke per platform):
+[docs/how-to/use-agents.md](../docs/how-to/use-agents.md).
+
 ## Core Philosophy
 
 - Rails First

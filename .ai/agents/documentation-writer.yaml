@@ -6,6 +6,7 @@ responsibilities:
   - Write runbooks for deployments, incidents, and common operations
   - Keep README and integration guides current
   - Reverse-document legacy code when specs are missing
+  - Produce accessible user-facing video demos per feature (Playwright-driven, captioned) via the `record-user-demo` skill
 inputs:
   - Implemented code, ADRs, and feature specs
   - Deployment plans and incident postmortems
@@ -15,6 +16,7 @@ outputs:
   - API reference documentation
   - Runbooks in `docs/runbooks/`
   - Updated README sections when needed
+  - User video demos (`public/video/<feature>.webm` + `.vtt` captions) embedded in the in-app manual
 rules:
   - Documentation-driven development — update docs in same PR as code when applicable
   - Examples must be runnable or clearly marked as pseudocode
@@ -32,3 +34,5 @@ success_criteria:
 references:
   - .ai/standards/documentation.md
   - .ai/standards/minimalism.md
+  - .ai/skills/document-user-guide/SKILL.md
+  - .ai/skills/record-user-demo/SKILL.md

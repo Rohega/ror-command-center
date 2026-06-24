@@ -15,6 +15,27 @@
 `document-module` skill; user-facing docs (install/onboarding, how-tos) use the
 `document-user-guide` skill — lead with the user's task, not internals.
 
+## User guide: text vs video demo
+
+User-facing documentation comes in two complementary media. Choose by what the
+reader needs, and compose them when a flow deserves both.
+
+| | Text user guide | Video demo |
+|---|----------------|------------|
+| Skill | `document-user-guide` | `record-user-demo` |
+| Best for | Prerequisites, copy-paste steps, troubleshooting, edge cases, anything scannable/searchable | Multi-step or visual flows where "showing" beats "telling" (drag/drop, state changes, full login→action paths) |
+| Output | README / `docs/USER-MANUAL.md` / runbooks (Markdown) | `public/video/<feature>.webm` + `.vtt` captions, embedded in the in-app manual |
+| Accessibility | Native text | **Captions required** (`.vtt`) — narration is by synchronized subtitles, not audio |
+
+- **Default to text.** It is cheaper, searchable, and translatable. Reach for a
+  video demo only when a flow is genuinely hard to describe in prose.
+- **Compose them.** Embed the demo inside the text guide with Markdown image
+  syntax — `![Demo: <feature>](video/<feature>.webm)` — so one page carries both.
+- Video demos drive the *real* app with Playwright and may create real records
+  in **development** data; never run them against production. See the
+  `record-user-demo` skill for the full toolchain, prerequisites, and the
+  minimalism rationale (Playwright-native `.webm` over screenshots+ffmpeg).
+
 ## Style
 
 - Clear headings, short paragraphs
@@ -55,5 +76,5 @@ breaking cross-references) using this layout:
 ## References
 
 - Agent: `.ai/agents/documentation-writer.yaml`
-- Skills: `document-module` (developer-facing), `document-user-guide` (user-facing)
-- Templates: `.ai/templates/technical-design-document.md`, `.ai/templates/user-guide.md`
+- Skills: `document-module` (developer-facing), `document-user-guide` (user-facing text), `record-user-demo` (user-facing video)
+- Templates: `.ai/templates/technical-design-document.md`, `.ai/templates/user-guide.md`, `.ai/templates/user-demo-script.md`
