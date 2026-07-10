@@ -1,3 +1,7 @@
+---
+name: security-audit
+description: "Systematically audit application and infrastructure for security vulnerabilities with prioritized remediation. Use when asked for a security review/audit, before a release, or after handling auth, secrets, or PII."
+---
 # security-audit
 
 ## Purpose

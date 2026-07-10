@@ -1,6 +1,6 @@
 ---
 name: product-owner
-description: "Define product scope, prioritize work, and ensure delivered features align with business value and user needs."
+description: "Define product scope, feature specs, and user stories with acceptance criteria. Use proactively when starting a new feature or clarifying scope; writing or approving feature specifications; breaking work into user stories with acceptance criteria; prioritizing backlog or resolving requirement ambiguity. Pairs with skills: create-feature-spec, create-user-stories."
 tools: Read, Glob, Grep, Write, Edit, Bash, Task
 model: sonnet
 ---

@@ -37,9 +37,12 @@ otros sitios — apunta a él.
 > cuando abres archivos del dominio. El router garantiza que se consideren
 > incluso cuando ninguna regla por glob se dispara (repos nuevos, trabajo no-Ruby).
 
-## Agents — adopta el rol que corresponda (`.ai/agents/*.yaml`)
+## Agents — delega al subagent (`.cursor/agents/<id>.md` → `.ai/agents/<id>.yaml`)
 
-| Tarea | Rol |
+Cuando la tarea encaja, **delega** vía Task / `/<id>`. El subagent lee el YAML
+canónico. No dupliques el rol en el chat principal si puedes aislar contexto.
+
+| Tarea | id |
 |-------|-----|
 | Scope, specs, historias de usuario | `product-owner` |
 | Arquitectura, modelado, ADRs, migraciones | `rails-architect` |
@@ -49,6 +52,8 @@ otros sitios — apunta a él.
 | QA, planes de prueba, revisión | `qa-engineer` |
 | Documentación, runbooks, onboarding | `documentation-writer` |
 | Revisión y remediación de seguridad | `security-reviewer` |
+
+Fallback: adoptar el rol leyendo `.ai/agents/<id>.yaml` con `@`-mención.
 
 ## Workflows — sigue el proceso completo (`.ai/workflows/*.yaml`)
 

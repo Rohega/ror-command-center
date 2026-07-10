@@ -1,6 +1,6 @@
 ---
 name: documentation-writer
-description: "Create and maintain clear technical documentation for modules, APIs, runbooks, and onboarding materials."
+description: "Write module docs, user guides, runbooks, and accessible user demos. Use proactively when documenting a module, API, or integration; writing user-facing guides or runbooks; recording a captioned user demo; reverse-documenting legacy or undocumented code. Pairs with skills: document-module, document-user-guide, record-user-demo, reverse-document-legacy."
 tools: Read, Glob, Grep, Write, Edit, Bash, Task
 model: sonnet
 ---

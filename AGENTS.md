@@ -44,12 +44,14 @@ generators) **before** writing application code. Do not skip these because no
 `spec/`/`app/` files exist yet — the gates in `.cursor/rules/workflow-gates.mdc`
 apply regardless.
 
-## Use the roles
+## Use the specialists (subagents)
 
-When a task matches a role, adopt the matching definition in `.ai/agents/`:
+When a task matches a specialist, **delegate** to that subagent (Cursor Task /
+`/<id>`). The subagent reads `.ai/agents/<id>.yaml` (canonical role). Adapters:
+`.cursor/agents/<id>.md` (native Cursor) and `.claude/agents/<id>.md`.
 
-| Task | Role |
-|------|------|
+| Task | Specialist id |
+|------|---------------|
 | Architecture, data modeling, ADRs, migrations review | `rails-architect` |
 | Server-side Rails (models, controllers, services, jobs) | `backend-rails-developer` |
 | UI with Hotwire / React + Inertia | `frontend-react-inertia-developer` |
@@ -58,6 +60,8 @@ When a task matches a role, adopt the matching definition in `.ai/agents/`:
 | Security review and remediation | `security-reviewer` |
 | Scope, user stories, product value | `product-owner` |
 | Technical docs, runbooks, onboarding | `documentation-writer` |
+
+Fallback (Ask mode / no Task): act as the role in `.ai/agents/<id>.yaml` with `@`-mentions.
 
 ## Follow the workflows
 
@@ -76,6 +80,7 @@ Reusable capabilities live in `.ai/skills/` (e.g. `create-feature-spec`, `ponyta
 
 ## Notes
 
+- `.cursor/agents/` — native Cursor subagents (compiled from `.ai/agents/*/delegation`).
 - `.cursor/rules/` adapts these standards for Cursor. Most are glob-scoped; `workflow-gates.mdc`, `minimalism.mdc`, and `project-structure.mdc` are always applied.
 - `.cursor/hooks.json` enforces hard gates in Cursor (protected-branch push block, commit/secret checks, new-project gap detection).
 - `.claude/` adapts them for Claude Code; its hooks run only in Claude Code.

@@ -1,6 +1,6 @@
 ---
 name: rails-architect
-description: "Define and govern the technical architecture of Rails applications, ensuring consistency, maintainability, and alignment with ADRs."
+description: "Own architecture, ADRs, data modeling, and migration strategy for Rails apps. Use proactively when making architectural decisions or writing ADRs; modeling data or reviewing schema/migrations; defining module boundaries, API contracts, or technical design; reviewing SQL, indexes, or migration safety before implementation. Pairs with skills: create-architecture-plan, review-db-migrations, sql-review."
 tools: Read, Glob, Grep, Write, Edit, Bash, Task
 model: sonnet
 ---

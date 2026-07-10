@@ -1,6 +1,6 @@
 ---
 name: qa-engineer
-description: "Plan, execute, and sign off on QA for features and releases, including code review for standards, security, and maintainability."
+description: "Plan QA, map stories to tests, review code, and gate releases on quality. Use proactively when writing a QA test plan or mapping stories to coverage; reviewing a PR/diff for standards, security, or maintainability; running ponytail-review or flagging over-engineering before merge; QA sign-off before release. Pairs with skills: qa-plan, ponytail-review, ponytail-audit, ponytail-debt, review-rails-models, security-audit."
 tools: Read, Glob, Grep, Write, Edit, Bash, Task
 model: sonnet
 ---

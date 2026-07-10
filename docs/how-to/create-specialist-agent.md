@@ -32,13 +32,24 @@ be able to chat with it.
 
 ## Steps
 
-1. Create the role definition at `.ai/agents/<name>.yaml`. Copy an existing one as
-   a base. Every `.ai/...` path you list under `references:` is **inlined** into
+1. Create the role definition at `.ai/agents/<id>.yaml`. Copy an existing one as
+   a base. Include `id` + `delegation` so Cursor/Claude adapters can discover the
+   role. Every `.ai/...` path you list under `references:` is **inlined** into
    the system prompt automatically, so the model follows those standards.
 
 ```yaml
+id: performance-engineer
 name: Performance Engineer
 purpose: Diagnose and fix Rails performance problems (N+1, slow queries, caching).
+delegation:
+  summary: Diagnose and fix Rails performance (N+1, slow queries, caching).
+  use_when:
+    - profiling endpoints or background jobs
+    - fixing N+1 queries or missing indexes
+  use_proactively: true
+  readonly: false
+  pairs_with_skills:
+    - sql-review
 responsibilities:
   - Profile endpoints and background jobs
   - Identify N+1 queries and missing indexes
@@ -50,6 +61,13 @@ references:
   - .ai/standards/postgresql.md
   - .ai/standards/minimalism.md
 ```
+
+1b. Add thin platform adapters (do not duplicate the YAML body):
+
+- Cursor: `.cursor/agents/<id>.md` — frontmatter `name`, `description` (from
+  `delegation`), `model: inherit`, `readonly`; body points at the YAML.
+- Claude Code: `.claude/agents/<id>.md` — same `description`; keep Claude
+  `tools` / `model` as needed.
 
 2. Compile the specialist — this registers `rorcc-<name>` in Ollama:
 
@@ -145,13 +163,25 @@ specialist from inside that project before using it there.
 
 ### Pasos
 
-1. Crea la definición del rol en `.ai/agents/<nombre>.yaml`. Copia uno existente
-   como base. Cada ruta `.ai/...` que listes en `references:` se **inlinea**
-   automáticamente al system prompt, así el modelo sigue esos standards.
+1. Crea la definición del rol en `.ai/agents/<id>.yaml`. Copia uno existente
+   como base. Incluye `id` + `delegation` para que los adapters de Cursor/Claude
+   descubran el rol. Cada ruta `.ai/...` que listes en `references:` se
+   **inlinea** automáticamente al system prompt, así el modelo sigue esos
+   standards.
 
 ```yaml
+id: performance-engineer
 name: Performance Engineer
 purpose: Diagnose and fix Rails performance problems (N+1, slow queries, caching).
+delegation:
+  summary: Diagnose and fix Rails performance (N+1, slow queries, caching).
+  use_when:
+    - profiling endpoints or background jobs
+    - fixing N+1 queries or missing indexes
+  use_proactively: true
+  readonly: false
+  pairs_with_skills:
+    - sql-review
 responsibilities:
   - Profile endpoints and background jobs
   - Identify N+1 queries and missing indexes
@@ -163,6 +193,13 @@ references:
   - .ai/standards/postgresql.md
   - .ai/standards/minimalism.md
 ```
+
+1b. Añade adapters finos (no dupliques el cuerpo del YAML):
+
+- Cursor: `.cursor/agents/<id>.md` — frontmatter `name`, `description` (desde
+  `delegation`), `model: inherit`, `readonly`; el body apunta al YAML.
+- Claude Code: `.claude/agents/<id>.md` — misma `description`; conserva
+  `tools` / `model` de Claude según haga falta.
 
 2. Compila el especialista — registra `rorcc-<nombre>` en Ollama:
 

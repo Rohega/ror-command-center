@@ -1,3 +1,7 @@
+---
+name: create-ux-spec
+description: "Guide collaborative authoring of a UX specification (flows, states, design tokens, accessibility) from approved user stories to an implementable design. Use when designing UI/UX before frontend work or writing a UX spec."
+---
 # create-ux-spec
 
 ## Purpose

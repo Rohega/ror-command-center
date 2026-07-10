@@ -1,3 +1,7 @@
+---
+name: create-architecture-plan
+description: "Produce architecture decisions and a technical design (ADR + TDD) for a feature before coding. Use when a feature needs data modeling, integration design, or significant technical decisions captured as an ADR."
+---
 # create-architecture-plan
 
 ## Purpose

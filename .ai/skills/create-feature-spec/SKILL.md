@@ -1,3 +1,7 @@
+---
+name: create-feature-spec
+description: "Guide collaborative authoring of a feature specification from a raw idea to an approved spec ready for user stories. Use when starting a new feature, capturing scope/goals/non-goals, or writing docs/specs/feature-*.md."
+---
 # create-feature-spec
 
 ## Purpose

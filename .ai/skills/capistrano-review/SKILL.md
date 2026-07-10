@@ -1,3 +1,11 @@
+---
+name: capistrano-review
+description: "Review Capistrano deployment configuration for safety, rollback capability, and hook correctness. Use when auditing deploy.rb, Capistrano stages/tasks, or before a Capistrano-based release."
+paths:
+  - "config/deploy.rb"
+  - "config/deploy/**"
+  - "lib/capistrano/**"
+---
 # capistrano-review
 
 ## Purpose

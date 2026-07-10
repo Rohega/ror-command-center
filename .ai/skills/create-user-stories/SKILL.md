@@ -1,3 +1,7 @@
+---
+name: create-user-stories
+description: "Break an approved feature spec into implementable user stories with acceptance criteria and traceability. Use when turning a spec into a backlog, writing stories, or defining acceptance criteria."
+---
 # create-user-stories
 
 ## Purpose
