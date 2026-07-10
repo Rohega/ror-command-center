@@ -1,3 +1,9 @@
+---
+name: review-rails-models
+description: "Review ActiveRecord models for Rails conventions, validations, associations, security, and performance. Use when reviewing or refactoring models, or after adding or changing a model."
+paths:
+  - "app/models/**"
+---
 # review-rails-models
 
 ## Purpose

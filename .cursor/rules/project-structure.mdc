@@ -20,6 +20,7 @@ Devise, ActiveAdmin, Hotwire, React + Inertia, AWS, Docker, Capistrano, Kamal.
 
 **Adapters (do not duplicate content):**
 - `.cursor/rules/` → references `.ai/standards/`
+- `.cursor/agents/` → thin Cursor subagents → `.ai/agents/*.yaml`
 - `.claude/` → Claude Code integration
 
 **Collaboration:** `.ai/standards/collaboration.md` — Question → Options → Decision → Draft → Approval

@@ -7,7 +7,7 @@
 need to know how the framework is built internally.
 **Goal:** Know which specialist to invoke for a task, and exactly how to invoke
 it on each platform.
-**Last updated:** 2026-06-24
+**Last updated:** 2026-07-10
 
 > This guide is about **using** the existing roles. To **create or compile** your
 > own specialist, see [create-specialist-agent.md](create-specialist-agent.md).
@@ -16,14 +16,15 @@ it on each platform.
 
 ## How invocation works (any platform)
 
-An **agent** is a role defined in `.ai/agents/<name>.yaml`. A **skill** is a
-concrete task in `.ai/skills/<name>/SKILL.md`. You pair them: pick the *role*,
-then point it at the *skill* and the relevant *standards*.
+An **agent** is a role defined in `.ai/agents/<id>.yaml` (with `delegation` for
+discovery). A **skill** is a concrete task in `.ai/skills/<name>/SKILL.md`. You
+pair them: pick the *role*, then point it at the *skill* and the relevant
+*standards*.
 
 | Platform | How you invoke an agent |
 |----------|-------------------------|
-| **Cursor** | In chat, tell it to act as the role and follow the skill: `Act as the agent in .ai/agents/<name>.yaml and follow .ai/skills/<skill>/SKILL.md ...`. Use `@`-mentions to attach the exact files. |
-| **Claude Code** | Run `claude`; invoke skills as slash commands (`/create-feature-spec`, `/qa-plan`, …). The `documentation-writer` skills include `/record-user-demo`. |
+| **Cursor** | Prefer the native subagent: `/<id>` or “use the `<id>` subagent…”. Adapters live in `.cursor/agents/<id>.md` and read `.ai/agents/<id>.yaml`. Fallback: `Act as the agent in .ai/agents/<id>.yaml` with `@`-mentions. |
+| **Claude Code** | Run `claude`; invoke skills as slash commands (`/create-feature-spec`, `/qa-plan`, …). Agents in `.claude/agents/` read the same YAML. |
 | **Codex / Copilot** | `AGENTS.md` / `.github/copilot-instructions.md` load automatically; reference the agent file in your prompt as in Cursor. |
 | **Local CLI** | `rorcc agent <name>` (chat) · `rorcc skill <skill>` · `rorcc workflow <workflow>`. |
 
@@ -58,28 +59,25 @@ docs). They will ask before writing files.
 **Spec a feature (product-owner):**
 
 ```
-Act as the agent in .ai/agents/product-owner.yaml and follow
-.ai/skills/create-feature-spec/SKILL.md for "<feature>". Ask me questions first,
-then save the spec to docs/specs/.
+/product-owner Follow .ai/skills/create-feature-spec/SKILL.md for "<feature>".
+Ask me questions first, then save the spec to docs/specs/.
 ```
 
 **Review a model against standards (qa-engineer):**
 
 ```
-Act as the agent in .ai/agents/qa-engineer.yaml. Review app/models/<model>.rb
-against .ai/standards/development.md and .ai/standards/security.md. List findings
-by severity; don't edit files yet.
+/qa-engineer Review app/models/<model>.rb against .ai/standards/development.md
+and .ai/standards/security.md. List findings by severity; don't edit files yet.
 ```
 
 **Record a user video demo (documentation-writer + record-user-demo):**
 
 ```
-Act as the agent in .ai/agents/documentation-writer.yaml and follow
-.ai/skills/record-user-demo/SKILL.md to create a captioned video demo of
-"<feature>". Read the demo credentials from the environment
-(<APP>_DEMO_EMAIL / <APP>_DEMO_PASSWORD), drive the real dev app with Playwright,
-output public/video/<feature>.{webm,vtt}, and embed it in the help page. Ask
-before writing files.
+/documentation-writer Follow .ai/skills/record-user-demo/SKILL.md to create a
+captioned video demo of "<feature>". Read the demo credentials from the
+environment (<APP>_DEMO_EMAIL / <APP>_DEMO_PASSWORD), drive the real dev app
+with Playwright, output public/video/<feature>.{webm,vtt}, and embed it in the
+help page. Ask before writing files.
 ```
 
 > Prerequisites for the demo recipe: app running, a seeded demo user, Playwright
@@ -92,7 +90,14 @@ before writing files.
 
 ```
 Run .ai/workflows/new-feature.yaml for "<feature>". Stop after each phase and
-wait for my approval.
+wait for my approval. Delegate each phase to the matching Cursor subagent.
+```
+
+**Fallback (Ask mode / no subagent):**
+
+```
+Act as the agent in .ai/agents/product-owner.yaml and follow
+.ai/skills/create-feature-spec/SKILL.md for "<feature>".
 ```
 
 ---
@@ -130,21 +135,22 @@ cualquier herramienta de IA (Cursor, Claude Code, Codex, Copilot o el CLI local
 `rorcc`). **No** necesitas conocer cómo está construido el framework por dentro.
 **Objetivo:** saber qué especialista invocar para cada tarea y cómo invocarlo en
 cada plataforma.
-**Última actualización:** 2026-06-24
+**Última actualización:** 2026-07-10
 
 > Esta guía trata de **usar** los roles existentes. Para **crear o compilar** tu
 > propio especialista, ve a [create-specialist-agent.md](create-specialist-agent.md).
 
 ### Cómo funciona la invocación (cualquier plataforma)
 
-Un **agente** es un rol definido en `.ai/agents/<nombre>.yaml`. Una **skill** es
-una tarea concreta en `.ai/skills/<nombre>/SKILL.md`. Se combinan: eliges el
-*rol*, luego lo apuntas a la *skill* y a los *standards* relevantes.
+Un **agente** es un rol definido en `.ai/agents/<id>.yaml` (con `delegation` para
+discovery). Una **skill** es una tarea concreta en `.ai/skills/<nombre>/SKILL.md`.
+Se combinan: eliges el *rol*, luego lo apuntas a la *skill* y a los *standards*
+relevantes.
 
 | Plataforma | Cómo invocas un agente |
 |------------|------------------------|
-| **Cursor** | En el chat, pídele actuar como el rol y seguir la skill: `Actúa como el agent en .ai/agents/<nombre>.yaml y sigue .ai/skills/<skill>/SKILL.md ...`. Usa `@`-menciones para adjuntar los archivos exactos. |
-| **Claude Code** | Ejecuta `claude`; invoca skills como slash commands (`/create-feature-spec`, `/qa-plan`, …). Las skills de `documentation-writer` incluyen `/record-user-demo`. |
+| **Cursor** | Prefiere el subagent nativo: `/<id>` o “usa el subagent `<id>`…”. Adapters en `.cursor/agents/<id>.md` leen `.ai/agents/<id>.yaml`. Fallback: `Actúa como el agent en .ai/agents/<id>.yaml` con `@`-menciones. |
+| **Claude Code** | Ejecuta `claude`; invoca skills como slash commands (`/create-feature-spec`, `/qa-plan`, …). Agents en `.claude/agents/` leen el mismo YAML. |
 | **Codex / Copilot** | `AGENTS.md` / `.github/copilot-instructions.md` se cargan solos; referencia el archivo del agente en tu prompt igual que en Cursor. |
 | **CLI local** | `rorcc agent <nombre>` (chat) · `rorcc skill <skill>` · `rorcc workflow <workflow>`. |
 
@@ -175,25 +181,23 @@ Done** (tests, revisión, QA, docs). Preguntarán antes de escribir archivos.
 **Redactar un feature spec (product-owner):**
 
 ```
-Actúa como el agent en .ai/agents/product-owner.yaml y sigue
-.ai/skills/create-feature-spec/SKILL.md para "<feature>". Hazme preguntas
-primero; luego guárdalo en docs/specs/.
+/product-owner Sigue .ai/skills/create-feature-spec/SKILL.md para "<feature>".
+Hazme preguntas primero; luego guárdalo en docs/specs/.
 ```
 
 **Revisar un modelo contra los standards (qa-engineer):**
 
 ```
-Actúa como el agent en .ai/agents/qa-engineer.yaml. Revisa app/models/<model>.rb
-contra .ai/standards/development.md y .ai/standards/security.md. Lista los
-hallazgos por severidad; no edites archivos todavía.
+/qa-engineer Revisa app/models/<model>.rb contra .ai/standards/development.md y
+.ai/standards/security.md. Lista los hallazgos por severidad; no edites archivos
+todavía.
 ```
 
 **Grabar un demo en video de usuario (documentation-writer + record-user-demo):**
 
 ```
-Actúa como el agent en .ai/agents/documentation-writer.yaml y sigue
-.ai/skills/record-user-demo/SKILL.md para crear un demo en video con subtítulos
-de "<feature>". Lee las credenciales del entorno
+/documentation-writer Sigue .ai/skills/record-user-demo/SKILL.md para crear un
+demo en video con subtítulos de "<feature>". Lee las credenciales del entorno
 (<APP>_DEMO_EMAIL / <APP>_DEMO_PASSWORD), conduce la app real de desarrollo con
 Playwright, genera public/video/<feature>.{webm,vtt} e incrústalo en la página de
 ayuda. Pregunta antes de escribir archivos.
@@ -209,7 +213,14 @@ ayuda. Pregunta antes de escribir archivos.
 
 ```
 Ejecuta .ai/workflows/new-feature.yaml para "<feature>". Detente tras cada fase y
-espera mi aprobación.
+espera mi aprobación. Delega cada fase al subagent Cursor correspondiente.
+```
+
+**Fallback (modo Ask / sin subagent):**
+
+```
+Actúa como el agent en .ai/agents/product-owner.yaml y sigue
+.ai/skills/create-feature-spec/SKILL.md para "<feature>".
 ```
 
 ### Verifica que funcionó

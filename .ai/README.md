@@ -40,6 +40,23 @@ generators): [standards/project-bootstrap.md](standards/project-bootstrap.md).
 How to use each one (what/when/how to invoke per platform):
 [docs/how-to/use-agents.md](../docs/how-to/use-agents.md).
 
+### Delegation schema
+
+Each agent YAML includes additive discovery fields used by platform adapters:
+
+| Field | Purpose |
+|-------|---------|
+| `id` | Stable slug (= filename = Cursor subagent `name`) |
+| `delegation.summary` | One-line WHAT for adapter `description` |
+| `delegation.use_when` | Trigger phrases for automatic delegation |
+| `delegation.use_proactively` | Prefer proactive Task/subagent handoff |
+| `delegation.readonly` | Cursor subagent `readonly` flag |
+| `delegation.pairs_with_skills` | Skills this role typically runs |
+
+**Compile rule:** `.cursor/agents/<id>.md` and `.claude/agents/<id>.md` are thin
+adapters — they compile `delegation` into frontmatter `description` and point
+back to `.ai/agents/<id>.yaml`. Do not duplicate role content in adapters.
+
 ## Core Philosophy
 
 - Rails First

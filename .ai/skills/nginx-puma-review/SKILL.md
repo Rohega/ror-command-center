@@ -1,3 +1,12 @@
+---
+name: nginx-puma-review
+description: "Review nginx and Puma configuration for production performance, security, and reliability. Use when auditing web/app server config, tuning workers/threads/timeouts, or before a production rollout."
+paths:
+  - "config/puma.rb"
+  - "config/puma/**"
+  - "**/nginx*.conf"
+  - "config/nginx/**"
+---
 # nginx-puma-review
 
 ## Purpose

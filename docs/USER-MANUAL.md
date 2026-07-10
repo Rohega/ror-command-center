@@ -245,36 +245,38 @@ con `--dry-run` antes de borrar nada.
 
 ### 4.2 Recetas copy-paste
 
-**Redactar un feature spec (skill + agent):**
+**Redactar un feature spec (subagent + skill):**
 
 ```
-Actúa como el agent en .ai/agents/product-owner.yaml y sigue
-.ai/skills/create-feature-spec/SKILL.md para un spec de "transferencia de stock
-entre almacenes". Hazme preguntas primero; luego guárdalo en docs/specs/.
+/product-owner Sigue .ai/skills/create-feature-spec/SKILL.md para un spec de
+"transferencia de stock entre almacenes". Hazme preguntas primero; luego
+guárdalo en docs/specs/.
 ```
 
-**Revisar un modelo contra los standards (agent + standard):**
+**Revisar un modelo contra los standards (subagent + standard):**
 
 ```
-Actúa como el agent en .ai/agents/qa-engineer.yaml. Revisa app/models/invoice.rb
-contra .ai/standards/development.md y .ai/standards/security.md.
-Lista los problemas por severidad; no edites archivos todavía.
+/qa-engineer Revisa app/models/invoice.rb contra .ai/standards/development.md y
+.ai/standards/security.md. Lista los problemas por severidad; no edites archivos
+todavía.
 ```
 
 **Ejecutar el workflow completo de nueva feature:**
 
 ```
 Ejecuta .ai/workflows/new-feature.yaml para "transferencia de stock entre
-almacenes". Detente tras cada fase y espera mi aprobación.
+almacenes". Detente tras cada fase y espera mi aprobación. Delega cada fase al
+subagent Cursor correspondiente.
 ```
 
 **Reforzar el framework en un chat puntual:**
 
 ```
 Para este proyecto, trata .ai/ como la fuente única de verdad. Antes de
-implementar, carga el agent de .ai/agents/, el skill de .ai/skills/ y los
-standards de .ai/standards/. Sigue el protocolo de colaboración: pregunta,
-ofrece opciones, redacta y espera mi aprobación antes de escribir archivos.
+implementar, delega al subagent en .cursor/agents/ (que lee .ai/agents/), carga
+el skill de .ai/skills/ y los standards de .ai/standards/. Sigue el protocolo de
+colaboración: pregunta, ofrece opciones, redacta y espera mi aprobación antes de
+escribir archivos.
 ```
 
 > Tip: usa `@`-menciones en Cursor para adjuntar el archivo exacto, p. ej.

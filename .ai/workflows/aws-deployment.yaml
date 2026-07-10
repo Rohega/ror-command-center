@@ -1,5 +1,6 @@
 name: aws-deployment
 description: Plan and execute AWS deployments with security review and rollback strategy.
+# agent / agents values are specialist ids (= .ai/agents/<id>.yaml = Cursor subagent name).
 phases:
   - id: planning
     label: Planning

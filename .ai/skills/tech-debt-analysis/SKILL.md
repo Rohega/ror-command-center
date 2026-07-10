@@ -1,3 +1,7 @@
+---
+name: tech-debt-analysis
+description: "Scan and catalog technical debt, prioritize repayment, and maintain a debt register. Use when assessing codebase health, planning refactors, or building a tech-debt backlog."
+---
 # tech-debt-analysis
 
 ## Purpose

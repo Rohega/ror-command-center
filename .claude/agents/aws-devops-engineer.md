@@ -1,6 +1,6 @@
 ---
 name: aws-devops-engineer
-description: "Design and maintain AWS infrastructure, CI/CD pipelines, deployment automation, and coordinate releases from staging to production."
+description: "AWS infrastructure, CI/CD, Capistrano/Kamal, nginx/Puma, releases and rollback. Use proactively when planning or executing AWS deploys (EC2, RDS, S3, IAM); configuring CI/CD, Capistrano, Kamal, or Docker deploy; reviewing nginx/Puma for production readiness; preparing release checklists, version tags, or rollback plans. Pairs with skills: aws-deploy-plan, capistrano-review, nginx-puma-review, release-checklist."
 tools: Read, Glob, Grep, Write, Edit, Bash, Task
 model: sonnet
 ---

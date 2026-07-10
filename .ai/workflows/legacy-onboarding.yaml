@@ -1,5 +1,6 @@
 name: legacy-onboarding
 description: End-to-end workflow to safely understand, document, and start modernizing an inherited or spec-less Ruby on Rails application.
+# agent / agents values are specialist ids (= .ai/agents/<id>.yaml = Cursor subagent name).
 
 phases:
   - id: discovery

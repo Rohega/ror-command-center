@@ -1,3 +1,12 @@
+---
+name: aws-deploy-plan
+description: "Create a deployment plan for AWS-hosted Rails apps (EC2/RDS/S3/IAM) covering infrastructure changes, migrations, validation, and rollback. Use when planning or documenting an AWS deploy, preparing a staging/production release, or producing a deployment-plan."
+paths:
+  - "config/deploy*"
+  - "Dockerfile"
+  - "kamal.yml"
+  - ".kamal/**"
+---
 # aws-deploy-plan
 
 ## Purpose

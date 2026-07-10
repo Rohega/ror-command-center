@@ -1,6 +1,6 @@
 ---
 name: backend-rails-developer
-description: "Implement server-side Rails features including models, controllers, services, jobs, and API endpoints following project standards."
+description: "Implement Rails models, controllers, services, jobs, APIs, and their RSpec tests. Use proactively when implementing server-side Rails features; writing models, controllers, services, jobs, or serializers; building or extending REST API endpoints; creating migrations or integrating external services. Pairs with skills: create-api-endpoints, review-rails-models, review-db-migrations, ocr-pipeline, whatsapp-integration."
 tools: Read, Glob, Grep, Write, Edit, Bash, Task
 model: sonnet
 ---

@@ -1,3 +1,7 @@
+---
+name: reverse-document-legacy
+description: "Audit an existing, spec-less Rails app and produce module docs, a system map, retrospective ADRs, and a prioritized risk list. Use when onboarding a legacy/undocumented codebase or starting the legacy-onboarding workflow."
+---
 # reverse-document-legacy
 
 ## Purpose

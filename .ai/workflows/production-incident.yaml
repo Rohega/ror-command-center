@@ -1,5 +1,6 @@
 name: production-incident
 description: Respond to production incidents from detection through postmortem.
+# agent / agents values are specialist ids (= .ai/agents/<id>.yaml = Cursor subagent name).
 phases:
   - id: incident
     label: Incident

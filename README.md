@@ -357,11 +357,12 @@ archive/game-studio-original/   # Previous game-studio framework (preserved)
 
 ## How to Use with Cursor
 
-1. Open the project in Cursor — rules in `.cursor/rules/` load automatically.
-2. `ai-index.mdc` (the `.ai/` router), `project-structure.mdc`, `minimalism.mdc`, and `workflow-gates.mdc` always apply; others activate by file glob. `ai-index.mdc` loads the core standards every chat so `.ai/` is always considered.
-3. `workflow-gates.mdc` enforces the Definition of Done (RSpec tests, review, QA, docs) even on greenfield projects; `.cursor/hooks.json` adds hard gates (e.g. blocks direct push to `main`).
-4. **New to this?** Follow the 5-minute quickstart in [docs/integrations/cursor.md](docs/integrations/cursor.md#quickstart-5-minutes).
-5. Plan in **Ask mode**, then switch to **Agent mode** to implement.
+1. Open the project in Cursor — rules in `.cursor/rules/` and `AGENTS.md` load automatically.
+2. Prefer native subagents in `.cursor/agents/` (e.g. `/aws-devops-engineer`) —
+   they read `.ai/agents/<id>.yaml`. Skills: `.ai/skills/` (adapters under `.claude/skills/`).
+3. `ai-index.mdc` (the `.ai/` router), `project-structure.mdc`, `minimalism.mdc`, and `workflow-gates.mdc` always apply; others activate by file glob.
+4. `workflow-gates.mdc` enforces the Definition of Done (RSpec tests, review, QA, docs); `.cursor/hooks.json` adds hard gates (e.g. blocks direct push to `main`).
+5. Plan in **Ask mode**, then switch to **Agent mode** to implement. Quickstart: [docs/integrations/cursor.md](docs/integrations/cursor.md).
 
 See [docs/integrations/cursor.md](docs/integrations/cursor.md) for concepts, copy-paste recipes, and troubleshooting.
 
@@ -372,7 +373,7 @@ See [docs/integrations/cursor.md](docs/integrations/cursor.md) for concepts, cop
 1. Run `claude` in the project root.
 2. `CLAUDE.md` loads standards and collaboration protocol.
 3. Invoke skills: `/create-feature-spec`, `/security-audit`, `/release-checklist`
-4. Spawn agents for specialized work — adapters in `.claude/agents/` read `.ai/agents/*.yaml`
+4. Spawn agents for specialized work — adapters in `.claude/agents/` read `.ai/agents/*.yaml` (Cursor uses `.cursor/agents/` for the same roles)
 
 See [docs/integrations/claude-code.md](docs/integrations/claude-code.md).
 

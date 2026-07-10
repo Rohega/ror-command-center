@@ -1,3 +1,7 @@
+---
+name: document-user-guide
+description: "Create or update user-facing documentation for a non-technical, task-oriented audience: install/onboarding guides, human READMEs, runbooks, and how-to walkthroughs. Use when the reader asks 'how do I do X?' rather than 'how is this built?'."
+---
 # document-user-guide
 
 ## Purpose

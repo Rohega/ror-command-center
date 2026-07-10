@@ -50,10 +50,12 @@ Full examples: `docs/COLLABORATIVE-DESIGN-PRINCIPLE.md`
 - Skills: `.claude/skills/` → delegate to `.ai/skills/*/SKILL.md`
 - Hooks: `.claude/hooks/`
 
+Cursor uses the same YAML via native subagents in `.cursor/agents/` (priority over `.claude/agents/` when names match).
+
 ## Getting Started
 
 1. Read `.ai/workflows/new-feature.yaml` for the default development flow
 2. Invoke skills with `/create-feature-spec`, `/qa-plan`, etc.
-3. Spawn agents per task — definitions in `.ai/agents/`
+3. Spawn agents per task — definitions in `.ai/agents/`; Cursor adapters in `.cursor/agents/`
 
 See `docs/integrations/claude-code.md` for full setup.

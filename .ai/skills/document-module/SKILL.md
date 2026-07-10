@@ -1,3 +1,7 @@
+---
+name: document-module
+description: "Create or update technical documentation for a code module, service, or integration, aimed at developers. Use when documenting how a module works internally, after building or changing a module, or writing docs/modules/*."
+---
 # document-module
 
 ## Purpose

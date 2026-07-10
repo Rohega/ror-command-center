@@ -1,6 +1,6 @@
 ---
 name: frontend-react-inertia-developer
-description: "Design and build user-facing interfaces with Hotwire and React + Inertia.js, owning UX and accessibility."
+description: "Build Hotwire and React + Inertia UI with UX states and accessibility. Use proactively when implementing Inertia pages, React components, or Hotwire (Turbo/Stimulus); designing UX flows, UI states, or design tokens; owning accessibility (WCAG, keyboard, focus, ARIA); coordinating frontend props/contracts with the backend. Pairs with skills: create-ux-spec."
 tools: Read, Glob, Grep, Write, Edit, Bash, Task
 model: sonnet
 ---

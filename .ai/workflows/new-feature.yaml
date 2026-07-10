@@ -1,5 +1,6 @@
 name: new-feature
 description: End-to-end workflow from idea through deployment for new Ruby on Rails features.
+# agent / agents values are specialist ids (= .ai/agents/<id>.yaml = Cursor subagent name).
 
 phases:
   - id: idea
@@ -37,7 +38,10 @@ phases:
     agents: [backend-rails-developer, frontend-react-inertia-developer]
     skills: [create-api-endpoints, review-db-migrations, ponytail-review]
     depends_on: [implementation-plan]
-    notes: Apply .ai/standards/minimalism.md while building — stdlib/Rails-native before new gems, deletion over addition.
+    notes: >-
+      Apply .ai/standards/minimalism.md while building — stdlib/Rails-native before new gems,
+      deletion over addition. On Cursor, backend-rails-developer and frontend-react-inertia-developer
+      may run in parallel as subagents (Task) when workstreams are independent.
 
   - id: testing
     label: Testing
