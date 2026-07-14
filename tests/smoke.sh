@@ -65,6 +65,38 @@ INSTOUT="$(cd "$ROOT" && ./install.sh --dry-run "$(mktemp -d)" 2>&1)"
 printf '%s\n' "$INSTOUT" | grep -qi 'archive/' && bad "archive/ leaked into install" || ok "archive/ not copied"
 printf '%s\n' "$INSTOUT" | grep -q '\.ai/' && ok ".ai/ is copied (sanity)" || bad ".ai/ missing from install"
 
+printf '\ndocs/INSTALL.md stays in sync with install.sh CORE_ITEMS:\n'
+INSTALL_DOC="$ROOT/docs/INSTALL.md"
+# Labels as documented in INSTALL.md "What gets installed" (must match CORE_ITEMS).
+for needle in \
+  '.ai/' \
+  '.cursor/' \
+  '.claude/' \
+  'AGENTS.md' \
+  'CLAUDE.md' \
+  'docs/integrations/' \
+  'docs/how-to/' \
+  'docs/CLAUDE.md' \
+  'docs/COLLABORATIVE-DESIGN-PRINCIPLE.md' \
+  'docs/USER-MANUAL.md' \
+  '.github/copilot-instructions.md' \
+  '--install-cli'
+do
+  if grep -Fq -- "$needle" "$INSTALL_DOC"; then
+    ok "INSTALL.md mentions $needle"
+  else
+    bad "INSTALL.md missing $needle"
+  fi
+done
+# CORE_ITEMS in install.sh must list the human-facing docs we document.
+for item in AGENTS.md docs/how-to docs/USER-MANUAL.md; do
+  if grep -Fq "\"$item\"" "$ROOT/install.sh"; then
+    ok "install.sh CORE includes $item"
+  else
+    bad "install.sh CORE missing $item"
+  fi
+done
+
 printf '\nollama_has_model (matches with/without tag):\n'
 # Run in an isolated bash so common.sh's ok()/err() don't clobber this file's.
 # Stub `ollama list` with a fixture mimicking real output (header + "name:latest").

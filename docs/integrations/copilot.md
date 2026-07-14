@@ -1,5 +1,9 @@
 # GitHub Copilot Integration
 
+> **Depth:** starter (repo instructions + chat patterns). Copilot does not load Cursor
+> rules or Claude slash skills; keep `.ai/` references short. Full workflows:
+> [../how-to/run-workflows.md](../how-to/run-workflows.md).
+
 ## Repository Instructions
 
 Create `.github/copilot-instructions.md` in your application repo (or use org-level instructions):

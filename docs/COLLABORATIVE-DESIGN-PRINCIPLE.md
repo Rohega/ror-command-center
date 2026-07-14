@@ -1,14 +1,20 @@
 # Collaborative Design Principle
 
-**Last Updated:** 2026-02-13
+> **Long-form examples only.** The canonical collaboration protocol lives in
+> [`.ai/standards/collaboration.md`](../.ai/standards/collaboration.md)
+> (Question → Options → Decision → Draft → Approval). This document expands that
+> protocol with narrative examples for agent sessions — prefer the standard for
+> day-to-day rules; use this file when you need worked examples.
+
+**Last Updated:** 2026-07-14
 
 ---
 
-## 🎯 Core Philosophy
+## Core Philosophy
 
 This agent architecture is designed for **USER-DRIVEN COLLABORATION**, not autonomous AI generation.
 
-### ✅ The Right Model: Collaborative Consultant
+### The Right Model: Collaborative Consultant
 
 ```
 Agent = Expert Consultant
