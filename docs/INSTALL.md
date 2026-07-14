@@ -7,6 +7,9 @@ This guide explains how to add the framework to a new or existing project using 
 > API keys, see [Local AI with Ollama](integrations/ollama.md) (`setup.sh` + the
 > `rorcc` CLI) — and check your machine first with `bash scripts/check-machine.sh`.
 
+For a beginner walkthrough of all routes (A / Ollama / Docker), see the
+[User Manual](USER-MANUAL.md). Documentation map: [docs/README.md](README.md).
+
 ## Prerequisites
 
 - Git and Bash
@@ -43,8 +46,9 @@ cd /path/to/your-project
 ```
 
 - **Cursor:** rules in `.cursor/rules/` load automatically. `project-structure.mdc`, `minimalism.mdc`, and `workflow-gates.mdc` are always applied (the last keeps the Definition of Done — RSpec tests, review, QA, docs — in scope even before any code exists). `.cursor/hooks.json` adds hard gates (blocks direct push to `main`, flags staged secrets).
-- **Claude Code:** run `claude` — `CLAUDE.md` loads the standards and collaboration protocol.
+- **Claude Code:** run `claude` — `CLAUDE.md` loads the standards and collaboration protocol. Codex / Copilot load `AGENTS.md`.
 - **Other platforms:** see [integrations/](integrations/) (Codex, ChatGPT, Copilot, Gemini).
+- **Daily use:** [User Manual](USER-MANUAL.md) and [how to use agents](how-to/use-agents.md).
 
 ## Options
 
@@ -54,6 +58,7 @@ cd /path/to/your-project
 | `--force` | Overwrite files that already exist in the target |
 | `--backup` | Save conflicting files as `<file>.bak` before overwriting |
 | `--with-examples` | Also copy `examples/` and the warehouse-mvp example docs |
+| `--install-cli` | Link the `rorcc` CLI into your PATH (for local Ollama use) and exit — no `<target-dir>` required |
 | `-h`, `--help` | Show usage |
 
 ### Examples
@@ -67,18 +72,25 @@ cd /path/to/your-project
 
 # Include the warehouse example for reference
 ./install.sh --with-examples ~/projects/my-app
+
+# Install only the rorcc CLI (Path B / Ollama local use)
+./install.sh --install-cli
 ```
 
 ## What gets installed
 
-**Framework core (generic, reusable):**
+**Framework core (generic, reusable)** — matches `CORE_ITEMS` in `install.sh`:
 
 - `.ai/` — single source of truth (agents, skills, workflows, standards, templates)
 - `.cursor/` — Cursor adapter (`rules/`, `hooks.json`, `hooks/`)
 - `.claude/` — Claude Code adapter (`agents/`, `hooks/`, `skills/`, `settings.json`)
+- `AGENTS.md` — entry point for Codex, Copilot, and other AGENTS.md-aware tools
 - `CLAUDE.md` — Claude Code entry point
 - `docs/integrations/` — per-platform setup guides
-- `docs/CLAUDE.md`, `docs/COLLABORATIVE-DESIGN-PRINCIPLE.md`
+- `docs/how-to/` — task-oriented how-tos (use agents, create specialist, …)
+- `docs/CLAUDE.md` — docs directory index for agents
+- `docs/COLLABORATIVE-DESIGN-PRINCIPLE.md` — collaboration protocol examples
+- `docs/USER-MANUAL.md` — human onboarding hub
 - `.github/copilot-instructions.md`
 
 **Empty scaffolding** (created with a `.gitkeep`, no example content):

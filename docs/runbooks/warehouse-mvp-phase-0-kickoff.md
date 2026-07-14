@@ -1,5 +1,7 @@
 > Language: English | [Español](#versión-en-español)
 
+> **EXAMPLE ONLY** — Warehouse WMS kickoff runbook, **not** a RoR Command Center framework runbook. See [docs/README.md](../README.md) and [examples/warehouse-wms/](../../examples/warehouse-wms/).
+
 # Runbook: WMS MVP — Phase 0 Kickoff
 
 **Goal:** Start implementation in a Rails repository with the 3 foundational branches merged in 5–7 days.  

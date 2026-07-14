@@ -1,5 +1,8 @@
 # Google Gemini Integration
 
+> **Depth:** starter (workspace instructions). For full recipes and workflows use
+> [cursor.md](cursor.md), [claude-code.md](claude-code.md), or [../how-to/run-workflows.md](../how-to/run-workflows.md).
+
 ## Gemini Code Assist / Workspace
 
 Add to project or workspace instructions:

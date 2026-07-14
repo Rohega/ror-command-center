@@ -48,9 +48,9 @@ docs). They will ask before writing files.
 | **security-reviewer** | Audit auth, secrets, IAM, input handling; produce a remediation report | `security-audit` |
 
 > Not sure which to pick? Start with the **workflow**:
-> `.ai/workflows/new-feature.yaml` runs the right agents in order
-> (product-owner → rails-architect → developers → qa-engineer →
-> documentation-writer).
+> [.ai/workflows/new-feature.yaml](../../.ai/workflows/new-feature.yaml) runs the
+> right agents in order. Human how-to for all four workflows:
+> [run-workflows.md](run-workflows.md).
 
 ---
 

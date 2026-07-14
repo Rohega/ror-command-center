@@ -1,5 +1,8 @@
 # ChatGPT Integration
 
+> **Depth:** starter (instructions + upload list). For full recipes and workflows use
+> [cursor.md](cursor.md), [claude-code.md](claude-code.md), or [../how-to/run-workflows.md](../how-to/run-workflows.md).
+
 ## Custom GPT / Project Instructions
 
 Add to your Custom GPT or ChatGPT Project instructions:

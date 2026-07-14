@@ -1,5 +1,7 @@
 > Language: English | [Español](#versión-en-español)
 
+> **EXAMPLE ONLY** — This is the warehouse WMS sample product spec, **not** documentation of the RoR Command Center framework. See [docs/README.md](../README.md) and [examples/warehouse-wms/](../../examples/warehouse-wms/).
+
 # Feature: WMS MVP — Multi-Warehouse Distribution
 
 **Status:** Approved  

@@ -4,7 +4,7 @@
 > agente de IA (Cursor, Claude Code, Codex, Copilot…). Pensada para ponerte a
 > producir en una sola sesión.
 
-Última actualización: 2026-06-22
+Última actualización: 2026-07-14
 
 ---
 
@@ -109,6 +109,7 @@ existentes salvo que pases `--force`.
 | `--force` | Sobrescribe archivos existentes |
 | `--backup` | Guarda los conflictos como `<archivo>.bak` |
 | `--with-examples` | Copia también `examples/` y docs del ejemplo warehouse |
+| `--install-cli` | Enlaza el CLI `rorcc` en el PATH (ruta Ollama) y sale — sin `<target>` |
 
 Verifica la instalación:
 
@@ -243,9 +244,9 @@ con `--dry-run` antes de borrar nada.
 > ¿Qué agente uso para cada tarea y cómo lo invoco en cada plataforma? Guía de
 > referencia de los 8 especialistas: `docs/how-to/use-agents.md`.
 
-### 4.2 Recetas copy-paste
+### 4.2 Recetas (muestra)
 
-**Redactar un feature spec (subagent + skill):**
+**Feature spec rápido (Cursor):**
 
 ```
 /product-owner Sigue .ai/skills/create-feature-spec/SKILL.md para un spec de
@@ -253,41 +254,23 @@ con `--dry-run` antes de borrar nada.
 guárdalo en docs/specs/.
 ```
 
-**Revisar un modelo contra los standards (subagent + standard):**
+**Workflow nueva feature:**
 
 ```
-/qa-engineer Revisa app/models/invoice.rb contra .ai/standards/development.md y
-.ai/standards/security.md. Lista los problemas por severidad; no edites archivos
-todavía.
+Ejecuta .ai/workflows/new-feature.yaml para "<tu feature>". Detente tras cada
+fase y espera mi aprobación. Delega cada fase al subagent correspondiente.
 ```
 
-**Ejecutar el workflow completo de nueva feature:**
+Más recipes (Cursor, troubleshooting, Ask vs Agent): `docs/integrations/cursor.md`.  
+Matriz de los 8 especialistas y prompts por plataforma: `docs/how-to/use-agents.md`.  
+Workflows de punta a punta: `docs/how-to/run-workflows.md`.
 
-```
-Ejecuta .ai/workflows/new-feature.yaml para "transferencia de stock entre
-almacenes". Detente tras cada fase y espera mi aprobación. Delega cada fase al
-subagent Cursor correspondiente.
-```
-
-**Reforzar el framework en un chat puntual:**
-
-```
-Para este proyecto, trata .ai/ como la fuente única de verdad. Antes de
-implementar, delega al subagent en .cursor/agents/ (que lee .ai/agents/), carga
-el skill de .ai/skills/ y los standards de .ai/standards/. Sigue el protocolo de
-colaboración: pregunta, ofrece opciones, redacta y espera mi aprobación antes de
-escribir archivos.
-```
-
-> Tip: usa `@`-menciones en Cursor para adjuntar el archivo exacto, p. ej.
-> `@.ai/skills/create-feature-spec/SKILL.md`.
+> Tip Cursor: `@.ai/skills/create-feature-spec/SKILL.md` adjunta el skill exacto.
 
 ### 4.3 Otras plataformas
 
-- **Claude Code:** ejecuta `claude`; invoca skills con `/create-feature-spec`,
-  `/qa-plan`, etc. Ver `docs/integrations/claude-code.md`.
-- **Codex / Copilot:** `AGENTS.md` y `.github/copilot-instructions.md` se cargan
-  solos. Ver `docs/integrations/codex.md` y `docs/integrations/copilot.md`.
+- **Claude Code:** `docs/integrations/claude-code.md` (slash skills + recipes).
+- **Codex / Copilot:** `docs/integrations/codex.md`, `docs/integrations/copilot.md`.
 
 ---
 
@@ -309,16 +292,13 @@ Detalle: `.cursor/rules/workflow-gates.mdc` y `.ai/workflows/new-feature.yaml`.
 
 ## 6. Extender el framework
 
-- **Nuevo standard:** créalo en `.ai/standards/`. Si quieres que se cargue
-  siempre, añádelo al núcleo en `.cursor/rules/ai-index.mdc` (y, por paridad, en
-  `CLAUDE.md` / `AGENTS.md`). Si es de dominio, añade su línea en la sección
-  "Standards de dominio" y, opcionalmente, una regla `.mdc` por glob.
-- **Nuevo skill / agent / workflow:** créalo bajo `.ai/` y lístalo en el router.
-  Para compilar un **agente especialista** como modelo local (`rorcc-<nombre>`) y
-  chatear con él, sigue la guía paso a paso:
-  `docs/how-to/create-specialist-agent.md`.
-- **Regla específica del proyecto:** añade un `.mdc` en `.cursor/rules/` que
-  **referencie** `.ai/standards/` — nunca copies el texto del standard.
+Checklist completo de contribuidor (ramas, adapters, hooks): `CONTRIBUTING.md`.
+
+Resumen:
+
+- **Nuevo standard / skill / agent / workflow:** crea bajo `.ai/`; adapters delgados en `.cursor/` / `.claude/`; no dupliques cuerpo.
+- **Agente especialista local (`rorcc-<nombre>`):** `docs/how-to/create-specialist-agent.md`.
+- **Mapa de docs:** `docs/README.md`.
 
 > Regla de oro: una sola fuente de verdad (`.ai/`). Los adaptadores apuntan, no
 > duplican.
@@ -355,12 +335,15 @@ Detalle: `.cursor/rules/workflow-gates.mdc` y `.ai/workflows/new-feature.yaml`.
 
 ## 9. Referencias
 
+- Mapa de documentación: `docs/README.md`
 - Índice de `.ai/`: `.ai/README.md`
-- Usar cada agente (referencia de los 8 especialistas): `docs/how-to/use-agents.md`
-- Crear un agente especialista (modelo local): `docs/how-to/create-specialist-agent.md`
+- Usar cada agente: `docs/how-to/use-agents.md`
+- Workflows: `docs/how-to/run-workflows.md`
+- Crear un agente especialista: `docs/how-to/create-specialist-agent.md`
+- Contribuir al kit: `CONTRIBUTING.md`
 - Guía Cursor: `docs/integrations/cursor.md`
 - Guía Claude Code: `docs/integrations/claude-code.md`
 - Guía IA local (Ollama): `docs/integrations/ollama.md`
+- Instalación Path A: `docs/INSTALL.md`
 - Protocolo de colaboración: `.ai/standards/collaboration.md`
 - Gates de ingeniería: `.cursor/rules/workflow-gates.mdc`
-- Instalación detallada: `docs/INSTALL.md`
