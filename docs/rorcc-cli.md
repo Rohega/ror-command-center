@@ -49,6 +49,7 @@ It leaves `jq`/`zstd`/`git` alone and keeps your own files in `--project` mode.
 | `rorcc agent <name> [--cloud]` | Chat with an agent (local by default, `--cloud` for hybrid) |
 | `rorcc skill <name> [--cloud]` | Run a `.ai/skills/<name>` skill with its responsible agent |
 | `rorcc workflow <name> [--cloud]` | Run a `.ai/workflows/<name>` end to end, phase by phase |
+| `rorcc workflow <name> --plan` | Parse + preflight the workflow; print phases, dependencies, and execution units. No LLM, no project writes |
 | `rorcc proxy [--start]` | Show IDE (Cursor/Claude Code) config; `--start` runs a LiteLLM gateway |
 | `rorcc uninstall [opts]` | Remove what `setup.sh` installed (`--models`, `--ollama`, `--project <dir>`, `--dry-run`) |
 | `rorcc help` | Show usage |
@@ -72,8 +73,11 @@ rorcc agent rails-architect
 Run a process end to end:
 
 ```bash
+rorcc workflow new-feature --plan   # validate + show units; no model calls
 rorcc workflow new-feature
-# Phase 1 Idea → create-feature-spec (product-owner) … confirm gate … next phase
+# Phase 1 Idea → create-feature-spec … confirm gate … next phase
+# Every declared skill runs. Agent sessions open only when a phase has no skills.
+# depends_on is enforced: a skipped/failed/blocked dependency blocks later phases.
 ```
 
 After editing an agent or standard under `.ai/`:
