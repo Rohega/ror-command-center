@@ -40,7 +40,7 @@ Generate and execute a pre-release validation checklist before production deploy
 
 ## Agent
 
-`release-manager`
+`aws-devops-engineer` — see `.ai/agents/aws-devops-engineer.yaml`
 
 ## Workflow
 

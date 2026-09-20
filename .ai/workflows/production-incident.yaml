@@ -24,7 +24,7 @@ phases:
   - id: fix
     label: Fix
     agents: [backend-rails-developer, aws-devops-engineer]
-    skills: [hotfix implied via git-workflow]
+    notes: Open a hotfix/* branch and follow .ai/standards/git-workflow.md.
     branch: hotfix/*
     depends_on: [root-cause-analysis]
 

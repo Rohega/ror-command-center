@@ -49,6 +49,11 @@ It leaves `jq`/`zstd`/`git` alone and keeps your own files in `--project` mode.
 | `rorcc agent <name> [--cloud]` | Chat with an agent (local by default, `--cloud` for hybrid) |
 | `rorcc skill <name> [--cloud]` | Run a `.ai/skills/<name>` skill with its responsible agent |
 | `rorcc workflow <name> [--cloud]` | Run a `.ai/workflows/<name>` end to end, phase by phase |
+| `rorcc workflow <name> --plan` | Preflight + deterministic router; print selected/omitted units. No LLM, no project writes |
+| `rorcc workflow <name> --auto` | Skip per-phase `[Enter]`; one-shot model turn per unit. Gates still need a human |
+| `rorcc workflow <name> --only a,b` | Run only those phase ids (prior phases are treated as already done) |
+| `rorcc workflow <name> --skip a` | Skip those phases; dependents follow `depends_on` |
+| `rorcc workflow <name> --full` | Disable the router; run every declared unit |
 | `rorcc proxy [--start]` | Show IDE (Cursor/Claude Code) config; `--start` runs a LiteLLM gateway |
 | `rorcc uninstall [opts]` | Remove what `setup.sh` installed (`--models`, `--ollama`, `--project <dir>`, `--dry-run`) |
 | `rorcc help` | Show usage |
@@ -72,8 +77,13 @@ rorcc agent rails-architect
 Run a process end to end:
 
 ```bash
+rorcc workflow new-feature --plan   # router + units; no model calls
+rorcc workflow new-feature --auto   # one-shot per selected unit; pause at gates
+rorcc workflow new-feature --only development,testing
 rorcc workflow new-feature
-# Phase 1 Idea → create-feature-spec (product-owner) … confirm gate … next phase
+# Skills are the execution unit. The router omits review skills whose paths
+# are absent (unless a create-* skill shares the phase, or you pass --full).
+# depends_on is enforced. Workflow cloud prompts stay lean (purpose + skill).
 ```
 
 After editing an agent or standard under `.ai/`:

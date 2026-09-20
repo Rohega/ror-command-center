@@ -29,6 +29,20 @@ assemble_system() {
   printf 'inlined %s referenced standard(s)\n' "$count" >&2
 }
 
+# Lean workflow prompt: specialist purpose only (no inlined standards dump).
+# Skills already name the standards that apply.
+assemble_lean() {
+  local root="$1" name="$2"
+  local agent_file="$root/.ai/agents/$name.yaml"
+  local purpose=""
+  if [ -f "$agent_file" ]; then
+    purpose="$(grep -m1 '^purpose:' "$agent_file" | sed 's/^purpose:[[:space:]]*//')"
+  fi
+  printf 'You are the "%s" specialist of RoR Command Center.\n' "$name"
+  [ -n "$purpose" ] && printf '%s\n' "$purpose"
+  printf 'Follow the attached skill. Standards the skill names still apply; do not request a full standards dump.\n'
+}
+
 # apply_context_budget <file>  → trims/warns based on RORCC_MAX_CHARS / RORCC_WARN_CHARS
 apply_context_budget() {
   local f="$1"

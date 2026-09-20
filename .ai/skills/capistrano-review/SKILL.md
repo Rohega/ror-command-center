@@ -43,7 +43,7 @@ Review Capistrano deployment configuration for safety, rollback capability, and 
 
 ## Agent
 
-`release-manager`
+`aws-devops-engineer` — see `.ai/agents/aws-devops-engineer.yaml`
 
 ## Workflow
 

@@ -42,4 +42,4 @@ Review SQL and ActiveRecord queries for correctness, performance, and index usag
 
 ## Agent
 
-`mysql-dba`
+`rails-architect` — see `.ai/agents/rails-architect.yaml`

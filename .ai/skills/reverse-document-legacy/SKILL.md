@@ -66,4 +66,4 @@ reverse-documentation capability behind `.ai/workflows/legacy-onboarding.yaml`.
 ## Agent
 
 `documentation-writer` (reverse-documentation); `rails-architect` (architecture/ADRs);
-`code-reviewer` via `tech-debt-analysis` (hotspots)
+`qa-engineer` via `tech-debt-analysis` (hotspots)
