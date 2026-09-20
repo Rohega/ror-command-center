@@ -8,9 +8,11 @@
 WF_FS=$'|'
 # shellcheck source=router.sh
 . "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/router.sh"
+# shellcheck source=classify.sh
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/classify.sh"
 
 # _parse_phases <file>
-# PSV: id|label|agents|skills|depends_on|gate|notes
+# PSV: id|label|agents|skills|depends_on|gate|notes|applies_when
 # agents/skills/depends_on are comma-separated and preserve every element.
 _parse_phases() {
   awk '
@@ -39,7 +41,7 @@ _parse_phases() {
     function flush(){
       if(have){
         gsub(/\t/," ",notes)
-        printf "%s|%s|%s|%s|%s|%s|%s\n", clean(id), clean(label), clean(agents), clean(skills), clean(depends), clean(gate), clean(notes)
+        printf "%s|%s|%s|%s|%s|%s|%s|%s\n", clean(id), clean(label), clean(agents), clean(skills), clean(depends), clean(gate), clean(notes), clean(applies)
       }
     }
     function stop_collecting(){ collecting=""; collecting_notes=0 }
@@ -49,7 +51,7 @@ _parse_phases() {
       have=1
       stop_collecting()
       id=value_after_colon($0)
-      label=""; agents=""; skills=""; depends=""; gate=""; notes=""
+      label=""; agents=""; skills=""; depends=""; gate=""; notes=""; applies=""
       next
     }
     /^[A-Za-z]/ { flush(); have=0; stop_collecting(); next }
@@ -81,6 +83,11 @@ _parse_phases() {
     have && /^    depends_on:[[:space:]]*$/ { collecting="depends"; next }
     have && /^    depends_on:/ { depends=append_item(depends, normalize_list(value_after_colon($0))); collecting=""; next }
     have && /^    gate:/   { gate=value_after_colon($0); next }
+    have && /^    applies_when:/ {
+      applies=value_after_colon($0)
+      applies=normalize_list(applies)
+      next
+    }
     have && /^    notes:/  {
       notes=value_after_colon($0)
       if(notes==">-" || notes==">" || notes=="|" || notes=="|-"){ notes=""; collecting_notes=1 }
@@ -123,7 +130,7 @@ _phase_units() {
 
 _workflow_units() {
   local file="$1" total=0 skills agents
-  while IFS="$WF_FS" read -r _id _label agents skills _deps _gate _notes; do
+  while IFS="$WF_FS" read -r _id _label agents skills _deps _gate _notes _applies; do
     [ -z "${_id:-}" ] && continue
     total=$((total + $(_phase_units "$skills" "$agents")))
   done < <(_parse_phases "$file")
@@ -193,11 +200,11 @@ _state_set() {
 _preflight_workflow() {
   local wf="$1" root="$2"
   local invalid=0
-  local id label agents skills deps gate notes
+  local id label agents skills deps gate notes applies
   local seen_ids="" seen
   local item stale
 
-  while IFS="$WF_FS" read -r id label agents skills deps gate notes; do
+  while IFS="$WF_FS" read -r id label agents skills deps gate notes applies; do
     [ -z "$id" ] && continue
 
     case " $seen_ids " in
@@ -234,7 +241,7 @@ _preflight_workflow() {
   done < <(_parse_phases "$wf")
 
   # Second pass: depends_on targets must exist (needs the full id set).
-  while IFS="$WF_FS" read -r id label agents skills deps gate notes; do
+  while IFS="$WF_FS" read -r id label agents skills deps gate notes applies; do
     [ -z "$id" ] && continue
     while IFS= read -r item; do
       seen=0
@@ -257,14 +264,19 @@ _preflight_workflow() {
 
 _print_workflow_plan() {
   local name="$1" wf="$2" root="$3"
-  local i=0 id label agents skills deps gate notes
+  local i=0 id label agents skills deps gate notes applies
   local declared=0 selected=0 omitted=0
   local scope_note=""
 
   printf '%s\n' "Workflow: $name"
+  if [ "${WF_CLASSIFY:-0}" = "1" ]; then
+    printf '\n'
+    printf '%s\n' "Classification:"
+    _classify_format | sed 's/^/  /'
+  fi
   printf '\n'
 
-  while IFS="$WF_FS" read -r id label agents skills deps gate notes; do
+  while IFS="$WF_FS" read -r id label agents skills deps gate notes applies; do
     [ -z "$id" ] && continue
     i=$((i + 1))
     declared=$((declared + $(_phase_units "$skills" "$agents")))
@@ -273,9 +285,16 @@ _print_workflow_plan() {
       scope_note="out of --only"
     elif [ -n "${WF_SKIP:-}" ] && _csv_has "$WF_SKIP" "$id"; then
       scope_note="--skip"
+    elif [ "${WF_CLASSIFY:-0}" = "1" ] && [ "${WF_FULL:-0}" != "1" ] \
+      && { [ -z "${WF_ONLY:-}" ] || ! _csv_has "$WF_ONLY" "$id"; } \
+      && ! _applies_when "$applies"; then
+      scope_note="applies_when"
     fi
 
     _route_phase "$root" "$skills" "$agents"
+    if [ "$scope_note" = "applies_when" ]; then
+      _omit_units "applies_when" "${skills:-$agents}"
+    fi
     if [ -n "$scope_note" ]; then
       omitted=$((omitted + $(_phase_units "$skills" "$agents")))
     else
@@ -292,7 +311,9 @@ _print_workflow_plan() {
     else
       printf '   selected: none\n'
     fi
-    [ -n "$WF_OMITTED" ] && [ -z "$scope_note" ] && printf '   omitted: %s\n' "$(_csv_pretty "$WF_OMITTED")"
+    if [ -n "$WF_OMITTED" ] && { [ -z "$scope_note" ] || [ "$scope_note" = "applies_when" ]; }; then
+      printf '   omitted: %s\n' "$(_csv_pretty "$WF_OMITTED")"
+    fi
     [ -n "$skills" ] && [ -n "$agents" ] && printf '   agents: %s\n' "$(_csv_pretty "$agents")"
     printf '   dependencies: %s\n' "$(_csv_pretty "$deps")"
     [ -n "$gate" ] && printf '   gate: %s\n' "$gate"
@@ -350,9 +371,38 @@ _run_csv_items() {
   return 0
 }
 
+_workflow_classify() {
+  WF_CLASSIFY=0
+  unset WF_SIZE WF_CLASS_REASON
+  _classify_reset
+  if [ -z "${WF_REQUEST:-}" ] && [ -z "${WF_SIZE_OVERRIDE:-}" ] && [ -z "${WF_SIGNALS_OVERRIDE:-}" ]; then
+    export WF_CLASSIFY=0
+    return 0
+  fi
+  WF_CLASSIFY=1
+  if [ -n "${WF_REQUEST:-}" ]; then
+    _classify_request "$WF_REQUEST"
+  fi
+  if [ -n "${WF_SIZE_OVERRIDE:-}" ]; then
+    WF_SIZE="$WF_SIZE_OVERRIDE"
+    [ -z "${WF_CLASS_REASON:-}" ] && WF_CLASS_REASON="Size set with --size."
+  fi
+  if [ -n "${WF_SIGNALS_OVERRIDE:-}" ]; then
+    _classify_reset_signals
+    _classify_apply_signals "$WF_SIGNALS_OVERRIDE" || return $?
+    [ -z "${WF_SIZE:-}" ] && WF_SIZE=M
+    [ -z "${WF_CLASS_REASON:-}" ] && WF_CLASS_REASON="Signals set with --signals."
+  fi
+  export WF_CLASSIFY WF_SIZE WF_CLASS_REASON
+  export WF_SIG_user_behavior_changed WF_SIG_database_changed WF_SIG_api_changed
+  export WF_SIG_auth_changed WF_SIG_architecture_changed WF_SIG_setup_changed
+  export WF_SIG_infrastructure_changed
+}
+
 cmd_workflow() {
   local name="" backend_flag="" plan=0 auto=0
   WF_ONLY=""; WF_SKIP=""; export WF_FULL=0
+  WF_REQUEST=""; WF_SIZE_OVERRIDE=""; WF_SIGNALS_OVERRIDE=""
   while [ $# -gt 0 ]; do
     case "$1" in
       --plan)  plan=1 ;;
@@ -368,6 +418,23 @@ cmd_workflow() {
         [ -n "${1:-}" ] || { err "usage: --skip <id,id>"; return 2; }
         WF_SKIP="$1"
         ;;
+      --request)
+        shift
+        [ -n "${1:-}" ] || { err "usage: --request <text>"; return 2; }
+        WF_REQUEST="$1"
+        ;;
+      --size)
+        shift
+        case "${1:-}" in
+          S|M|L|XL) WF_SIZE_OVERRIDE="$1" ;;
+          *) err "usage: --size S|M|L|XL"; return 2 ;;
+        esac
+        ;;
+      --signals)
+        shift
+        [ -n "${1:-}" ] || { err "usage: --signals <name,name>"; return 2; }
+        WF_SIGNALS_OVERRIDE="$1"
+        ;;
       --cloud) backend_flag="--cloud" ;;
       --local) backend_flag="--local" ;;
       -*) err "unknown option: $1"; return 2 ;;
@@ -376,7 +443,10 @@ cmd_workflow() {
     shift
   done
   if [ -z "$name" ]; then
-    err "usage: rorcc workflow <workflow-name> [--plan|--auto|--full|--only ids|--skip ids|--local|--cloud]"
+    err "usage: rorcc workflow <workflow-name> [--plan|--auto|--full|--only ids|--skip ids|--request text|--size S|M|L|XL|--signals names|--local|--cloud]"
+    return 2
+  fi
+  if ! _workflow_classify; then
     return 2
   fi
 
@@ -408,10 +478,13 @@ cmd_workflow() {
   local desc; desc="$(grep -m1 '^description:' "$wf" | sed 's/^description:[[:space:]]*//')"
   info "${C_BOLD}Workflow: $name${C_RESET}"
   [ -n "$desc" ] && printf '  %s\n' "$desc"
+  if [ "${WF_CLASSIFY:-0}" = "1" ]; then
+    printf '  classification: size=%s\n' "${WF_SIZE:-?}"
+  fi
   printf '\n'
 
-  local n=0 id label agents skills deps gate notes units
-  while IFS="$WF_FS" read -r id label agents skills deps gate notes; do
+  local n=0 id label agents skills deps gate notes applies units
+  while IFS="$WF_FS" read -r id label agents skills deps gate notes applies; do
     [ -z "$id" ] && continue
     n=$((n + 1))
     units="$(_phase_units "$skills" "$agents")"
@@ -445,11 +518,16 @@ cmd_workflow() {
   local any_failed=0 any_blocked=0
   run_start="$(date +%s)"
 
-  while IFS="$WF_FS" read -r id label agents skills deps gate notes <&3; do
+  while IFS="$WF_FS" read -r id label agents skills deps gate notes applies <&3; do
     [ -z "$id" ] && continue
     i=$((i + 1))
     units="$(_phase_units "$skills" "$agents")"
     _route_phase "$root" "$skills" "$agents"
+    if [ "${WF_CLASSIFY:-0}" = "1" ] && [ "${WF_FULL:-0}" != "1" ] \
+      && { [ -z "${WF_ONLY:-}" ] || ! _csv_has "$WF_ONLY" "$id"; } \
+      && ! _applies_when "$applies"; then
+      _omit_units "applies_when" "${skills:-$agents}"
+    fi
     printf '%b\n' "${C_BOLD}── Phase $i/$n: ${label:-$id} ──${C_RESET}"
     [ -n "$agents" ] && printf '  agents: %s\n' "$(_csv_pretty "$agents")"
     if [ -n "$skills" ]; then
@@ -472,6 +550,15 @@ cmd_workflow() {
       info "skipped $id (--skip)"
       _state_set "$state_file" "$id" "skipped"
       printf '%s\t%s\t%s\t%s\n' "$id" "0" "0" "skipped" >> "$metrics_file"
+      printf '\n'
+      continue
+    fi
+    if [ "${WF_CLASSIFY:-0}" = "1" ] && [ "${WF_FULL:-0}" != "1" ] \
+      && { [ -z "${WF_ONLY:-}" ] || ! _csv_has "$WF_ONLY" "$id"; } \
+      && ! _applies_when "$applies"; then
+      info "phase '$id' omitted by applies_when — passing"
+      _state_set "$state_file" "$id" "passed"
+      printf '%s\t%s\t%s\t%s\n' "$id" "0" "0" "passed" >> "$metrics_file"
       printf '\n'
       continue
     fi

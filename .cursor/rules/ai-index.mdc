@@ -78,7 +78,9 @@ Fallback: adoptar el rol leyendo `.ai/agents/<id>.yaml` con `@`-mención.
 `legacy-module-audit` · `modernization-plan` · `retrospective-adr` ·
 `user-guide`
 
-## Definition of Done (no negociable)
+## Definition of Done (proporcional)
 
-Tests RSpec · `ponytail-review` · `qa-plan` · documentación · rama `feature/`.
-Detalle en `.cursor/rules/workflow-gates.mdc`.
+Canónico: `.ai/standards/orchestration.md`. Artefactos ganados por complejidad,
+riesgo o incertidumbre — no inventar spec/ADR/docs de módulo en un cambio S.
+Nunca omitir seguridad, validación en límites, tests de lógica no trivial, ni
+review de migraciones cuando existen. Rama `feature/`.

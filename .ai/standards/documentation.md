@@ -2,14 +2,27 @@
 
 ## What to Document
 
+**Artifacts are earned by complexity, risk, or uncertainty.** Do not write a
+feature spec, ADR, or module doc because the template exists. Technical docs
+(`document-module`) are not a substitute for user docs (`document-user-guide`).
+
 | Artifact | Location | When |
 |----------|----------|------|
-| Module overview | `docs/modules/<name>.md` | New feature area |
-| ADR | `docs/architecture/adr-NNNN-*.md` | Significant technical decision |
-| API | `docs/api/` or OpenAPI | Public or partner APIs |
+| Module overview | `docs/modules/<name>.md` | New or changed feature **area** (size L/XL or `api_changed`) — not a one-line visual tweak |
+| ADR | `docs/architecture/adr-NNNN-*.md` | Significant technical decision (`architecture_changed` / XL) |
+| API | `docs/api/` or OpenAPI | Public or partner APIs (`api_changed`) |
 | Runbook | `docs/runbooks/` | Deploy, incident, integration ops |
-| Feature spec | `docs/specs/` | Before implementation |
-| User guide / onboarding | `docs/` (README, `docs/USER-MANUAL.md`, runbooks) | Onboarding, install, or any setup/UX change a user follows |
+| Feature spec | `docs/specs/` | Size L/XL — before implementation |
+| User guide / onboarding | `docs/` (README, `docs/USER-MANUAL.md`, runbooks) | `user_behavior_changed` or `setup_changed` — the task a human follows |
+
+Proportional examples:
+
+| Change | Write | Skip |
+|--------|-------|------|
+| Button color / label | Visual check | Spec, stories, ADR, module doc, user manual |
+| Button now starts another flow | User manual + behavior tests | ADR unless architecture changes |
+| New mandatory setup step | README / user guide | ADR, feature spec |
+| Sidekiq → Solid Queue | ADR + rollout plan + docs | Nothing material — this is XL |
 
 **Audience matters:** developer-facing docs (modules, APIs) use the
 `document-module` skill; user-facing docs (install/onboarding, how-tos) use the
