@@ -31,9 +31,16 @@ cmd_skill() {
     return 1
   fi
 
-  # Responsible agent: first .ai/agents/<slug>.yaml referenced by the skill.
+  # Responsible agent: .ai/agents/<slug>.yaml path, else first roster id under ## Agent.
   local agent_slug
   agent_slug="$(grep -oE '\.ai/agents/[a-z0-9-]+\.yaml' "$skill_file" | head -n1 | sed 's#.*/##; s#\.yaml$##')"
+  if [ -z "$agent_slug" ]; then
+    agent_slug="$(awk '/^## Agent/{p=1;next} p&&/^## /{exit} p' "$skill_file" \
+      | grep -oE '`[a-z0-9-]+`' | tr -d '`' \
+      | while IFS= read -r s; do
+          [ -f "$root/.ai/agents/$s.yaml" ] && { printf '%s\n' "$s"; break; }
+        done)"
+  fi
 
   # Build the skill seed: framing + SKILL.md + any referenced templates.
   local seed; seed="$(mktemp)"

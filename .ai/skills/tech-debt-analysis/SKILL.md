@@ -40,4 +40,4 @@ Scan and catalog technical debt, prioritize repayment, and maintain a debt regis
 
 ## Agent
 
-`code-reviewer` (analysis); `rails-architect` (architecture debt)
+`qa-engineer` (analysis); `rails-architect` (architecture debt)

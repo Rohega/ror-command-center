@@ -43,4 +43,4 @@ Review Rails database migrations for safety, reversibility, locking risk, and in
 
 ## Agent
 
-`mysql-dba`
+`rails-architect` — see `.ai/agents/rails-architect.yaml`

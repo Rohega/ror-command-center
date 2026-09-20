@@ -43,4 +43,4 @@ Review ActiveRecord models for Rails conventions, validations, associations, sec
 
 ## Agent
 
-`code-reviewer`
+`qa-engineer` — see `.ai/agents/qa-engineer.yaml`

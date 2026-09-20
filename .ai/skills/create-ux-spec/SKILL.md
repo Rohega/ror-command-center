@@ -45,8 +45,8 @@ Guide collaborative authoring of a UX specification from approved user stories t
 
 ## Agent
 
-`frontend-engineer` — see `.ai/agents/frontend-react-inertia-developer.yaml` (owns UX and accessibility)
+`frontend-react-inertia-developer` — see `.ai/agents/frontend-react-inertia-developer.yaml` (owns UX and accessibility)
 
 ## Workflow
 
-`.ai/workflows/new-feature.yaml` → phase `design`
+`.ai/workflows/new-feature.yaml` — UX specification before frontend development

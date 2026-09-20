@@ -34,7 +34,7 @@ COMMANDS:
   update [name]           Recompile agents after editing .ai/ (all, or just <name>)
   agent <name> [--cloud]  Chat with an agent (local Ollama by default, --cloud for hybrid)
   skill <name> [--cloud]  Run a .ai/skills/<name> skill with its responsible agent
-  workflow <name> [--cloud]  Run a .ai/workflows/<name> end to end, phase by phase
+  workflow <name> [--plan|--cloud]  Run a workflow (or --plan: preflight only, no LLM)
   proxy [--start]         Show IDE (Cursor/Claude Code) config; --start runs a LiteLLM gateway
   uninstall [opts]        Remove what setup.sh installed (agents, CLI, framework; --ollama/--models/--project)
   help                    Show this help
