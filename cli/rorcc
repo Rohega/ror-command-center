@@ -53,6 +53,8 @@ EXAMPLES:
   rorcc doctor
   rorcc build-agent rails-architect
   rorcc agent rails-architect
+  rorcc workflow new-feature --plan
+  rorcc workflow new-feature --auto
 EOF
 }
 

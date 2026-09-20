@@ -5,7 +5,7 @@
 **Goal:** Create a brand-new, runnable Rails app with the `.ai/` framework using only Docker on the host.
 **Audience:** Any developer starting a fresh project (e.g. `tallerflow`).
 **Prerequisites:** Docker Desktop running (WSL integration enabled on Windows); Git. No Ruby/Rails/Node on the host.
-**Last updated:** 2026-06-22 · **Owner:** Documentation Writer
+**Last updated:** 2026-09-20 · **Owner:** Documentation Writer
 
 > **Docker only — Ollama is optional.** Creating the project needs just Docker.
 > Ollama is *not* required here; it is only one of the ways to run the AI
@@ -58,9 +58,11 @@ Open http://localhost:3000. MySQL is reachable from the host at `localhost:3307`
 
 Pick how you want the AI specialists to run:
 
-- **Cursor (no extra setup):** open the project; `.cursor/rules` + `AGENTS.md` load automatically. Ask it to *"follow the new-feature workflow"*.
-- **Local (Ollama):** `rorcc workflow new-feature`
-- **Cloud (API key):** `rorcc workflow new-feature --cloud`
+- **Cursor (no extra setup):** open the project; `.cursor/rules` + `AGENTS.md` load automatically. Ask it to *"follow the new-feature workflow and stop after each phase"*.
+- **Local (Ollama):** `rorcc workflow new-feature --plan` then `rorcc workflow new-feature` (or `--auto`).
+- **Cloud (API key):** `rorcc workflow new-feature --plan` then `rorcc workflow new-feature --cloud`.
+
+`--plan` needs no model. Full CLI flags: `docs/how-to/run-workflows.md`.
 
 ## Step 5 — Push to your own repo (optional)
 
@@ -168,9 +170,11 @@ Abre http://localhost:3000. MySQL es accesible desde el host en `localhost:3307`
 
 Elige cómo correr a los especialistas IA:
 
-- **Cursor (sin configuración extra):** abre el proyecto; `.cursor/rules` + `AGENTS.md` se cargan solos. Pídele *"sigue el workflow new-feature"*.
-- **Local (Ollama):** `rorcc workflow new-feature`
-- **Nube (API key):** `rorcc workflow new-feature --cloud`
+- **Cursor (sin configuración extra):** abre el proyecto; `.cursor/rules` + `AGENTS.md` se cargan solos. Pídele *"sigue el workflow new-feature y detente en cada fase"*.
+- **Local (Ollama):** `rorcc workflow new-feature --plan` y luego `rorcc workflow new-feature` (o `--auto`).
+- **Nube (API key):** `rorcc workflow new-feature --plan` y luego `rorcc workflow new-feature --cloud`.
+
+`--plan` no llama a ningún modelo. Flags: `docs/how-to/run-workflows.md`.
 
 ### Paso 5 — Subir a tu propio repo (opcional)
 

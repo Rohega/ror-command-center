@@ -15,8 +15,10 @@ This directory is the **single source of truth** for all Ruby on Rails AI engine
 ## Quick Start
 
 1. Pick a workflow: [workflows/new-feature.yaml](workflows/new-feature.yaml)
-2. Load collaboration rules: [standards/collaboration.md](standards/collaboration.md)
-3. Invoke the first skill: [skills/create-feature-spec/SKILL.md](skills/create-feature-spec/SKILL.md)
+2. Preview it without a model: `rorcc workflow new-feature --plan`
+   (human how-to: [docs/how-to/run-workflows.md](../docs/how-to/run-workflows.md))
+3. Load collaboration rules: [standards/collaboration.md](standards/collaboration.md)
+4. Invoke the first skill: [skills/create-feature-spec/SKILL.md](skills/create-feature-spec/SKILL.md)
 
 ## Non-negotiable gates (Definition of Done)
 

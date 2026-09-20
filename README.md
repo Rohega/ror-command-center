@@ -93,6 +93,36 @@ Deep map: [`.ai/README.md`](.ai/README.md) · how to invoke specialists: [docs/h
 
 ---
 
+## Run a workflow (copy-paste)
+
+From a directory that contains `.ai/` (this repo or a project you installed into).
+No Ollama or API keys needed for `--plan`.
+
+```bash
+rorcc workflow new-feature --plan          # validate + show what would run (0 model calls)
+rorcc workflow new-feature                 # interactive: Enter / s skip / q quit
+rorcc workflow new-feature --auto          # one model turn per selected skill; still stops at gates
+rorcc workflow new-feature --only idea,specification
+```
+
+| I want to… | Workflow name |
+|------------|---------------|
+| Build a feature from idea to deploy | `new-feature` |
+| Plan/execute an AWS release | `aws-deployment` |
+| Document a inherited Rails app first | `legacy-onboarding` |
+| Handle a production outage | `production-incident` |
+
+`--plan` prints **Declared / Selected / Omitted** units. Reviews whose files do
+not exist (for example `capistrano-review` without `config/deploy.rb`) are
+omitted so you do not pay for them. `--full` forces every declared skill.
+
+Step-by-step (Cursor, Claude, CLI, gates, troubleshooting):
+[docs/how-to/run-workflows.md](docs/how-to/run-workflows.md).
+CLI flags: [docs/rorcc-cli.md](docs/rorcc-cli.md).
+Spanish copy-paste of the same commands: [User Manual §4.3](docs/USER-MANUAL.md).
+
+---
+
 ## Platform entry points
 
 | Platform | Start here |

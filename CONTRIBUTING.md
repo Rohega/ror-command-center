@@ -69,7 +69,9 @@ All agents follow `.ai/standards/collaboration.md` — user approves before file
 - Verify YAML/Markdown renders correctly
 - Confirm adapter pointers match canonical paths
 - Run hook scripts: `bash .claude/hooks/session-start.sh`
-- Framework smoke: `bash tests/smoke.sh`
+- Framework smoke: `bash tests/smoke.sh` (covers `rorcc workflow --plan`, parser, router)
+- Workflow runner how-to: [docs/how-to/run-workflows.md](docs/how-to/run-workflows.md)
+  · internals: [docs/modules/workflow-runner.md](docs/modules/workflow-runner.md)
 
 ## License
 

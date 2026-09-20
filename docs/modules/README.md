@@ -1,7 +1,9 @@
 # Module documentation
 
-This directory holds **developer-facing** module docs for an application built *with* RoR Command Center (`document-module` skill → `docs/modules/<name>.md`).
+Developer-facing module docs (`document-module` skill → `docs/modules/<name>.md`).
 
-In the framework kit itself this folder is intentionally empty scaffolding. After `install.sh`, your Rails app owns the content here.
+- **In a Rails app** you installed the framework into: this folder is yours.
+- **In this kit:** [workflow-runner.md](workflow-runner.md) documents `rorcc workflow`.
+  Humans running a workflow: [how-to/run-workflows.md](../how-to/run-workflows.md).
 
 See `.ai/standards/documentation.md` and `.ai/templates/` for expected shape.

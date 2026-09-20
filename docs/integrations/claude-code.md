@@ -103,7 +103,15 @@ Execute .ai/workflows/new-feature.yaml for "multi-warehouse stock transfer".
 Stop after each phase and wait for my approval. Use the agent YAML for each phase.
 ```
 
-See also: [../how-to/run-workflows.md](../how-to/run-workflows.md).
+Same process on the CLI (preview costs **zero** tokens — no Ollama needed):
+
+```bash
+rorcc workflow new-feature --plan
+rorcc workflow new-feature --auto
+```
+
+Flags, phase ids, and the other three workflows:
+[how-to/run-workflows.md](../how-to/run-workflows.md).
 
 ### 4. Architecture ADR
 

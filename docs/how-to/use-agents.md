@@ -7,7 +7,7 @@
 need to know how the framework is built internally.
 **Goal:** Know which specialist to invoke for a task, and exactly how to invoke
 it on each platform.
-**Last updated:** 2026-07-10
+**Last updated:** 2026-09-20
 
 > This guide is about **using** the existing roles. To **create or compile** your
 > own specialist, see [create-specialist-agent.md](create-specialist-agent.md).
@@ -26,7 +26,7 @@ pair them: pick the *role*, then point it at the *skill* and the relevant
 | **Cursor** | Prefer the native subagent: `/<id>` or “use the `<id>` subagent…”. Adapters live in `.cursor/agents/<id>.md` and read `.ai/agents/<id>.yaml`. Fallback: `Act as the agent in .ai/agents/<id>.yaml` with `@`-mentions. |
 | **Claude Code** | Run `claude`; invoke skills as slash commands (`/create-feature-spec`, `/qa-plan`, …). Agents in `.claude/agents/` read the same YAML. |
 | **Codex / Copilot** | `AGENTS.md` / `.github/copilot-instructions.md` load automatically; reference the agent file in your prompt as in Cursor. |
-| **Local CLI** | `rorcc agent <name>` (chat) · `rorcc skill <skill>` · `rorcc workflow <workflow>`. |
+| **Local CLI** | `rorcc agent <name>` · `rorcc skill <skill>` · `rorcc workflow <name> --plan` then `--auto` or interactive. Flags: [run-workflows.md](run-workflows.md). |
 
 Every agent embeds the **collaboration protocol** (Question → Options → Decision
 → Draft → Approval) and the **Definition of Done** gates (tests, review, QA,
@@ -86,12 +86,24 @@ help page. Ask before writing files.
 > may create real records — never point it at production. Full detail:
 > `.ai/skills/record-user-demo/SKILL.md`.
 
-**Run the full feature workflow:**
+**Run the full feature workflow (Cursor):**
 
 ```
 Run .ai/workflows/new-feature.yaml for "<feature>". Stop after each phase and
 wait for my approval. Delegate each phase to the matching Cursor subagent.
 ```
+
+**Same workflow on the CLI** (from a folder that contains `.ai/`; `--plan` needs
+no model):
+
+```bash
+rorcc workflow new-feature --plan
+rorcc workflow new-feature --auto          # gates still ask for y
+rorcc workflow new-feature --only development,testing
+```
+
+Names: `new-feature`, `aws-deployment`, `legacy-onboarding`, `production-incident`.
+Flags: [run-workflows.md](run-workflows.md).
 
 **Fallback (Ask mode / no subagent):**
 
@@ -121,7 +133,8 @@ Act as the agent in .ai/agents/product-owner.yaml and follow
 
 ## Related
 
-- User manual: [docs/USER-MANUAL.md](../USER-MANUAL.md) (§4 Uso diario)
+- User manual: [docs/USER-MANUAL.md](../USER-MANUAL.md) (§4.3 CLI workflow)
+- Run a workflow: [run-workflows.md](run-workflows.md)
 - Create/compile your own specialist: [create-specialist-agent.md](create-specialist-agent.md)
 - Agent definitions: `.ai/agents/` · Skills: `.ai/skills/` · Workflows: `.ai/workflows/`
 - Collaboration protocol: `.ai/standards/collaboration.md`
@@ -135,7 +148,7 @@ cualquier herramienta de IA (Cursor, Claude Code, Codex, Copilot o el CLI local
 `rorcc`). **No** necesitas conocer cómo está construido el framework por dentro.
 **Objetivo:** saber qué especialista invocar para cada tarea y cómo invocarlo en
 cada plataforma.
-**Última actualización:** 2026-07-10
+**Última actualización:** 2026-09-20
 
 > Esta guía trata de **usar** los roles existentes. Para **crear o compilar** tu
 > propio especialista, ve a [create-specialist-agent.md](create-specialist-agent.md).
@@ -152,7 +165,7 @@ relevantes.
 | **Cursor** | Prefiere el subagent nativo: `/<id>` o “usa el subagent `<id>`…”. Adapters en `.cursor/agents/<id>.md` leen `.ai/agents/<id>.yaml`. Fallback: `Actúa como el agent en .ai/agents/<id>.yaml` con `@`-menciones. |
 | **Claude Code** | Ejecuta `claude`; invoca skills como slash commands (`/create-feature-spec`, `/qa-plan`, …). Agents en `.claude/agents/` leen el mismo YAML. |
 | **Codex / Copilot** | `AGENTS.md` / `.github/copilot-instructions.md` se cargan solos; referencia el archivo del agente en tu prompt igual que en Cursor. |
-| **CLI local** | `rorcc agent <nombre>` (chat) · `rorcc skill <skill>` · `rorcc workflow <workflow>`. |
+| **CLI local** | `rorcc agent <nombre>` · `rorcc skill <skill>` · `rorcc workflow <nombre> --plan` y luego `--auto` o interactivo. Flags: [run-workflows.md](run-workflows.md). |
 
 Cada agente lleva incorporado el **protocolo de colaboración** (Pregunta →
 Opciones → Decisión → Borrador → Aprobación) y los gates de la **Definition of
@@ -209,12 +222,24 @@ ayuda. Pregunta antes de escribir archivos.
 > **desarrollo** y puede crear registros reales — nunca la apuntes a producción.
 > Detalle completo: `.ai/skills/record-user-demo/SKILL.md`.
 
-**Ejecutar el workflow completo de feature:**
+**Ejecutar el workflow completo de feature (Cursor):**
 
 ```
 Ejecuta .ai/workflows/new-feature.yaml para "<feature>". Detente tras cada fase y
 espera mi aprobación. Delega cada fase al subagent Cursor correspondiente.
 ```
+
+**El mismo workflow en el CLI** (desde una carpeta con `.ai/`; `--plan` no
+necesita modelo):
+
+```bash
+rorcc workflow new-feature --plan
+rorcc workflow new-feature --auto          # los gates siguen pidiendo y
+rorcc workflow new-feature --only development,testing
+```
+
+Nombres: `new-feature`, `aws-deployment`, `legacy-onboarding`, `production-incident`.
+Flags: [run-workflows.md](run-workflows.md).
 
 **Fallback (modo Ask / sin subagent):**
 
@@ -242,7 +267,8 @@ Actúa como el agent en .ai/agents/product-owner.yaml y sigue
 
 ### Relacionado
 
-- Manual de usuario: [docs/USER-MANUAL.md](../USER-MANUAL.md) (§4 Uso diario)
+- Manual de usuario: [docs/USER-MANUAL.md](../USER-MANUAL.md) (§4.3 workflow CLI)
+- Ejecutar un workflow: [run-workflows.md](run-workflows.md)
 - Crear/compilar tu propio especialista: [create-specialist-agent.md](create-specialist-agent.md)
 - Definiciones de agentes: `.ai/agents/` · Skills: `.ai/skills/` · Workflows: `.ai/workflows/`
 - Protocolo de colaboración: `.ai/standards/collaboration.md`

@@ -103,6 +103,18 @@ Stop after each phase and wait for my approval before continuing. Delegate each
 phase to the matching Cursor subagent.
 ```
 
+Same process on the CLI (preview costs **zero** tokens — no Ollama needed):
+
+```bash
+rorcc workflow new-feature --plan    # declared / selected / omitted
+rorcc workflow new-feature           # Enter / s / q each phase
+rorcc workflow new-feature --auto    # one model turn per skill; gates still ask
+```
+
+Flags, phase ids, and the other three workflows:
+[how-to/run-workflows.md](../how-to/run-workflows.md). Backend + frontend may run
+as two Cursor `Task` subagents only when the ADR is frozen; the CLI stays sequential.
+
 ### 4. Architecture decision (subagent + template)
 
 ```
@@ -138,6 +150,7 @@ approval before writing files.
 | Agent edits without asking | You're in Agent mode and didn't ask it to confirm | Add "ask before editing" to your prompt, or use Ask mode to plan. |
 | Not sure which rules are active | Rules activate by file glob | Open a file of that type, or `@`-mention the rule. |
 | Agent doesn't follow the team process | Collaboration protocol not reinforced | Use recipe #5 above. |
+| Agent skips workflow gates | Prompt too vague | Repeat: “stop after each phase; wait for approval”. Or use `rorcc workflow --plan` first. |
 
 ## Customization
 

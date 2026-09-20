@@ -128,17 +128,27 @@ If the skill's agent isn't compiled yet, `rorcc` builds it automatically.
 
 ## Run a full workflow
 
-Run an end-to-end process (`.ai/workflows/<name>.yaml`) phase by phase. Each phase
-runs its skill with the right agent and pauses at its gate for your confirmation:
+Run an end-to-end process (`.ai/workflows/<name>.yaml`) from a directory that
+contains `.ai/`. **Preview first** — `--plan` does not start Ollama or call an API:
 
 ```bash
-rorcc workflow new-feature           # local
-rorcc workflow new-feature --cloud   # hybrid
+rorcc workflow new-feature --plan    # selected vs omitted units; 0 LLM calls
+rorcc workflow new-feature           # local; Enter / s / q each phase
+rorcc workflow new-feature --auto    # one-shot per selected skill; gates still ask
+rorcc workflow new-feature --cloud   # hybrid (needs API key)
+rorcc workflow new-feature --only development,testing
+rorcc workflow new-feature --plan --full   # do not omit path-based reviews
 ```
 
-At each phase: `Enter` to run, `s` to skip, `q` to quit. After a phase with a
-gate, you confirm it before moving on. Available workflows: `new-feature`,
-`legacy-onboarding`, `aws-deployment`, `production-incident`.
+After a phase that has a **gate**, you confirm it before moving on — including
+with `--auto`. Available names: `new-feature`, `legacy-onboarding`,
+`aws-deployment`, `production-incident`.
+
+If a review skill has no matching files (no `config/deploy.rb`, no `app/models`),
+`--plan` marks it `omitted` so you do not pay for it. `--full` runs everything.
+In this kit `new-feature --plan` is typically **14 declared / 12 selected**.
+
+Walkthrough and flags: [docs/how-to/run-workflows.md](../how-to/run-workflows.md).
 
 ## Hybrid mode (local + cloud)
 

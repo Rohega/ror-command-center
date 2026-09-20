@@ -17,7 +17,8 @@ For AI sessions (not humans): root [`AGENTS.md`](../AGENTS.md), [`CLAUDE.md`](..
 1. [User Manual](USER-MANUAL.md) — choose Path A (IDE), Path B (Ollama), or Docker.
 2. [INSTALL.md](INSTALL.md) — step-by-step for Path A (`install.sh`).
 3. Platform guides: [integrations/](integrations/) (Cursor, Claude Code, Ollama, Codex, …).
-4. Daily use: [how-to/use-agents.md](how-to/use-agents.md) · [how-to/run-workflows.md](how-to/run-workflows.md) · [rorcc-cli.md](rorcc-cli.md).
+4. Daily use: [how-to/use-agents.md](how-to/use-agents.md) · **[how-to/run-workflows.md](how-to/run-workflows.md)** (`rorcc workflow <name> --plan`) · [rorcc-cli.md](rorcc-cli.md).
+5. CLI runner internals: [modules/workflow-runner.md](modules/workflow-runner.md).
 
 ## Contribute to the kit
 

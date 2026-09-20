@@ -4,7 +4,7 @@
 > agente de IA (Cursor, Claude Code, Codex, Copilot…). Pensada para ponerte a
 > producir en una sola sesión.
 
-Última actualización: 2026-07-14
+Última actualización: 2026-09-20
 
 ---
 
@@ -173,7 +173,8 @@ Comandos útiles después de instalar:
 rorcc doctor                  # diagnóstico: Ollama, modelos, daemon, entorno
 rorcc agent rails-architect   # chatear con un especialista
 rorcc skill create-feature-spec
-rorcc workflow new-feature
+rorcc workflow new-feature --plan   # 0 modelos: qué se ejecutaría
+rorcc workflow new-feature          # Enter / s / q en cada fase
 ```
 
 > **Dónde ejecutar `rorcc`.** Los comandos que leen el framework (`agent`,
@@ -254,23 +255,61 @@ con `--dry-run` antes de borrar nada.
 guárdalo en docs/specs/.
 ```
 
-**Workflow nueva feature:**
+**Workflow nueva feature (Cursor / Claude):**
 
 ```
 Ejecuta .ai/workflows/new-feature.yaml para "<tu feature>". Detente tras cada
 fase y espera mi aprobación. Delega cada fase al subagent correspondiente.
 ```
 
-Más recipes (Cursor, troubleshooting, Ask vs Agent): `docs/integrations/cursor.md`.  
-Matriz de los 8 especialistas y prompts por plataforma: `docs/how-to/use-agents.md`.  
-Workflows de punta a punta: `docs/how-to/run-workflows.md`.
-
 > Tip Cursor: `@.ai/skills/create-feature-spec/SKILL.md` adjunta el skill exacto.
 
-### 4.3 Otras plataformas
+### 4.3 Correr un workflow con `rorcc` (explícito)
 
+Hazlo **siempre** desde la raíz del proyecto (donde está `.ai/`). `--plan` no
+necesita Ollama ni API keys.
+
+1. **Elige el nombre** (no inventes otro):
+   - feature nueva → `new-feature`
+   - release AWS → `aws-deployment`
+   - app heredada → `legacy-onboarding`
+   - incidente → `production-incident`
+2. **Previsualiza** (no gasta tokens, no escribe archivos):
+
+```bash
+rorcc workflow new-feature --plan
+```
+
+   Últimas líneas típicas **en este kit** (sin `app/models` ni `config/deploy.rb`):
+
+   `Declared units: 14` · `Selected units: 12` · `Omitted units: 2` ·
+   `LLM calls performed: 0`
+
+   `selected` = se corre. `omitted` = review sin archivos (p. ej. Capistrano).
+   IDs de fase para `--only` / `--skip`: `idea`, `specification`, `architecture`,
+   `implementation-plan`, `development`, `testing`, `documentation`, `deployment`.
+3. **Ejecuta:**
+
+```bash
+rorcc workflow new-feature            # te pregunta en cada fase (Enter / s / q)
+rorcc workflow new-feature --auto     # un turno de modelo por skill; los gates siguen pidiendo "y"
+```
+
+4. **Retoma** sin repetir idea/spec: `rorcc workflow new-feature --only development,testing`.
+5. **Fuerza reviews omitidos** (vas a crear esos archivos): añade `--full`.
+
+Si el YAML está roto verás `workflow invalid` **antes** de llamar al modelo.
+`--auto` **no** aprueba gates y **no** hace commit.
+
+Guía completa (flags, gates, paralelo vs secuencial, los otros 3 workflows):
+`docs/how-to/run-workflows.md`.
+
+### 4.4 Otras plataformas
+
+- **Cursor (detalle):** `docs/integrations/cursor.md` (Ask vs Agent, recetas).
 - **Claude Code:** `docs/integrations/claude-code.md` (slash skills + recipes).
 - **Codex / Copilot:** `docs/integrations/codex.md`, `docs/integrations/copilot.md`.
+- **Especialistas:** `docs/how-to/use-agents.md`.
 
 ---
 
@@ -317,6 +356,9 @@ Resumen:
 | El agente edita sin preguntar | Estás en modo Agent | Pide "pregunta antes de editar" o planifica en modo Ask |
 | No sé qué reglas están activas | Activación por glob | Abre un archivo de ese tipo o `@`-menciona la regla |
 | Falta el equipo en un repo nuevo | Aún sin archivos Rails | El router (`ai-index.mdc`) ya garantiza el núcleo; refuerza con la receta 4.2 |
+| `workflow invalid` | YAML o IDs rotos | Lee las líneas `error:`; no se llamó a ningún modelo |
+| Una fase sale `blocked` | Falló o saltaste una dependencia | Repite esa fase, o `--only` si ya la hiciste fuera |
+| `--plan` omite un review | No existen sus `paths:` | Normal. Si lo necesitas: `--full` |
 
 ---
 
@@ -328,6 +370,9 @@ Resumen:
   (`ai-index.mdc` en Cursor; `CLAUDE.md`/`AGENTS.md` en otras).
 - **Núcleo** — Los 9 standards transversales que se cargan en cada sesión.
 - **DoD (Definition of Done)** — Criterios mínimos para dar por terminado el trabajo.
+- **Unit (unidad de ejecución)** — Una skill seleccionada (o un agent si la fase no tiene skills).
+- **`--plan`** — Previsualiza el workflow: 0 llamadas a modelo.
+- **Gate** — Pregunta humana al final de una fase; `--auto` no la salta.
 - **`alwaysApply`** — Frontmatter de una regla de Cursor que la activa en todo chat.
 - **Glob** — Patrón de archivos que activa una regla `.mdc` por tipo de archivo.
 

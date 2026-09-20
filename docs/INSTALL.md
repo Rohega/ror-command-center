@@ -48,7 +48,32 @@ cd /path/to/your-project
 - **Cursor:** rules in `.cursor/rules/` load automatically. `project-structure.mdc`, `minimalism.mdc`, and `workflow-gates.mdc` are always applied (the last keeps the Definition of Done — RSpec tests, review, QA, docs — in scope even before any code exists). `.cursor/hooks.json` adds hard gates (blocks direct push to `main`, flags staged secrets).
 - **Claude Code:** run `claude` — `CLAUDE.md` loads the standards and collaboration protocol. Codex / Copilot load `AGENTS.md`.
 - **Other platforms:** see [integrations/](integrations/) (Codex, ChatGPT, Copilot, Gemini).
-- **Daily use:** [User Manual](USER-MANUAL.md) and [how to use agents](how-to/use-agents.md).
+- **Daily use:** [User Manual](USER-MANUAL.md), [how to use agents](how-to/use-agents.md),
+  and [how to run a workflow](how-to/run-workflows.md).
+
+## Step 5 — Preview a workflow (no model)
+
+From the project you just installed (or this clone), you can see the
+`new-feature` phases without Ollama or API keys **if** the `rorcc` CLI is on
+your `PATH` (`./install.sh --install-cli`):
+
+```bash
+cd /path/to/your-project
+rorcc workflow new-feature --plan
+```
+
+Expect `LLM calls performed: 0`. In a project without `app/models` or
+`config/deploy.rb`, the last lines are typically `Declared units: 14` /
+`Selected units: 12` (two reviews omitted).
+
+Without the CLI, paste this into Cursor / Claude Agent chat instead:
+
+```
+Execute .ai/workflows/new-feature.yaml for "<feature>". Stop after each phase
+and wait for my approval.
+```
+
+Full flags (`--auto`, `--only`, `--skip`, `--full`): [how-to/run-workflows.md](how-to/run-workflows.md).
 
 ## Options
 
@@ -87,7 +112,7 @@ cd /path/to/your-project
 - `AGENTS.md` — entry point for Codex, Copilot, and other AGENTS.md-aware tools
 - `CLAUDE.md` — Claude Code entry point
 - `docs/integrations/` — per-platform setup guides
-- `docs/how-to/` — task-oriented how-tos (use agents, create specialist, …)
+- `docs/how-to/` — task-oriented how-tos (use agents, run workflows, create specialist, …)
 - `docs/CLAUDE.md` — docs directory index for agents
 - `docs/COLLABORATIVE-DESIGN-PRINCIPLE.md` — collaboration protocol examples
 - `docs/USER-MANUAL.md` — human onboarding hub
