@@ -173,19 +173,40 @@ printf '%s\n' "$BLOCK_OUT" | awk -F'|' '
 rm -f "$BLOCK_WF"
 
 UNITS="$(wf_eval _workflow_units "$ROOT/.ai/workflows/new-feature.yaml")"
-[ "$UNITS" = "14" ] && ok "new-feature execution units = 14" || bad "execution units = $UNITS (expected 14)"
+[ "$UNITS" = "14" ] && ok "new-feature declared units = 14" || bad "declared units = $UNITS (expected 14)"
 
 printf '\nworkflow --plan (no LLM):\n'
 PLAN_OUT="$(cd "$ROOT" && env -u OPENAI_API_KEY -u ANTHROPIC_API_KEY -u OLLAMA_HOST \
   "$RORCC" workflow new-feature --plan 2>&1)"
 plan_rc=$?
 [ "$plan_rc" -eq 0 ] && ok "rorcc workflow new-feature --plan -> 0" || bad "--plan exit $plan_rc"
-printf '%s\n' "$PLAN_OUT" | grep -q 'Execution units: 14' \
-  && ok "--plan prints execution units" || bad "--plan missing execution units"
+printf '%s\n' "$PLAN_OUT" | grep -q 'Declared units: 14' \
+  && ok "--plan prints declared units" || bad "--plan missing declared units"
+printf '%s\n' "$PLAN_OUT" | grep -q 'Selected units:' \
+  && ok "--plan prints selected units" || bad "--plan missing selected units"
 printf '%s\n' "$PLAN_OUT" | grep -q 'LLM calls performed: 0' \
   && ok "--plan reports 0 LLM calls" || bad "--plan missing LLM calls line"
 printf '%s\n' "$PLAN_OUT" | grep -q 'create-api-endpoints' \
   && ok "--plan lists development skills" || bad "--plan missing development skills"
+printf '%s\n' "$PLAN_OUT" | grep -q 'capistrano-review:no matching paths' \
+  && ok "--plan omits capistrano-review in this repo" || bad "--plan should omit capistrano-review"
+printf '%s\n' "$PLAN_OUT" | grep -q 'review-db-migrations' \
+  && ok "--plan keeps review-db-migrations (create-* sibling)" || bad "review-db-migrations dropped"
+
+FULL_PLAN="$(cd "$ROOT" && "$RORCC" workflow new-feature --plan --full 2>&1)"
+printf '%s\n' "$FULL_PLAN" | grep -q 'Selected units: 14' \
+  && ok "--full --plan selects all 14 units" || bad "--full should select 14"
+
+ONLY_PLAN="$(cd "$ROOT" && "$RORCC" workflow new-feature --plan --only idea,specification 2>&1)"
+printf '%s\n' "$ONLY_PLAN" | grep -q 'out of --only' \
+  && ok "--only marks other phases out of scope" || bad "--only scope missing"
+ONLY_SEL="$(printf '%s\n' "$ONLY_PLAN" | awk '/^Selected units:/{print $3}')"
+[ "$ONLY_SEL" = "2" ] && ok "--only idea,specification → 2 selected units" || bad "--only selected=$ONLY_SEL"
+
+AUTO_PLAN="$(cd "$ROOT" && env -u OPENAI_API_KEY -u ANTHROPIC_API_KEY \
+  "$RORCC" workflow new-feature --plan --auto 2>&1)"
+[ $? -eq 0 ] && printf '%s\n' "$AUTO_PLAN" | grep -q 'LLM calls performed: 0' \
+  && ok "--plan --auto still 0 LLM calls" || bad "--plan --auto invoked a model?"
 
 printf '\nworkflow preflight:\n'
 preflight_wf() {
@@ -259,6 +280,46 @@ for wf_name in new-feature aws-deployment legacy-onboarding production-incident;
   preflight_wf "$ROOT/.ai/workflows/$wf_name.yaml" >/dev/null 2>&1 \
     && ok "preflight $wf_name" || bad "preflight $wf_name failed"
 done
+
+printf '\nworkflow router:\n'
+route_eval() {
+  RORCC_LIB_DIR="$ROOT/lib/rorcc" bash -c '
+    . "$1/lib/rorcc/common.sh"
+    . "$1/lib/rorcc/workflow.sh"
+    WF_FULL=0
+    _route_skills "$2" "$3"
+    printf "SEL=%s\nOMIT=%s\n" "$WF_SELECTED" "$WF_OMITTED"
+  ' _ "$ROOT" "$@"
+}
+
+# Isolated tree: review-db-migrations with no migrations and no create-* sibling.
+BARE="$(mktemp -d)"
+mkdir -p "$BARE/.ai/skills/review-db-migrations"
+cp "$ROOT/.ai/skills/review-db-migrations/SKILL.md" "$BARE/.ai/skills/review-db-migrations/"
+BARE_OUT="$(route_eval "$BARE" "review-db-migrations")"
+printf '%s\n' "$BARE_OUT" | grep -q 'OMIT=review-db-migrations:no matching paths' \
+  && ok "router omits review-db-migrations without db/" || bad "bare omit: $BARE_OUT"
+mkdir -p "$BARE/db/migrate"
+touch "$BARE/db/migrate/001_init.rb"
+HIT_OUT="$(route_eval "$BARE" "review-db-migrations")"
+printf '%s\n' "$HIT_OUT" | grep -q 'SEL=review-db-migrations' \
+  && ok "router keeps review-db-migrations when paths match" || bad "hit: $HIT_OUT"
+rm -rf "$BARE"
+
+# create-* sibling keeps the review even without files (this repo has no db/migrate).
+DEV_OUT="$(route_eval "$ROOT" "create-api-endpoints,review-db-migrations")"
+printf '%s\n' "$DEV_OUT" | grep -q 'SEL=create-api-endpoints,review-db-migrations' \
+  && ok "create-* sibling keeps contextual review" || bad "sibling: $DEV_OUT"
+
+LEAN="$(RORCC_LIB_DIR="$ROOT/lib/rorcc" bash -c '
+  . "$1/lib/rorcc/common.sh"
+  . "$1/lib/rorcc/assemble.sh"
+  assemble_lean "$1" backend-rails-developer
+' _ "$ROOT")"
+printf '%s\n' "$LEAN" | grep -q 'backend-rails-developer' \
+  && ok "assemble_lean names the specialist" || bad "lean missing specialist"
+printf '%s\n' "$LEAN" | grep -q 'STANDARD:' \
+  && bad "assemble_lean dumped standards" || ok "assemble_lean stays lean"
 
 printf '\n'
 printf '\033[1mResult:\033[0m %d passed, %d failed\n' "$PASS" "$FAIL"
