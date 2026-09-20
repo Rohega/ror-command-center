@@ -1,12 +1,13 @@
 # shellcheck shell=bash
-# rorcc workflow <name> [--plan|--local|--cloud] — run a .ai/workflows/<name>.yaml
-# end to end. Parser V2 keeps full agent/skill/depends_on arrays. Skills are the
-# execution unit; agents on a phase are metadata unless the phase has no skills.
-# depends_on is enforced. --plan is deterministic (no LLM, no project writes).
+# rorcc workflow <name> [--plan|--auto|--full|--only ids|--skip ids|--local|--cloud]
+# Parser V2 + deterministic V3 router (see .ai/standards/orchestration.md).
+# Skills are the execution unit. --plan never calls an LLM.
 
 # Field separator for parsed phases. Must NOT be IFS whitespace — bash `read`
 # collapses consecutive tabs, which would drop empty depends_on/gate/notes.
 WF_FS=$'|'
+# shellcheck source=router.sh
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/router.sh"
 
 # _parse_phases <file>
 # PSV: id|label|agents|skills|depends_on|gate|notes
@@ -110,8 +111,7 @@ _each_csv() {
   done
 }
 
-# Execution units for one phase: declared skills, else agents.
-# ponytail: sequential units only; a later Smart Router can subset this list.
+# Declared execution units for one phase: skills, else agents.
 _phase_units() {
   local skills="${1:-}" agents="${2:-}"
   if [ -n "$skills" ]; then
@@ -161,6 +161,10 @@ _dep_outcome() {
   [ -z "$deps" ] && { printf 'passed\n'; return 0; }
   [ ! -f "$state" ] && { printf 'blocked\n'; return 0; }
   while IFS= read -r dep; do
+    # --only: dependencies outside the requested set are assumed already done.
+    if [ -n "${WF_ONLY:-}" ] && ! _csv_has "$WF_ONLY" "$dep"; then
+      continue
+    fi
     st="$(awk -F'\t' -v id="$dep" 'NR>1 && $1==id {print $2; exit}' "$state")"
     if [ "$st" != "passed" ]; then
       printf 'blocked\n'
@@ -252,9 +256,10 @@ _preflight_workflow() {
 }
 
 _print_workflow_plan() {
-  local name="$1" wf="$2"
-  local i=0 id label agents skills deps gate notes units exec
-  local total=0
+  local name="$1" wf="$2" root="$3"
+  local i=0 id label agents skills deps gate notes
+  local declared=0 selected=0 omitted=0
+  local scope_note=""
 
   printf '%s\n' "Workflow: $name"
   printf '\n'
@@ -262,25 +267,42 @@ _print_workflow_plan() {
   while IFS="$WF_FS" read -r id label agents skills deps gate notes; do
     [ -z "$id" ] && continue
     i=$((i + 1))
-    units="$(_phase_units "$skills" "$agents")"
-    total=$((total + units))
-    if [ -n "$skills" ]; then
-      exec="skills: $(_csv_pretty "$skills")"
-    elif [ -n "$agents" ]; then
-      exec="agents: $(_csv_pretty "$agents")  (no skills — agent session)"
-    else
-      exec="nothing to run"
+    declared=$((declared + $(_phase_units "$skills" "$agents")))
+    scope_note=""
+    if [ -n "${WF_ONLY:-}" ] && ! _csv_has "$WF_ONLY" "$id"; then
+      scope_note="out of --only"
+    elif [ -n "${WF_SKIP:-}" ] && _csv_has "$WF_SKIP" "$id"; then
+      scope_note="--skip"
     fi
+
+    _route_phase "$root" "$skills" "$agents"
+    if [ -n "$scope_note" ]; then
+      omitted=$((omitted + $(_phase_units "$skills" "$agents")))
+    else
+      selected=$((selected + $(_csv_count "${WF_SELECTED:-}")))
+      omitted=$((omitted + $(_csv_count "${WF_OMITTED:-}")))
+    fi
+
     printf '%d. %s\n' "$i" "${label:-$id}"
     printf '   id: %s\n' "$id"
-    printf '   %s\n' "$exec"
+    if [ -n "$scope_note" ]; then
+      printf '   selected: none (%s)\n' "$scope_note"
+    elif [ -n "$WF_SELECTED" ]; then
+      printf '   selected: %s\n' "$(_csv_pretty "$WF_SELECTED")"
+    else
+      printf '   selected: none\n'
+    fi
+    [ -n "$WF_OMITTED" ] && [ -z "$scope_note" ] && printf '   omitted: %s\n' "$(_csv_pretty "$WF_OMITTED")"
     [ -n "$skills" ] && [ -n "$agents" ] && printf '   agents: %s\n' "$(_csv_pretty "$agents")"
     printf '   dependencies: %s\n' "$(_csv_pretty "$deps")"
     [ -n "$gate" ] && printf '   gate: %s\n' "$gate"
     printf '\n'
   done < <(_parse_phases "$wf")
 
-  printf 'Execution units: %s\n' "$total"
+  printf 'Declared units: %s\n' "$declared"
+  printf 'Selected units: %s\n' "$selected"
+  printf 'Omitted units: %s\n' "$omitted"
+  printf 'Execution units: %s\n' "$selected"
   printf 'LLM calls performed: 0\n'
 }
 
@@ -329,10 +351,23 @@ _run_csv_items() {
 }
 
 cmd_workflow() {
-  local name="" backend_flag="" plan=0
+  local name="" backend_flag="" plan=0 auto=0
+  WF_ONLY=""; WF_SKIP=""; export WF_FULL=0
   while [ $# -gt 0 ]; do
     case "$1" in
       --plan)  plan=1 ;;
+      --auto)  auto=1 ;;
+      --full)  WF_FULL=1; export WF_FULL ;;
+      --only)
+        shift
+        [ -n "${1:-}" ] || { err "usage: --only <id,id>"; return 2; }
+        WF_ONLY="$1"
+        ;;
+      --skip)
+        shift
+        [ -n "${1:-}" ] || { err "usage: --skip <id,id>"; return 2; }
+        WF_SKIP="$1"
+        ;;
       --cloud) backend_flag="--cloud" ;;
       --local) backend_flag="--local" ;;
       -*) err "unknown option: $1"; return 2 ;;
@@ -341,7 +376,7 @@ cmd_workflow() {
     shift
   done
   if [ -z "$name" ]; then
-    err "usage: rorcc workflow <workflow-name> [--plan|--local|--cloud]"
+    err "usage: rorcc workflow <workflow-name> [--plan|--auto|--full|--only ids|--skip ids|--local|--cloud]"
     return 2
   fi
 
@@ -358,8 +393,15 @@ cmd_workflow() {
     return 1
   fi
 
+  export RORCC_LEAN=1
+  if [ "$auto" -eq 1 ]; then
+    export RORCC_WORKFLOW_AUTO=1
+  else
+    unset RORCC_WORKFLOW_AUTO
+  fi
+
   if [ "$plan" -eq 1 ]; then
-    _print_workflow_plan "$name" "$wf"
+    _print_workflow_plan "$name" "$wf" "$root"
     return 0
   fi
 
@@ -377,8 +419,12 @@ cmd_workflow() {
       "${label:-$id}" "$C_DIM" "${skills:-${agents:-?}}" "$units" "$C_RESET"
   done < <(_parse_phases "$wf")
   printf '\n'
-  info "Running $n phases. Skills run in order; agents run only when a phase has no skills."
-  info "At each phase: [Enter] run · s skip · q quit."
+  info "Running $n phases. Router selects skills; agents run only when a phase has no skills."
+  if [ "$auto" -eq 1 ]; then
+    info "--auto: one-shot per unit; gates still need confirmation."
+  else
+    info "At each phase: [Enter] run · s skip · q quit."
+  fi
   printf '\n'
 
   local run_id run_dir state_file metrics_file summary_file
@@ -403,16 +449,32 @@ cmd_workflow() {
     [ -z "$id" ] && continue
     i=$((i + 1))
     units="$(_phase_units "$skills" "$agents")"
+    _route_phase "$root" "$skills" "$agents"
     printf '%b\n' "${C_BOLD}── Phase $i/$n: ${label:-$id} ──${C_RESET}"
     [ -n "$agents" ] && printf '  agents: %s\n' "$(_csv_pretty "$agents")"
     if [ -n "$skills" ]; then
-      printf '  skills: %s\n' "$(_csv_pretty "$skills")"
-    else
-      printf '  skills: none (will run agent session)\n'
+      printf '  declared: %s\n' "$(_csv_pretty "$skills")"
     fi
+    printf '  selected: %s\n' "$(_csv_pretty "${WF_SELECTED:-}")"
+    [ -n "$WF_OMITTED" ] && printf '  omitted: %s\n' "$(_csv_pretty "$WF_OMITTED")"
     [ -n "$deps" ]  && printf '  depends_on: %s\n' "$(_csv_pretty "$deps")"
     [ -n "$notes" ] && printf '  notes: %s\n' "$notes"
     [ -n "$gate" ]  && printf '  %bgate:%b  %s\n' "$C_YELLOW" "$C_RESET" "$gate"
+
+    if [ -n "${WF_ONLY:-}" ] && ! _csv_has "$WF_ONLY" "$id"; then
+      info "skipped $id (not in --only)"
+      _state_set "$state_file" "$id" "skipped"
+      printf '%s\t%s\t%s\t%s\n' "$id" "0" "0" "skipped" >> "$metrics_file"
+      printf '\n'
+      continue
+    fi
+    if [ -n "${WF_SKIP:-}" ] && _csv_has "$WF_SKIP" "$id"; then
+      info "skipped $id (--skip)"
+      _state_set "$state_file" "$id" "skipped"
+      printf '%s\t%s\t%s\t%s\n' "$id" "0" "0" "skipped" >> "$metrics_file"
+      printf '\n'
+      continue
+    fi
 
     if [ "$(_dep_outcome "$deps" "$state_file")" = "blocked" ]; then
       warn "phase '$id' blocked — dependencies are not all passed"
@@ -423,23 +485,25 @@ cmd_workflow() {
       continue
     fi
 
-    printf '%b' "  [Enter] run · s skip · q quit: "
-    IFS= read -r choice || break
-    case "$choice" in
-      q|Q)
-        info "workflow stopped"
-        now="$(date +%s)"
-        _write_summary "$summary_file" "$name" "$run_id" "$state_file" "$total_units" "$((now - run_start))"
-        return 0
-        ;;
-      s|S)
-        info "skipped $label"
-        _state_set "$state_file" "$id" "skipped"
-        printf '%s\t%s\t%s\t%s\n' "$id" "0" "$units" "skipped" >> "$metrics_file"
-        printf '\n'
-        continue
-        ;;
-    esac
+    if [ "$auto" -eq 0 ]; then
+      printf '%b' "  [Enter] run · s skip · q quit: "
+      IFS= read -r choice || break
+      case "$choice" in
+        q|Q)
+          info "workflow stopped"
+          now="$(date +%s)"
+          _write_summary "$summary_file" "$name" "$run_id" "$state_file" "$total_units" "$((now - run_start))"
+          return 0
+          ;;
+        s|S)
+          info "skipped $label"
+          _state_set "$state_file" "$id" "skipped"
+          printf '%s\t%s\t%s\t%s\n' "$id" "0" "$units" "skipped" >> "$metrics_file"
+          printf '\n'
+          continue
+          ;;
+      esac
+    fi
 
     _state_set "$state_file" "$id" "running"
     export RORCC_SKILL_PREAMBLE="You are working through the '$name' workflow, phase '${label:-$id}'.${gate:+ Gate to satisfy before completing: $gate.} Apply the workflow design principles (Rails conventions, minimalism, security, tests)."
@@ -447,14 +511,15 @@ cmd_workflow() {
     now="$(date +%s)"
     rc=0
     units_run=0
-    if [ -n "$skills" ]; then
-      _run_csv_items skill "$skills" "$backend_flag" || rc=1
-      units_run="$units"
-    elif [ -n "$agents" ]; then
-      _run_csv_items agent "$agents" "$backend_flag" || rc=1
-      units_run="$units"
+    if [ -z "${WF_SELECTED:-}" ]; then
+      info "phase '$id' has no applicable units — passing"
+      units_run=0
+    elif [ -n "$skills" ]; then
+      _run_csv_items skill "$WF_SELECTED" "$backend_flag" || rc=1
+      units_run="$(_csv_count "$WF_SELECTED")"
     else
-      warn "phase '$id' has no agent or skill — nothing to run"
+      _run_csv_items agent "$WF_SELECTED" "$backend_flag" || rc=1
+      units_run="$(_csv_count "$WF_SELECTED")"
     fi
     unset RORCC_SKILL_PREAMBLE
     elapsed=$(( $(date +%s) - now ))

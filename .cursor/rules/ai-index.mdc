@@ -32,6 +32,7 @@ otros sitios — apunta a él.
 - Auth/Admin → `devise-auth.md` · `activeadmin.md`
 - Infra/Deploy → `aws-infrastructure.md` · `kamal-docker.md`
 - Legacy → `legacy-rails.md`
+- CLI / workflows → `orchestration.md`
 
 > Estos también se auto-activan por glob desde sus reglas `.mdc` específicas
 > cuando abres archivos del dominio. El router garantiza que se consideren

@@ -44,9 +44,11 @@ cmd_agent() {
   fi
 
   . "$RORCC_LIB_DIR/chat.sh"
+  local once=""
+  [ "${RORCC_WORKFLOW_AUTO:-}" = "1" ] && once="1"
   CHAT_BACKEND="$backend" CHAT_NAME="$name" CHAT_LABEL="$label" \
     CHAT_MODEL="rorcc-$name" CHAT_SYSFILE="$sysfile" CHAT_SEED="" \
-    chat_session
+    CHAT_ONCE="$once" chat_session
 
   [ -n "$sysfile" ] && rm -f "$sysfile"
 }

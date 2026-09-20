@@ -16,6 +16,7 @@ domain standard for the area you touch:
 - API → `api-design` · Data → `postgresql` / `mysql` · Async → `sidekiq-activejob`
 - Auth/Admin → `devise-auth` / `activeadmin` · Infra → `aws-infrastructure` / `kamal-docker`
 - Legacy → `legacy-rails`
+- CLI / workflows → `orchestration`
 
 Full navigable index: `.ai/README.md`. Cursor loads this automatically via
 `.cursor/rules/ai-index.mdc`; other tools load this file (`AGENTS.md`).

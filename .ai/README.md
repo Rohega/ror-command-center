@@ -67,3 +67,4 @@ back to `.ai/agents/<id>.yaml`. Do not duplicate role content in adapters.
 - Testable Code
 - Senior Engineer Standards
 - Minimalism — lazy senior engineer ([standards/minimalism.md](standards/minimalism.md)): YAGNI, stdlib/Rails-native first, deletion over addition, never cutting safety. Skills: `ponytail-review`, `ponytail-audit`, `ponytail-debt`.
+- Orchestration — deterministic workflow router ([standards/orchestration.md](standards/orchestration.md)): select skills by project paths, never spend tokens to decide the next phase.

@@ -64,8 +64,13 @@ cmd_skill() {
     cloud_check || { rm -f "$seed"; return 1; }
     . "$RORCC_LIB_DIR/assemble.sh"
     sysfile="$(mktemp)"
-    [ -n "$agent_slug" ] && [ -f "$root/.ai/agents/$agent_slug.yaml" ] \
-      && assemble_system "$root" "$agent_slug" > "$sysfile" 2>/dev/null
+    [ -n "$agent_slug" ] && [ -f "$root/.ai/agents/$agent_slug.yaml" ] && {
+      if [ "${RORCC_LEAN:-}" = "1" ]; then
+        assemble_lean "$root" "$agent_slug" > "$sysfile"
+      else
+        assemble_system "$root" "$agent_slug" > "$sysfile" 2>/dev/null
+      fi
+    }
     cat "$seed" >> "$sysfile"
     apply_context_budget "$sysfile"
     label="cloud:$CLOUD_PROVIDER/$CLOUD_MODEL · skill:$name"
@@ -87,9 +92,11 @@ cmd_skill() {
   fi
 
   . "$RORCC_LIB_DIR/chat.sh"
+  local once=""
+  [ "${RORCC_WORKFLOW_AUTO:-}" = "1" ] && once="1"
   CHAT_BACKEND="$backend" CHAT_NAME="$name" CHAT_LABEL="$label" \
     CHAT_MODEL="${model:-}" CHAT_SYSFILE="$sysfile" CHAT_SEED="$(cat "$seed")" \
-    chat_session
+    CHAT_ONCE="$once" chat_session
 
   rm -f "$seed"
   [ -n "$sysfile" ] && rm -f "$sysfile"
