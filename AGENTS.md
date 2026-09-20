@@ -24,26 +24,28 @@ Full navigable index: `.ai/README.md`. Cursor loads this automatically via
 ## Always apply
 
 - **Standards** in `.ai/standards/` govern every change. Minimalism (`.ai/standards/minimalism.md`) and the project structure are non-negotiable defaults.
-- **Engineering gates / Definition of Done** (`.cursor/rules/workflow-gates.mdc`): no feature is complete without RSpec tests, review, QA sign-off, and documentation.
+- **Engineering gates / Definition of Done** (`.ai/standards/orchestration.md`):
+  strong and **proportional**. Artifacts are earned by complexity, risk, or
+  uncertainty — do not invent a spec, ADR, or module doc for a trivial change.
 - **Collaboration protocol** (`.ai/standards/collaboration.md`): Question → Options → Decision → Draft → Approval. Ask before writing files; no commits without explicit instruction.
 - **Git workflow** (`.ai/standards/git-workflow.md`): work on `feature/<ticket>-<slug>` branches, Conventional Commits, never commit directly to `main`.
 
-## Definition of Done (MUST)
+## Definition of Done (proportional)
 
-For any implementation work you **MUST**:
+Canonical table: `.ai/standards/orchestration.md` (Proportional Definition of Done).
+Classify the request once (S/M/L/XL + signals), then run only the earned phases
+in `.ai/workflows/new-feature.yaml` (`applies_when` + path router).
 
-- Produce a plan that explicitly lists **tests, review, QA, and documentation** as
-  separate steps — never fold them into "implementation" or defer them.
-- Write **RSpec** tests covering the critical paths before considering work done.
-- Run **review** (`ponytail-review`, `review-rails-models`/`review-db-migrations`)
-  and **QA** (`qa-plan`) with no BLOCKING findings.
-- Add **documentation** (`document-module`) for new or changed modules.
+**Never omit** regardless of size: security when it applies; validation at trust
+boundaries; protection against data loss; tests for non-trivial logic; migration
+review when migrations exist.
+
+**Do omit** for size S with no risk signals: Feature Spec, User Stories, ADR,
+Technical Design, module documentation, and full QA.
 
 When creating a Rails app **from scratch**, the first step is the test stack:
 follow `.ai/standards/project-bootstrap.md` (RSpec + FactoryBot + SimpleCov +
-generators) **before** writing application code. Do not skip these because no
-`spec/`/`app/` files exist yet — the gates in `.cursor/rules/workflow-gates.mdc`
-apply regardless.
+generators) **before** writing application code.
 
 ## Use the specialists (subagents)
 
@@ -67,8 +69,8 @@ Fallback (Ask mode / no Task): act as the role in `.ai/agents/<id>.yaml` with `@
 ## Follow the workflows
 
 For multi-step work, you **MUST** follow the matching process in `.ai/workflows/`.
-Do not invent an ad-hoc plan that skips its phases (testing, QA, documentation,
-deployment). Available workflows:
+Honor `applies_when` after one classification — do not skip earned safety phases,
+and do not invent omitted ones. Available workflows:
 
 - New feature → `.ai/workflows/new-feature.yaml`
 - AWS deployment → `.ai/workflows/aws-deployment.yaml`

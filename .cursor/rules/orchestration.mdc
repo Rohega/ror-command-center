@@ -8,7 +8,8 @@ globs: lib/rorcc/workflow.sh,lib/rorcc/router.sh,.ai/workflows/**
 Follow the canonical standard: **`.ai/standards/orchestration.md`**
 
 - Execution unit is `phase → selected skills`
-- Router is deterministic (skill `paths:`, `--only` / `--skip` / `--full`)
+- Optional one-shot heuristic classify (`--request` / `--size` / `--signals`) then `applies_when`
+- Path router stays deterministic (skill `paths:`, `--only` / `--skip` / `--full`)
 - Never call a model to decide the next phase
 - `--auto` is one-shot per unit; gates still need a human
 - Workflow cloud context is lean (purpose + skill + templates)

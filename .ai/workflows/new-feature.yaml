@@ -1,6 +1,9 @@
 name: new-feature
 description: End-to-end workflow from idea through deployment for new Ruby on Rails features.
 # agent / agents values are specialist ids (= .ai/agents/<id>.yaml = Cursor subagent name).
+# applies_when: size list and/or signals, OR-clauses split by /. Empty = always.
+# Without --request/--size/--signals the classifier is off and every phase applies
+# (path router only). --full and --only ignore applies_when.
 
 phases:
   - id: idea
@@ -9,6 +12,7 @@ phases:
     skill: create-feature-spec
     output: docs/specs/feature-*.md
     gate: Product Owner approval
+    applies_when: L,XL
 
   - id: specification
     label: Specification
@@ -16,6 +20,7 @@ phases:
     skill: create-user-stories
     output: docs/stories/*.md
     depends_on: [idea]
+    applies_when: L,XL
 
   - id: architecture
     label: Architecture
@@ -24,6 +29,7 @@ phases:
     output: docs/architecture/adr-*.md
     depends_on: [specification]
     gate: ADR Accepted for significant decisions
+    applies_when: XL/architecture_changed
 
   - id: implementation-plan
     label: Implementation Plan
@@ -31,7 +37,8 @@ phases:
     skill: create-architecture-plan
     output: docs/architecture/impl-plan-*.md
     depends_on: [architecture]
-    notes: Include migration strategy and rollback plan.
+    applies_when: XL/architecture_changed,infrastructure_changed
+    notes: Include migration strategy and rollback plan when this phase applies.
 
   - id: development
     label: Development
@@ -42,6 +49,7 @@ phases:
       Apply .ai/standards/minimalism.md while building — stdlib/Rails-native before new gems,
       deletion over addition. On Cursor, backend-rails-developer and frontend-react-inertia-developer
       may run in parallel as subagents (Task) when workstreams are independent.
+      Size M may capture light acceptance criteria here instead of a stories phase.
 
   - id: testing
     label: Testing
@@ -49,6 +57,7 @@ phases:
     skills: [qa-plan, review-rails-models, security-audit, ponytail-review]
     depends_on: [development]
     gate: QA sign-off, no BLOCKING findings, and no unaddressed over-engineering (ponytail-review)
+    applies_when: M,L,XL/auth_changed,database_changed,api_changed
 
   - id: documentation
     label: Documentation
@@ -56,12 +65,17 @@ phases:
     skill: document-module
     output: docs/modules/*.md
     depends_on: [testing]
+    applies_when: L,XL/user_behavior_changed,setup_changed,api_changed
+    notes: >-
+      User-facing behavior or setup → document-user-guide / README.
+      Module or API surface → document-module. Do not invent both.
 
   - id: deployment
     label: Deployment
     agent: aws-devops-engineer
     skills: [release-checklist, capistrano-review]
     depends_on: [documentation]
+    applies_when: XL/infrastructure_changed
     notes: Assume production deployment on AWS. Include monitoring and rollback considerations.
 
 design_principles:
@@ -70,6 +84,6 @@ design_principles:
   - Avoid unnecessary abstractions.
   - Prefer Service Objects over fat controllers.
   - Prefer ActiveJob for async work.
-  - Always generate migration strategies and rollback plans.
-  - Always include security, monitoring, and deployment considerations.
+  - Artifacts are earned by complexity, risk, or uncertainty — do not emit a spec, ADR, or module doc because the template exists.
+  - Generate migration/rollback plans when the schema or architecture changes.
   - Never simplify away validation, error handling, security, accessibility, or required tests.

@@ -29,8 +29,8 @@ pair them: pick the *role*, then point it at the *skill* and the relevant
 | **Local CLI** | `rorcc agent <name>` · `rorcc skill <skill>` · `rorcc workflow <name> --plan` then `--auto` or interactive. Flags: [run-workflows.md](run-workflows.md). |
 
 Every agent embeds the **collaboration protocol** (Question → Options → Decision
-→ Draft → Approval) and the **Definition of Done** gates (tests, review, QA,
-docs). They will ask before writing files.
+→ Draft → Approval) and the **proportional Definition of Done**
+(`.ai/standards/orchestration.md`). They will ask before writing files.
 
 ---
 

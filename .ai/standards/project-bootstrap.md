@@ -77,4 +77,4 @@ any failure. See `.ai/standards/testing.md` for coverage expectations and
 
 - Testing principles: `.ai/standards/testing.md`
 - Rails conventions: `.ai/standards/development.md`
-- Workflow & gates: `.ai/workflows/new-feature.yaml`, `.cursor/rules/workflow-gates.mdc`
+- Workflow & gates: `.ai/workflows/new-feature.yaml`, `.ai/standards/orchestration.md`

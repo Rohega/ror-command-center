@@ -20,15 +20,17 @@ This directory is the **single source of truth** for all Ruby on Rails AI engine
 3. Load collaboration rules: [standards/collaboration.md](standards/collaboration.md)
 4. Invoke the first skill: [skills/create-feature-spec/SKILL.md](skills/create-feature-spec/SKILL.md)
 
-## Non-negotiable gates (Definition of Done)
+## Definition of Done (proportional)
 
-Every task — even greenfield — must satisfy these before it is "done". The Cursor
-adapter enforces them via the always-applied rule `.cursor/rules/workflow-gates.mdc`.
+Canonical: [standards/orchestration.md](standards/orchestration.md).
+**Artifacts are earned by complexity, risk, or uncertainty.**
 
-- **Tests (RSpec)** cover the critical paths — [standards/testing.md](standards/testing.md)
-- **Review** — `ponytail-review`, `review-rails-models`, `review-db-migrations`
-- **QA sign-off** — skill `qa-plan`, no BLOCKING findings
-- **Documentation** — skill `document-module`
+Never skip security, trust-boundary validation, data-loss protection, tests for
+non-trivial logic, or migration review when migrations exist. Do skip Feature
+Spec / Stories / ADR / module docs / full QA on size-S local changes.
+
+The Cursor adapter (`.cursor/rules/workflow-gates.mdc`) points here — it must
+not re-impose a uniform 8-phase checklist.
 
 **New apps bootstrap the test stack first** (RSpec + FactoryBot + SimpleCov +
 generators): [standards/project-bootstrap.md](standards/project-bootstrap.md).
@@ -69,4 +71,4 @@ back to `.ai/agents/<id>.yaml`. Do not duplicate role content in adapters.
 - Testable Code
 - Senior Engineer Standards
 - Minimalism — lazy senior engineer ([standards/minimalism.md](standards/minimalism.md)): YAGNI, stdlib/Rails-native first, deletion over addition, never cutting safety. Skills: `ponytail-review`, `ponytail-audit`, `ponytail-debt`.
-- Orchestration — deterministic workflow router ([standards/orchestration.md](standards/orchestration.md)): select skills by project paths, never spend tokens to decide the next phase.
+- Orchestration — deterministic workflow router ([standards/orchestration.md](standards/orchestration.md)): classify impact once (optional), then select skills by `applies_when` + project paths. Never spend tokens to decide the next phase.

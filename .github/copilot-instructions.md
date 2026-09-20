@@ -21,4 +21,4 @@ Agents: `.ai/agents/` · Skills: `.ai/skills/` · Workflows: `.ai/workflows/` ·
 Templates: `.ai/templates/`. Full index: `.ai/README.md`.
 
 For reviews, align with `.ai/standards/code-review.md` severity levels.
-Definition of Done: RSpec tests + review + QA + docs.
+Definition of Done is proportional (`.ai/standards/orchestration.md`): earn artifacts by complexity/risk; never skip safety.

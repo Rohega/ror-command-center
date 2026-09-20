@@ -315,17 +315,19 @@ Guía completa (flags, gates, paralelo vs secuencial, los otros 3 workflows):
 
 ## 5. El pipeline de una feature (Definition of Done)
 
-Toda feature sigue: **Idea → Spec → Arquitectura → Plan → Desarrollo → Tests →
-Documentación → Deploy**. No se considera terminada hasta cumplir el DoD:
+`new-feature` declara Idea → Spec → Arquitectura → Plan → Desarrollo → Tests →
+Documentación → Deploy, pero **solo se ejecutan las fases ganadas** por tamaño
+(S/M/L/XL) y señales de riesgo. Un cambio de texto no genera spec, ADR ni
+manual. Un cambio de autenticación, por pequeño que sea, no se trata como
+trivial inseguro.
 
-- [ ] Tests RSpec de los caminos críticos.
-- [ ] Sin specs pendientes/saltados sin ticket.
-- [ ] `ponytail-review` sin sobre-ingeniería sin resolver.
-- [ ] `qa-plan` sin hallazgos BLOQUEANTES.
-- [ ] Documentación del módulo en `docs/`.
-- [ ] Trabajo en rama `feature/<ticket>-<slug>` (nunca en `main`).
+Canónico: `.ai/standards/orchestration.md`. Nunca se omiten seguridad,
+validación en límites, tests de lógica no trivial, ni review de migraciones
+cuando hay migraciones. El trabajo va en `feature/<ticket>-<slug>` (nunca `main`).
 
-Detalle: `.cursor/rules/workflow-gates.mdc` y `.ai/workflows/new-feature.yaml`.
+```
+rorcc workflow new-feature --plan --request "Cambiar el texto Login por Entrar"
+```
 
 ---
 

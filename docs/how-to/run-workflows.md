@@ -192,6 +192,11 @@ the workstreams do not share files. The CLI stays sequential on purpose:
 two parallel chats re-read the same context (more tokens) and can invent two
 different APIs. Do not ask the CLI for parallel workers.
 
+`--request` / `--size` / `--signals` classify once (heuristic, 0 LLM), then
+honor `applies_when` on each phase. Omitted phases **pass** (vacuous) so
+dependents are not blocked. Without these flags, behavior is unchanged
+(path router only). `--full` and `--only` ignore `applies_when`.
+
 Run state (after a real run, not `--plan`) is under `.rorcc/runs/<run-id>/`
 (`state.tsv`, `metrics.tsv`, `summary.tsv`) — gitignored.
 
@@ -206,6 +211,9 @@ Run state (after a real run, not `--plan`) is under `.rorcc/runs/<run-id>/`
 | `--only id,id` | Run only those phase ids | You already finished earlier phases |
 | `--skip id` | Skip those phases; dependents become `blocked` | You explicitly do not want a later phase |
 | `--full` | Select every declared skill, even if paths are missing | Greenfield / you know the files will appear |
+| `--request "…"` | Classify once, then honor `applies_when` | Adaptive `new-feature` (S/M/L/XL) |
+| `--size S\|M\|L\|XL` | Override size (implies classification) | Heuristic is wrong |
+| `--signals a,b` | Override risk signals (implies classification) | e.g. `--size S --signals auth_changed` |
 | `--local` / `--cloud` | Backend (default is `RORCC_BACKEND` or local) | Local everyday; cloud for hard architecture |
 
 Phase **ids** (copy these into `--only` / `--skip`, never the labels):
@@ -245,10 +253,11 @@ Phase **ids** (copy these into `--only` / `--skip`, never the labels):
 
 \* Omitted by the router when `app/models/**` or `config/deploy.rb` (etc.) do
 not exist. In this kit’s own tree, `--plan` typically reports **14 declared /
-12 selected**.
+12 selected**. With `--request`, `applies_when` can omit more (S copy → 3).
 
-**Verification (done):** DoD in `.cursor/rules/workflow-gates.mdc` — RSpec
-critical paths, review, QA, docs, branch `feature/<ticket>-<slug>`.
+**Verification (done):** proportional DoD in `.ai/standards/orchestration.md` —
+earn spec/ADR/docs/QA by size and signals; never skip safety. Branch
+`feature/<ticket>-<slug>`.
 
 **Cursor prompt:**
 
@@ -377,12 +386,13 @@ rorcc workflow new-feature --only development,testing
 - Si hay `skills:`, el CLI **no** abre chats extra de `agents:` (evita pagar dos veces).
 - Reviews sin archivos (`capistrano-review` sin `config/deploy.rb`) se **omiten**.
 - `depends_on` se cumple: una fase skipped/failed **bloquea** a las siguientes.
+- `--request` / `--size` / `--signals` clasifican una vez y aplican `applies_when`.
 - Paralelo backend+frontend: solo en **Cursor Task** cuando el contrato ya está
   cerrado. El CLI es secuencial a propósito (menos tokens, menos APIs inventadas).
 
 **Flags:** `--plan` (0 tokens) · `--auto` (un turno por skill; los gates piden `y`) ·
 `--only id,id` (trata el resto como ya hecho) · `--skip id` (bloquea dependientes) ·
-`--full` (no omitir reviews).
+`--full` (no omitir reviews) · `--request` / `--size` / `--signals` (clasificación).
 
 **IDs de `new-feature`:** `idea`, `specification`, `architecture`,
 `implementation-plan`, `development`, `testing`, `documentation`, `deployment`.

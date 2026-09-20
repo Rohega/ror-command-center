@@ -150,3 +150,95 @@ _csv_has() {
   done < <(_each_csv "$csv")
   return 1
 }
+
+_all_tokens_are_sizes() {
+  local csv="$1" item
+  [ -z "$csv" ] && return 1
+  while IFS= read -r item; do
+    case "$item" in
+      S|M|L|XL) ;;
+      *) return 1 ;;
+    esac
+  done < <(_each_csv "$csv")
+  return 0
+}
+
+_signal_on() {
+  case "$1" in
+    user_behavior_changed) [ "${WF_SIG_user_behavior_changed:-0}" = "1" ] ;;
+    database_changed) [ "${WF_SIG_database_changed:-0}" = "1" ] ;;
+    api_changed) [ "${WF_SIG_api_changed:-0}" = "1" ] ;;
+    auth_changed) [ "${WF_SIG_auth_changed:-0}" = "1" ] ;;
+    architecture_changed) [ "${WF_SIG_architecture_changed:-0}" = "1" ] ;;
+    setup_changed) [ "${WF_SIG_setup_changed:-0}" = "1" ] ;;
+    infrastructure_changed) [ "${WF_SIG_infrastructure_changed:-0}" = "1" ] ;;
+    *) return 1 ;;
+  esac
+}
+
+_any_signal() {
+  local csv="$1" item
+  while IFS= read -r item; do
+    _signal_on "$item" && return 0
+  done < <(_each_csv "$csv")
+  return 1
+}
+
+_all_signals() {
+  local csv="$1" item
+  [ -z "$csv" ] && return 1
+  while IFS= read -r item; do
+    _signal_on "$item" || return 1
+  done < <(_each_csv "$csv")
+  return 0
+}
+
+# One clause: size:L,XL | any:foo,bar | all:foo | L,XL | architecture_changed
+_eval_when_clause() {
+  local clause="$1"
+  clause="${clause#"${clause%%[![:space:]]*}"}"
+  clause="${clause%"${clause##*[![:space:]]}"}"
+  [ -z "$clause" ] && return 1
+  case "$clause" in
+    size:*) _csv_has "${clause#size:}" "${WF_SIZE:-}" ;;
+    any:*) _any_signal "${clause#any:}" ;;
+    all:*) _all_signals "${clause#all:}" ;;
+    *)
+      if _all_tokens_are_sizes "$clause"; then
+        _csv_has "$clause" "${WF_SIZE:-}"
+      else
+        _any_signal "$clause"
+      fi
+      ;;
+  esac
+}
+
+# _applies_when <expr>
+# Empty / no classification / --full → true.
+# Clauses are OR (split on / ; YAML "|" is normalized to / by the parser).
+_applies_when() {
+  local expr="${1:-}" rest clause
+  [ "${WF_CLASSIFY:-0}" != "1" ] && return 0
+  [ "${WF_FULL:-0}" = "1" ] && return 0
+  [ -z "$expr" ] && return 0
+  rest="$expr"
+  while [ -n "$rest" ]; do
+    case "$rest" in
+      */*) clause="${rest%%/*}"; rest="${rest#*/}" ;;
+      *) clause="$rest"; rest="" ;;
+    esac
+    _eval_when_clause "$clause" && return 0
+  done
+  return 1
+}
+
+# Mark every declared unit omitted with $1. Used when applies_when fails —
+# including units the path router already dropped, so the reason stays consistent.
+_omit_units() {
+  local reason="$1" units="$2" item
+  WF_SELECTED=""
+  WF_OMITTED=""
+  while IFS= read -r item; do
+    WF_OMITTED="${WF_OMITTED:+$WF_OMITTED,}$item:$reason"
+  done < <(_each_csv "$units")
+}

@@ -45,7 +45,7 @@ The target directory is created if it does not exist. Existing files are **skipp
 cd /path/to/your-project
 ```
 
-- **Cursor:** rules in `.cursor/rules/` load automatically. `project-structure.mdc`, `minimalism.mdc`, and `workflow-gates.mdc` are always applied (the last keeps the Definition of Done — RSpec tests, review, QA, docs — in scope even before any code exists). `.cursor/hooks.json` adds hard gates (blocks direct push to `main`, flags staged secrets).
+- **Cursor:** rules in `.cursor/rules/` load automatically. `project-structure.mdc`, `minimalism.mdc`, and `workflow-gates.mdc` are always applied (the last points at the proportional DoD in `.ai/standards/orchestration.md`). `.cursor/hooks.json` adds hard gates (blocks direct push to `main`, flags staged secrets).
 - **Claude Code:** run `claude` — `CLAUDE.md` loads the standards and collaboration protocol. Codex / Copilot load `AGENTS.md`.
 - **Other platforms:** see [integrations/](integrations/) (Codex, ChatGPT, Copilot, Gemini).
 - **Daily use:** [User Manual](USER-MANUAL.md), [how to use agents](how-to/use-agents.md),

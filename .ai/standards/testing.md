@@ -18,6 +18,10 @@
 - Choose the concrete framework and helpers from the stack standard
   (e.g. Rails: RSpec + FactoryBot + Capybara)
 
+Trivial one-liners (copy, color) need no spec. Non-trivial logic still leaves
+one runnable check — see `.ai/standards/minimalism.md`. Size S + `auth_changed`
+is not a trivial-unsafe pass: test the auth path.
+
 ## Coverage Expectations
 
 | Layer | Minimum |

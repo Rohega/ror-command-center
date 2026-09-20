@@ -54,6 +54,9 @@ It leaves `jq`/`zstd`/`git` alone and keeps your own files in `--project` mode.
 | `rorcc workflow <name> --only a,b` | Run only those phase ids (prior phases are treated as already done) |
 | `rorcc workflow <name> --skip a` | Skip those phases; dependents follow `depends_on` |
 | `rorcc workflow <name> --full` | Disable the router; run every declared unit |
+| `rorcc workflow <name> --request "…"` | Classify once (heuristic, 0 LLM) then apply `applies_when` |
+| `rorcc workflow <name> --size S\|M\|L\|XL` | Override size (implies classification) |
+| `rorcc workflow <name> --signals a,b` | Override signals (implies classification) |
 | `rorcc proxy [--start]` | Show IDE (Cursor/Claude Code) config; `--start` runs a LiteLLM gateway |
 | `rorcc uninstall [opts]` | Remove what `setup.sh` installed (`--models`, `--ollama`, `--project <dir>`, `--dry-run`) |
 | `rorcc help` | Show usage |
@@ -78,6 +81,7 @@ Run a process end to end — **start with `--plan`** (no Ollama, no API keys):
 
 ```bash
 rorcc workflow new-feature --plan              # what will run; 0 LLM calls
+rorcc workflow new-feature --plan --request "Cambiar el texto Login por Entrar"
 rorcc workflow new-feature                     # Enter / s skip / q quit
 rorcc workflow new-feature --auto              # one-shot per selected skill; gates still ask
 rorcc workflow new-feature --only development,testing

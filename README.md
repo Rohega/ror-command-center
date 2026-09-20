@@ -89,7 +89,7 @@ Full runbook: [docs/runbooks/new-project-docker-bootstrap.md](docs/runbooks/new-
 
 Deep map: [`.ai/README.md`](.ai/README.md) · how to invoke specialists: [docs/how-to/use-agents.md](docs/how-to/use-agents.md).
 
-**Definition of Done:** RSpec, review, QA, docs — even on greenfield (`.cursor/rules/workflow-gates.mdc`).
+**Definition of Done:** proportional — earned by complexity/risk (`.ai/standards/orchestration.md`). Never skip safety.
 
 ---
 

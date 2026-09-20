@@ -47,6 +47,8 @@ assert_exit 2 "skill bad flag -> 2"        -- "$RORCC" skill create-feature-spec
 assert_exit 2 "workflow (no arg) -> 2"     -- "$RORCC" workflow
 assert_exit 1 "workflow bad name -> 1"     -- "$RORCC" workflow does-not-exist
 assert_exit 2 "workflow bad flag -> 2"     -- "$RORCC" workflow new-feature --bogus
+assert_exit 2 "workflow --size bad -> 2"    -- "$RORCC" workflow new-feature --plan --size Q
+assert_exit 2 "workflow --request empty -> 2" -- "$RORCC" workflow new-feature --plan --request
 
 printf '\nbuild-agent codegen (no Ollama needed):\n'
 TMP="$(mktemp -d)"; export HOME="$TMP"
@@ -207,6 +209,162 @@ AUTO_PLAN="$(cd "$ROOT" && env -u OPENAI_API_KEY -u ANTHROPIC_API_KEY \
   "$RORCC" workflow new-feature --plan --auto 2>&1)"
 [ $? -eq 0 ] && printf '%s\n' "$AUTO_PLAN" | grep -q 'LLM calls performed: 0' \
   && ok "--plan --auto still 0 LLM calls" || bad "--plan --auto invoked a model?"
+
+printf '\nadaptive classifier:\n'
+classify_eval() {
+  RORCC_LIB_DIR="$ROOT/lib/rorcc" bash -c '
+    . "$1/lib/rorcc/common.sh"
+    . "$1/lib/rorcc/workflow.sh"
+    _classify_request "$2"
+    _classify_format
+  ' _ "$ROOT" "$1"
+}
+
+S_CLASS="$(classify_eval "Cambiar el texto Login por Entrar")"
+printf '%s\n' "$S_CLASS" | grep -q '^size: S$' \
+  && ok "S: size S for Login→Entrar copy" || bad "S size: $S_CLASS"
+printf '%s\n' "$S_CLASS" | grep -q 'auth_changed: false' \
+  && ok "S: login label is not auth_changed" || bad "S auth: $S_CLASS"
+printf '%s\n' "$S_CLASS" | grep -q 'user_behavior_changed: false' \
+  && ok "S: copy-only is not user_behavior" || bad "S behavior: $S_CLASS"
+
+M_CLASS="$(classify_eval "Agregar filtro por fecha a facturas")"
+printf '%s\n' "$M_CLASS" | grep -q '^size: M$' \
+  && ok "M: size M for date filter" || bad "M size: $M_CLASS"
+printf '%s\n' "$M_CLASS" | grep -q 'user_behavior_changed: true' \
+  && ok "M: filter sets user_behavior_changed" || bad "M behavior: $M_CLASS"
+printf '%s\n' "$M_CLASS" | grep -q 'architecture_changed: false' \
+  && ok "M: no architecture_changed" || bad "M arch: $M_CLASS"
+
+L_CLASS="$(classify_eval "Agregar módulo de vacaciones con solicitudes y aprobación de RH")"
+printf '%s\n' "$L_CLASS" | grep -q '^size: L$' \
+  && ok "L: size L for vacation module" || bad "L size: $L_CLASS"
+printf '%s\n' "$L_CLASS" | grep -q 'user_behavior_changed: true' \
+  && ok "L: module sets user_behavior_changed" || bad "L behavior: $L_CLASS"
+
+XL_CLASS="$(classify_eval "Migrar Sidekiq a Solid Queue")"
+printf '%s\n' "$XL_CLASS" | grep -q '^size: XL$' \
+  && ok "XL: size XL for Sidekiq→Solid Queue" || bad "XL size: $XL_CLASS"
+printf '%s\n' "$XL_CLASS" | grep -q 'architecture_changed: true' \
+  && ok "XL: architecture_changed" || bad "XL arch: $XL_CLASS"
+
+plan_request() {
+  (cd "$ROOT" && env -u OPENAI_API_KEY -u ANTHROPIC_API_KEY -u OLLAMA_HOST \
+    "$RORCC" workflow new-feature --plan --request "$1" 2>&1)
+}
+
+plan_metrics() {
+  awk '
+    /^Declared units:/{d=$3}
+    /^Selected units:/{s=$3}
+    /^Omitted units:/{o=$3}
+    /^LLM calls performed:/{l=$4}
+    END{printf "%s %s %s %s\n", d,s,o,l}
+  ' <<< "$1"
+}
+
+printf '\nadaptive --plan (new-feature):\n'
+BASE_PLAN="$(cd "$ROOT" && env -u OPENAI_API_KEY -u ANTHROPIC_API_KEY -u OLLAMA_HOST \
+  "$RORCC" workflow new-feature --plan 2>&1)"
+BASE_M="$(plan_metrics "$BASE_PLAN")"
+if printf '%s\n' "$BASE_PLAN" | grep -q 'Classification:'; then
+  bad "baseline leaked classification"
+else
+  ok "--plan without --request prints no classification"
+fi
+
+S_PLAN="$(plan_request "Cambiar el texto Login por Entrar")"
+S_M="$(plan_metrics "$S_PLAN")"
+printf '%s\n' "$S_PLAN" | grep -q 'size: S' && ok "S plan prints size S" || bad "S plan class"
+if printf '%s\n' "$S_PLAN" | grep -q 'create-feature-spec:applies_when' \
+  && printf '%s\n' "$S_PLAN" | grep -q 'create-user-stories:applies_when' \
+  && printf '%s\n' "$S_PLAN" | grep -q 'create-architecture-plan:applies_when' \
+  && printf '%s\n' "$S_PLAN" | grep -q 'document-module:applies_when'; then
+  ok "S omits spec, stories, ADR, module docs"
+else
+  bad "S still selected a planning/doc unit"
+fi
+printf '%s\n' "$S_PLAN" | grep -q 'create-api-endpoints' \
+  && ok "S keeps development" || bad "S dropped development"
+if printf '%s\n' "$S_PLAN" | grep -q 'release-checklist:applies_when' \
+  && printf '%s\n' "$S_PLAN" | grep -q 'capistrano-review:applies_when'; then
+  ok "S retags every deployment unit as applies_when"
+else
+  bad "S deployment omit reasons mixed or incomplete"
+fi
+printf '%s\n' "$S_PLAN" | grep -q 'LLM calls performed: 0' \
+  && ok "S --plan is 0 LLM" || bad "S plan called a model?"
+
+M_PLAN="$(plan_request "Agregar filtro por fecha a facturas")"
+if printf '%s\n' "$M_PLAN" | grep -q 'size: M' \
+  && printf '%s\n' "$M_PLAN" | grep -q 'create-api-endpoints' \
+  && printf '%s\n' "$M_PLAN" | grep -q 'qa-plan' \
+  && printf '%s\n' "$M_PLAN" | grep -q 'ponytail-review' \
+  && printf '%s\n' "$M_PLAN" | grep -q 'create-feature-spec:applies_when' \
+  && printf '%s\n' "$M_PLAN" | grep -q 'create-architecture-plan:applies_when'; then
+  ok "M: develop+test+review, no spec/ADR"
+else
+  bad "M plan mismatch"
+fi
+
+L_PLAN="$(plan_request "Agregar módulo de vacaciones con solicitudes y aprobación de RH")"
+if printf '%s\n' "$L_PLAN" | grep -q 'size: L' \
+  && printf '%s\n' "$L_PLAN" | grep -q 'selected: create-feature-spec' \
+  && printf '%s\n' "$L_PLAN" | grep -q 'selected: create-user-stories' \
+  && printf '%s\n' "$L_PLAN" | grep -q 'qa-plan' \
+  && printf '%s\n' "$L_PLAN" | grep -q 'document-module'; then
+  ok "L: spec + stories + develop + QA + docs"
+else
+  bad "L plan mismatch"
+fi
+
+XL_PLAN="$(plan_request "Migrar Sidekiq a Solid Queue")"
+if printf '%s\n' "$XL_PLAN" | grep -q 'size: XL' \
+  && printf '%s\n' "$XL_PLAN" | grep -q 'selected: create-architecture-plan' \
+  && printf '%s\n' "$XL_PLAN" | grep -q 'selected: create-feature-spec' \
+  && printf '%s\n' "$XL_PLAN" | grep -q 'release-checklist'; then
+  ok "XL: architecture + rollout + full pipeline"
+else
+  bad "XL plan mismatch"
+fi
+
+AUTH_PLAN="$(cd "$ROOT" && "$RORCC" workflow new-feature --plan --size S --signals auth_changed 2>&1)"
+if printf '%s\n' "$AUTH_PLAN" | grep -q 'size: S' \
+  && printf '%s\n' "$AUTH_PLAN" | grep -q 'auth_changed: true' \
+  && printf '%s\n' "$AUTH_PLAN" | grep -q 'security-audit' \
+  && printf '%s\n' "$AUTH_PLAN" | grep -q 'create-feature-spec:applies_when'; then
+  ok "S+auth_changed keeps security-audit, omits spec"
+else
+  bad "S+auth plan mismatch"
+fi
+
+FULL_REQ="$(cd "$ROOT" && "$RORCC" workflow new-feature --plan --full --request "Cambiar el texto Login por Entrar" 2>&1)"
+printf '%s\n' "$FULL_REQ" | grep -q 'Selected units: 14' \
+  && ok "--full ignores applies_when (14 selected)" || bad "--full + --request should select 14"
+
+ONLY_REQ="$(cd "$ROOT" && "$RORCC" workflow new-feature --plan --only idea --request "Cambiar el texto Login por Entrar" 2>&1)"
+ONLY_REQ_SEL="$(printf '%s\n' "$ONLY_REQ" | awk '/^Selected units:/{print $3}')"
+[ "$ONLY_REQ_SEL" = "1" ] && ok "--only idea ignores applies_when" || bad "--only + --request selected=$ONLY_REQ_SEL"
+
+printf '\nadaptive metrics (declared / selected / omitted / LLM):\n'
+printf '  %-22s %s\n' "baseline (no class)" "$BASE_M"
+printf '  %-22s %s\n' "S copy" "$S_M"
+printf '  %-22s %s\n' "M date filter" "$(plan_metrics "$M_PLAN")"
+printf '  %-22s %s\n' "L vacation module" "$(plan_metrics "$L_PLAN")"
+printf '  %-22s %s\n' "XL Solid Queue" "$(plan_metrics "$XL_PLAN")"
+printf '  %-22s %s\n' "S+auth" "$(plan_metrics "$AUTH_PLAN")"
+
+S_SEL="$(printf '%s' "$S_M" | awk '{print $2}')"
+M_SEL="$(plan_metrics "$M_PLAN" | awk '{print $2}')"
+L_SEL="$(plan_metrics "$L_PLAN" | awk '{print $2}')"
+XL_SEL="$(plan_metrics "$XL_PLAN" | awk '{print $2}')"
+BASE_SEL="$(printf '%s' "$BASE_M" | awk '{print $2}')"
+if [ "$S_SEL" -lt "$M_SEL" ] && [ "$M_SEL" -lt "$L_SEL" ] && [ "$L_SEL" -le "$XL_SEL" ] \
+  && [ "$S_SEL" -lt "$BASE_SEL" ] && [ "$M_SEL" -lt "$BASE_SEL" ]; then
+  ok "S/M select fewer units than baseline and scale up to L/XL"
+else
+  bad "unit counts did not reduce for S/M (S=$S_SEL M=$M_SEL L=$L_SEL XL=$XL_SEL base=$BASE_SEL)"
+fi
 
 printf '\nworkflow preflight:\n'
 preflight_wf() {
