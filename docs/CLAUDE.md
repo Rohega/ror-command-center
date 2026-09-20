@@ -18,7 +18,7 @@ Start here as a human: [docs/README.md](README.md) (three doors: use, contribute
 | `docs/architecture/` | ADRs (app-owned; warehouse ADRs here are EXAMPLE ONLY) |
 | `docs/specs/` | Feature specifications (warehouse-mvp is EXAMPLE ONLY) |
 | `docs/stories/` | User stories (warehouse-mvp is EXAMPLE ONLY) |
-| `docs/modules/` | Module documentation (empty in the kit; filled in apps) |
+| `docs/modules/` | Module documentation (`workflow-runner.md` for the CLI runner; apps add their own) |
 | `docs/runbooks/` | Operational runbooks |
 
 ## Canonical Standards

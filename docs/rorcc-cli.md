@@ -74,17 +74,43 @@ rorcc build-agent rails-architect
 rorcc agent rails-architect
 ```
 
-Run a process end to end:
+Run a process end to end — **start with `--plan`** (no Ollama, no API keys):
 
 ```bash
-rorcc workflow new-feature --plan   # router + units; no model calls
-rorcc workflow new-feature --auto   # one-shot per selected unit; pause at gates
+rorcc workflow new-feature --plan              # what will run; 0 LLM calls
+rorcc workflow new-feature                     # Enter / s skip / q quit
+rorcc workflow new-feature --auto              # one-shot per selected skill; gates still ask
 rorcc workflow new-feature --only development,testing
-rorcc workflow new-feature
-# Skills are the execution unit. The router omits review skills whose paths
-# are absent (unless a create-* skill shares the phase, or you pass --full).
-# depends_on is enforced. Workflow cloud prompts stay lean (purpose + skill).
+rorcc workflow new-feature --skip deployment
+rorcc workflow new-feature --plan --full       # do not omit path-based reviews
 ```
+
+How to pick a workflow, read `--plan` output, and recover from `blocked` /
+`workflow invalid`: [docs/how-to/run-workflows.md](how-to/run-workflows.md).
+
+## Workflow runner
+
+`rorcc workflow` reads `.ai/workflows/<name>.yaml`, fails closed in preflight,
+then runs **selected skills** (not a redundant agent chat on top of each skill).
+
+| Flag | What happens |
+|------|----------------|
+| `--plan` | Preflight + router. Prints declared / selected / omitted units. No writes |
+| `--auto` | No per-phase `[Enter]`. One model completion per selected unit. **Gates still require `y`** |
+| `--only a,b` | Only those **phase ids**. Other phases are skipped; their absence does not block |
+| `--skip a` | Skip those ids; later phases that `depends_on` them become `blocked` |
+| `--full` | Ignore path-based omission; run every declared skill |
+| `--local` / `--cloud` | Backend |
+
+**Units:** one selected skill (or one agent if the phase has no skills). In this
+repository `new-feature` is usually **14 declared / 12 selected** because
+`review-rails-models` and `capistrano-review` have no matching files.
+
+**After a real run** (not `--plan`): `.rorcc/runs/<run-id>/{state,metrics,summary}.tsv`
+(gitignored).
+
+Workflow-invoked **cloud** skills send a lean prompt (`purpose` + skill +
+templates). Standalone `rorcc skill` still inlines referenced standards.
 
 After editing an agent or standard under `.ai/`:
 
@@ -136,6 +162,8 @@ Full step-by-step onboarding (with troubleshooting and rollback):
 | `RORCC_WARN_CHARS` | `32000` | Warn when the assembled prompt exceeds this size |
 | `RORCC_MAX_CHARS` | _(unset)_ | Hard-cap (truncate) the system prompt for small models |
 | `RORCC_PROXY_PORT` | `4000` | Port for the `proxy --start` LiteLLM gateway |
+| `RORCC_LEAN` | `1` during `workflow` | Cloud: specialist purpose + skill only (set by the runner) |
+| `RORCC_WORKFLOW_AUTO` | `1` with `--auto` | One-shot chat turn per unit |
 | `OPENAI_API_KEY` / `ANTHROPIC_API_KEY` | _(unset)_ | Cloud credentials |
 
 ## Use from Cursor / Claude Code
@@ -168,5 +196,8 @@ Best-effort — IDE behavior changes between versions.
 | `model 'rorcc-<name>' not found` | `rorcc build-agent <name>` first |
 | Cloud: empty/failed response | check `OPENAI_API_KEY`/`ANTHROPIC_API_KEY` and network |
 | Slow / poor answers | use a larger model tier, or `--cloud` for that task |
+| `workflow invalid` | Preflight failed — read `error:` lines; fix YAML before spending tokens |
+| Phase `blocked` | A `depends_on` phase was skipped/failed; re-run it or use `--only` |
+| Skill omitted in `--plan` | No matching `paths:` on disk; pass `--full` if you still need it |
 
 See also: [docs/integrations/ollama.md](integrations/ollama.md).

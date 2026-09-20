@@ -47,11 +47,17 @@ Task: Implement US-003 from docs/stories/...
 
 ## Workflows
 
-Reference workflow YAML phases:
+Phase **ids** (not labels) for `new-feature`: `idea`, `specification`,
+`architecture`, `implementation-plan`, `development`, `testing`,
+`documentation`, `deployment`.
 
 ```
-Follow .ai/workflows/new-feature.yaml from phase "review".
+Follow .ai/workflows/new-feature.yaml from phase testing.
+Stop after each phase and wait for my approval.
 ```
+
+CLI preview (0 tokens): `rorcc workflow new-feature --plan`.
+How-to: [../how-to/run-workflows.md](../how-to/run-workflows.md).
 
 ## CI / Automation
 
