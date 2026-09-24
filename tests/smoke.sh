@@ -479,6 +479,36 @@ printf '%s\n' "$LEAN" | grep -q 'backend-rails-developer' \
 printf '%s\n' "$LEAN" | grep -q 'STANDARD:' \
   && bad "assemble_lean dumped standards" || ok "assemble_lean stays lean"
 
+printf '\nbuilder:\n'
+assert_exit 2 "builder bad flag -> 2" -- "$RORCC" builder --bogus
+FIX="$(mktemp -d)"
+mkdir -p "$FIX/.ai/agents"
+PLAN_OUT="$(cd "$FIX" && "$RORCC" builder --plan 2>&1)"
+plan_rc=$?
+[ "$plan_rc" -eq 0 ] && ok "builder --plan -> 0" || bad "builder --plan exit $plan_rc"
+printf '%s\n' "$PLAN_OUT" | grep -q 'rorcc workflow new-feature' \
+  && ok "builder --plan prints the workflow command" || bad "builder --plan missing command"
+[ -z "$(find "$FIX/docs" -type f 2>/dev/null)" ] \
+  && ok "builder --plan writes no plan file" || bad "builder --plan wrote a file"
+DRAFT="$(cd "$FIX" && "$RORCC" builder --request "I want a page where staff mark an order as packed" \
+  --who staff --data yes --sign-in no --area change --done "Staff can mark an order packed." 2>&1)"
+printf '%s\n' "$DRAFT" | grep -q 'draft saved' && ok "answers without --accept stay a draft" || bad "draft: $DRAFT"
+find "$FIX/docs/plans" -name 'builder-*.md' | grep -q . \
+  && ok "draft plan file exists" || bad "draft plan missing"
+grep -q 'size: M' "$FIX"/docs/plans/builder-*.md \
+  && ok "change + data maps to size M" || bad "size M missing"
+grep -q 'database_changed' "$FIX"/docs/plans/builder-*.md \
+  && ok "data yes sets database_changed" || bad "database_changed missing"
+grep -q 'user_behavior_changed' "$FIX"/docs/plans/builder-*.md \
+  && ok "page in the request sets user_behavior_changed" || bad "user_behavior_changed missing"
+NEW="$(cd "$FIX" && "$RORCC" builder --request "Add a packed-orders area" \
+  --who staff --data no --sign-in yes --area new --done "Staff sign in and open the new area." 2>&1)"
+printf '%s\n' "$NEW" | grep -q -- '--size L' && ok "new area maps to size L" || bad "size L: $NEW"
+printf '%s\n' "$NEW" | grep -q 'auth_changed' && ok "sign-in yes sets auth_changed" || bad "auth missing: $NEW"
+assert_exit 2 "builder rejects a secret" -- "$RORCC" builder --request "store the password hunter2" \
+  --who staff --data no --sign-in no --area change --done "no"
+rm -rf "$FIX"
+
 printf '\n'
 printf '\033[1mResult:\033[0m %d passed, %d failed\n' "$PASS" "$FAIL"
 [ "$FAIL" -eq 0 ]
