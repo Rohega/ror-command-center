@@ -2,6 +2,8 @@
 # rorcc workflow <name> [--plan|--auto|--full|--only ids|--skip ids|--local|--cloud]
 # Parser V2 + deterministic V3 router (see .ai/standards/orchestration.md).
 # Skills are the execution unit. --plan never calls an LLM.
+# shellcheck source=stack.sh
+. "$RORCC_LIB_DIR/stack.sh"
 
 # Field separator for parsed phases. Must NOT be IFS whitespace — bash `read`
 # collapses consecutive tabs, which would drop empty depends_on/gate/notes.
@@ -269,6 +271,7 @@ _print_workflow_plan() {
   local scope_note=""
 
   printf '%s\n' "Workflow: $name"
+  printf 'stack: %s\n' "$(_stack_id "$root")"
   if [ "${WF_CLASSIFY:-0}" = "1" ]; then
     printf '\n'
     printf '%s\n' "Classification:"
