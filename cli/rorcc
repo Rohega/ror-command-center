@@ -37,6 +37,7 @@ COMMANDS:
   workflow <name> [--plan|--auto|--full|--only ids|--skip ids|--request text|--size S|M|L|XL|--signals names|--cloud]
   builder [--plan] [--request text] [--who role] [--data yes|no] [--sign-in yes|no] [--area new|change] [--done text] [--accept]
                           Fixed questions, then new-feature after an explicit accept
+  actions <file>          Run file/shell actions; --undo restores the git checkpoint
   proxy [--start]         Show IDE (Cursor/Claude Code) config; --start runs a LiteLLM gateway
   uninstall [opts]        Remove what setup.sh installed (agents, CLI, framework; --ollama/--models/--project)
   help                    Show this help
@@ -119,6 +120,7 @@ main() {
     skill)        . "$RORCC_LIB_DIR/skill.sh";       cmd_skill "$@" ;;
     workflow)     . "$RORCC_LIB_DIR/workflow.sh";    cmd_workflow "$@" ;;
     builder)      . "$RORCC_LIB_DIR/builder.sh";     cmd_builder "$@" ;;
+    actions)      . "$RORCC_LIB_DIR/actions.sh";     cmd_actions "$@" ;;
     proxy)        . "$RORCC_LIB_DIR/proxy.sh";       cmd_proxy "$@" ;;
     uninstall)    cmd_uninstall "$@" ;;
     help|-h|--help) usage ;;
