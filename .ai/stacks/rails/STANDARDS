@@ -1,0 +1,14 @@
+development.md
+project-bootstrap.md
+legacy-rails.md
+hotwire.md
+frontend.md
+ux-accessibility.md
+activeadmin.md
+devise-auth.md
+sidekiq-activejob.md
+postgresql.md
+mysql.md
+api-design.md
+aws-infrastructure.md
+kamal-docker.md

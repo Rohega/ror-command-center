@@ -595,6 +595,23 @@ mkdir -p "$EMPTY/.ai/agents"
 assert_exit 1 "preview without compose -> 1" -- bash -c 'cd "$1" && "$2" preview' _ "$EMPTY" "$RORCC"
 rm -rf "$PRE" "$BIN" "$LOG" "$EMPTY"
 
+printf '\nstack:\n'
+STACK_PLAN="$(cd "$ROOT" && "$RORCC" workflow new-feature --plan 2>&1)"
+printf '%s\n' "$STACK_PLAN" | grep -q 'stack: unspecified' && ok "kit repo stack is unspecified" || bad "kit stack: $STACK_PLAN"
+printf '%s\n' "$STACK_PLAN" | grep -q 'Selected units: 12' && ok "stack id does not change selected units" || bad "selected changed"
+RAILS_APP="$(mktemp -d)"
+touch "$RAILS_APP/Gemfile"
+RORCC_LIB_DIR="$ROOT/lib/rorcc" bash -c '. "$1/lib/rorcc/stack.sh"; _stack_id "$2"' _ "$ROOT" "$RAILS_APP" | grep -qx rails \
+  && ok "Gemfile detects rails" || bad "rails id"
+BARE_APP="$(mktemp -d)"
+RORCC_LIB_DIR="$ROOT/lib/rorcc" bash -c '. "$1/lib/rorcc/stack.sh"; _stack_id "$2"' _ "$ROOT" "$BARE_APP" | grep -qx unspecified \
+  && ok "empty tree is unspecified" || bad "bare id"
+CORE_N="$(grep -c . "$ROOT/.ai/stacks/core/STANDARDS")"
+RAILS_N="$(grep -c . "$ROOT/.ai/stacks/rails/STANDARDS")"
+FILE_N="$(find "$ROOT/.ai/standards" -name '*.md' | wc -l | tr -d ' ')"
+[ "$((CORE_N + RAILS_N))" -eq "$FILE_N" ] && ok "every standard is core or rails" || bad "lists $CORE_N+$RAILS_N != $FILE_N"
+rm -rf "$RAILS_APP" "$BARE_APP"
+
 printf '\n'
 printf '\033[1mResult:\033[0m %d passed, %d failed\n' "$PASS" "$FAIL"
 [ "$FAIL" -eq 0 ]

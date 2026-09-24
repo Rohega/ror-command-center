@@ -125,7 +125,7 @@ Do not implement these from this document. Open an ADR when a phase starts if th
 | 2 | Actions `file` and `shell` on the project tree. Decision: [ADR-0007](../architecture/adr-0007-action-runner.md). | A failed action leaves the tree at the checkpoint. | No WebContainer. No new snapshot store. |
 | 3 | Structured security findings. Decision: [ADR-0008](../architecture/adr-0008-security-pass.md). | Findings cite files the pass opened. | Runs only when the proportional DoD already requires security. |
 | 4 | Preview refresh and restart. Decision: [ADR-0009](../architecture/adr-0009-preview.md). | The person is not told to type a shell command for those two. | Preview is not the Definition of Done. |
-| 5 | Move stack-agnostic standards apart from Rails standards. Path router learns a stack id. | `rorcc workflow new-feature --plan` in a Rails app selects the same units as before. | No new stack in this phase. |
+| 5 | Stack id on the path router. Decision: [ADR-0010](../architecture/adr-0010-stack-core.md). | `rorcc workflow new-feature --plan` in a Rails app selects the same units as before. | No new stack in this phase. |
 | 6 | Next.js stack: detector, bootstrap, one implementer. | A real Next project runs one workflow. | Python and standalone React are out of scope. |
 | 7 | Desktop or web shell that shells out to `rorcc`. | The shell is a separate repo. | It does not vendor this tree. |
 
