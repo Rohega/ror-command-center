@@ -40,6 +40,7 @@ COMMANDS:
   actions <file>          Run file/shell actions; --undo restores the git checkpoint
   security [--size S|M|L|XL] [--signals names] [--paths a,b]
                           Structured findings when the DoD already requires security
+  preview [refresh|restart]  Show, refresh, or restart the compose preview. Not the Definition of Done
   proxy [--start]         Show IDE (Cursor/Claude Code) config; --start runs a LiteLLM gateway
   uninstall [opts]        Remove what setup.sh installed (agents, CLI, framework; --ollama/--models/--project)
   help                    Show this help
@@ -124,6 +125,7 @@ main() {
     builder)      . "$RORCC_LIB_DIR/builder.sh";     cmd_builder "$@" ;;
     actions)      . "$RORCC_LIB_DIR/actions.sh";     cmd_actions "$@" ;;
     security)     . "$RORCC_LIB_DIR/security_pass.sh"; cmd_security "$@" ;;
+    preview)      . "$RORCC_LIB_DIR/preview.sh";     cmd_preview "$@" ;;
     proxy)        . "$RORCC_LIB_DIR/proxy.sh";       cmd_proxy "$@" ;;
     uninstall)    cmd_uninstall "$@" ;;
     help|-h|--help) usage ;;

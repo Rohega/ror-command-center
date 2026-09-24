@@ -567,6 +567,34 @@ grep -q 'files: app/clean.rb' "$REPORT" && bad "finding cites a file with no iss
 grep -q 'opened: app/leaky.rb,app/clean.rb' "$REPORT" && ok "report lists both opened files" || bad "opened list: $(cat "$REPORT")"
 rm -rf "$SEC"
 
+printf '\npreview:\n'
+PRE="$(mktemp -d)"
+mkdir -p "$PRE/.ai/agents"
+printf 'services: {}\n' >"$PRE/docker-compose.yml"
+printf 'RAILS_PORT=3010\n' >"$PRE/.env"
+VIEW="$(cd "$PRE" && "$RORCC" preview 2>&1)"
+printf '%s\n' "$VIEW" | grep -q 'preview: http://localhost:3010' && ok "preview prints the compose URL" || bad "url: $VIEW"
+printf '%s\n' "$VIEW" | grep -q 'preview status: down' && ok "down preview is only a status" || bad "status: $VIEW"
+REF="$(cd "$PRE" && "$RORCC" preview refresh 2>&1)"
+ref_rc=$?
+[ "$ref_rc" -ne 0 ] && ok "refresh fails when the preview is down" || bad "refresh exit 0"
+printf '%s\n' "$REF" | grep -qi 'docker compose' && bad "refresh tells the user to type a command" || ok "refresh does not print a shell command"
+BIN="$(mktemp -d)"
+cat >"$BIN/docker" <<'EOF'
+#!/bin/sh
+printf '%s\n' "$*" >"$RORCC_DOCKER_LOG"
+exit 0
+EOF
+chmod +x "$BIN/docker"
+LOG="$(mktemp)"
+(cd "$PRE" && RORCC_DOCKER="$BIN/docker" RORCC_DOCKER_LOG="$LOG" "$RORCC" preview restart >/dev/null) \
+  && ok "restart exits 0" || bad "restart failed"
+grep -q 'compose -f docker-compose.yml restart web' "$LOG" && ok "restart restarts the web service" || bad "restart args: $(cat "$LOG")"
+EMPTY="$(mktemp -d)"
+mkdir -p "$EMPTY/.ai/agents"
+assert_exit 1 "preview without compose -> 1" -- bash -c 'cd "$1" && "$2" preview' _ "$EMPTY" "$RORCC"
+rm -rf "$PRE" "$BIN" "$LOG" "$EMPTY"
+
 printf '\n'
 printf '\033[1mResult:\033[0m %d passed, %d failed\n' "$PASS" "$FAIL"
 [ "$FAIL" -eq 0 ]
