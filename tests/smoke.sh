@@ -509,6 +509,46 @@ assert_exit 2 "builder rejects a secret" -- "$RORCC" builder --request "store th
   --who staff --data no --sign-in no --area change --done "no"
 rm -rf "$FIX"
 
+printf '\nactions:\n'
+ACT="$(mktemp -d)"
+git -C "$ACT" init -q
+git -C "$ACT" config user.email t@example.com
+git -C "$ACT" config user.name t
+mkdir -p "$ACT/.ai/agents"
+printf 'keep\n' >"$ACT/.ai/agents/.keep"
+printf 'base\n' >"$ACT/keep.txt"
+git -C "$ACT" add keep.txt .ai && git -C "$ACT" commit -qm init
+printf 'base\nextra\n' >"$ACT/keep.txt"
+printf 'pre\n' >"$ACT/note.txt"
+LIST="$(mktemp)"
+cat >"$LIST" <<'EOF'
+--- file created.txt
+hi
+--- shell false
+EOF
+set +e
+FAIL_OUT="$(cd "$ACT" && "$RORCC" actions "$LIST" 2>&1)"
+fail_rc=$?
+set +e
+[ "$fail_rc" -ne 0 ] && ok "failed shell exits non-zero" || bad "failed shell exit 0"
+printf '%s\n' "$FAIL_OUT" | grep -q 'failed shell false' && ok "prints failed" || bad "status: $FAIL_OUT"
+[ ! -f "$ACT/created.txt" ] && ok "failed action removes its file" || bad "created.txt survived"
+printf 'base\nextra\n' | cmp -s - "$ACT/keep.txt" && ok "dirty tracked file restored" || bad "keep.txt changed"
+printf 'pre\n' | cmp -s - "$ACT/note.txt" && ok "untracked file restored" || bad "note.txt lost"
+cat >"$LIST" <<'EOF'
+--- file created.txt
+hi
+EOF
+(cd "$ACT" && "$RORCC" actions "$LIST" >/dev/null) && ok "file action completes" || bad "file action failed"
+[ -f "$ACT/created.txt" ] && ok "file action writes" || bad "created.txt missing"
+(cd "$ACT" && "$RORCC" actions --undo >/dev/null) && ok "undo exits 0" || bad "undo failed"
+[ ! -f "$ACT/created.txt" ] && ok "undo removes the action file" || bad "undo left created.txt"
+printf 'base\nextra\n' | cmp -s - "$ACT/keep.txt" && ok "undo keeps prior edits" || bad "undo lost edits"
+BAD="$(mktemp)"
+printf '%s\n' '--- file ../escape.txt' 'x' >"$BAD"
+assert_exit 1 "actions reject .." -- bash -c 'cd "$1" && "$2" actions "$3"' _ "$ACT" "$RORCC" "$BAD"
+rm -rf "$ACT" "$LIST" "$BAD"
+
 printf '\n'
 printf '\033[1mResult:\033[0m %d passed, %d failed\n' "$PASS" "$FAIL"
 [ "$FAIL" -eq 0 ]
