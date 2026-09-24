@@ -32,7 +32,7 @@ The sequence is fixed:
 | 6 | A Next.js stack | Only when a real project asks for it |
 | 7 | A desktop or web shell that calls `rorcc` | Product decision. Not this repository |
 
-Phases 2–7 are recorded so they are not rediscovered. They are not accepted designs. Each one needs its own ADR before implementation if it changes architecture.
+Phases 2–7 each have an accepted ADR: [0007](adr-0007-action-runner.md), [0008](adr-0008-security-pass.md), [0009](adr-0009-preview.md), [0010](adr-0010-stack-core.md), [0011](adr-0011-next-stack.md), [0012](adr-0012-external-shell.md). This ADR keeps the order. It does not replace those decisions.
 
 Constraints on every phase:
 
@@ -63,7 +63,7 @@ Constraints on every phase:
 
 - Two audiences share one repository. The builder must not become the only documented path.
 - Phase 1 does not produce a running preview. Callers who expect Dyad will not get it yet.
-- Holding phases 2–7 in one document means their details will be wrong until each phase opens. That is intentional.
+- The detail of phases 2–7 lives in ADR-0007 through ADR-0012, not in this sequence table.
 
 ## Compliance
 
@@ -95,7 +95,7 @@ RoR Command Center es un kit de ingeniería: especialistas, skills y un runner d
 
 Añadir un builder delgado delante del workflow `new-feature`. No forkear Dyad ni bolt.diy. Un modelo no elige la fase. No partir `.ai/` en `core/` y `stacks/` hasta que un segundo stack tenga un proyecto real.
 
-La secuencia queda fija: fase 1 ahora (`rorcc builder`); fases 2 a 7 anotadas y sin diseño aceptado. El detalle de cada fase está en la tabla de la versión en inglés y en [docs/design/app-builder.md](../design/app-builder.md).
+La secuencia queda fija: fase 1 es `rorcc builder`. Las fases 2 a 7 ya tienen diseño aceptado: [ADR-0007](adr-0007-action-runner.md), [ADR-0008](adr-0008-security-pass.md), [ADR-0009](adr-0009-preview.md), [ADR-0010](adr-0010-stack-core.md), [ADR-0011](adr-0011-next-stack.md) y [ADR-0012](adr-0012-external-shell.md). Este ADR conserva el orden. No sustituye esas decisiones. El diseño de la fase 1 sigue en [docs/design/app-builder.md](../design/app-builder.md).
 
 En todas las fases: no se copian prompts, el router sigue a cero tokens, el contexto del workflow sigue magro, el README del ingeniero sigue siendo la entrada principal, y un preview verde no cierra el Definition of Done.
 
@@ -105,7 +105,7 @@ La opción elegida es el modo builder sobre el workflow Rails actual. Se descart
 
 ## Consecuencias
 
-A favor: una entrada puede hacer pocas preguntas y entregar un pedido acotado al workflow que ya existe. En contra: dos audiencias en un repo, la fase 1 no tiene preview, y el detalle de las fases 2 a 7 se precisa cuando cada una se abra.
+A favor: una entrada puede hacer pocas preguntas y entregar un pedido acotado al workflow que ya existe. En contra: dos audiencias en un repo. El detalle de las fases 2 a 7 está en los ADR-0007 a ADR-0012.
 
 ## Cumplimiento
 

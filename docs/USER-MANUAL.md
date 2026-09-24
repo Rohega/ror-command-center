@@ -4,7 +4,7 @@
 > agente de IA (Cursor, Claude Code, Codex, Copilot…). Pensada para ponerte a
 > producir en una sola sesión.
 
-Última actualización: 2026-09-20
+Última actualización: 2026-09-24
 
 ---
 
@@ -310,6 +310,58 @@ Guía completa (flags, gates, paralelo vs secuencial, los otros 3 workflows):
 - **Claude Code:** `docs/integrations/claude-code.md` (slash skills + recipes).
 - **Codex / Copilot:** `docs/integrations/codex.md`, `docs/integrations/copilot.md`.
 - **Especialistas:** `docs/how-to/use-agents.md`.
+
+### 4.5 Tareas con `rorcc`
+
+Desde la raíz del proyecto (la carpeta que tiene `.ai/`). Una tarea, un comando.
+
+**Pasar de una frase a un plan, sin escribir archivos**
+
+```bash
+rorcc builder --plan
+```
+
+Muestra las cinco preguntas y el comando de `new-feature`. No guarda el plan. En una terminal, `rorcc builder` hace las preguntas y, si aceptas, arranca el workflow.
+
+**Aplicar una lista de cambios y poder deshacerla**
+
+```bash
+rorcc actions lista.txt
+rorcc actions --undo
+```
+
+`lista.txt` empieza por una línea `--- file ruta/relativa` o `--- shell comando`. Hace falta un repositorio git con al menos un commit. Si una acción falla, el árbol vuelve al checkpoint. `--undo` lo restaura después de un acierto.
+
+**Pedir el informe de seguridad cuando el cambio ya lo exige**
+
+```bash
+rorcc security --size L --paths app/models/user.rb
+```
+
+Con tamaño S o M, y sin la señal `auth_changed`, imprime `security pass skipped` y no escribe nada. Si corre, el informe en `docs/security/` cita solo los archivos que abrió.
+
+**Ver si la app de Docker responde**
+
+```bash
+rorcc preview
+```
+
+Imprime la URL (`preview: http://localhost:…`) y `preview status: up` o `down`. Hace falta `docker-compose.yml` o `compose.yml`.
+
+```bash
+rorcc preview refresh
+rorcc preview restart
+```
+
+`refresh` recarga esa URL. `restart` reinicia el servicio `web`. El preview no da el trabajo por cerrado.
+
+**Dejar listo el marcador de un proyecto Next.js**
+
+```bash
+rorcc init --next mi-app
+```
+
+Crea `next.config.mjs` e instala el framework en `mi-app`. No ejecuta npm.
 
 ---
 

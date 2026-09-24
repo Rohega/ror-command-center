@@ -2,7 +2,7 @@
 
 # Technical Design: App builder
 
-**Status:** Approved for phase 1. Phases 2–7 are held, not designed.  
+**Status:** Approved for phase 1. Phases 2–7 are decided in ADR-0007 through ADR-0012.  
 **Author:** Rails Architect  
 **Date:** 2026-09-24  
 **ADR:** [ADR-0006](../architecture/adr-0006-app-builder-outside-rorcc-inside.md)
@@ -118,7 +118,7 @@ rorcc workflow new-feature --size <size> --signals <csv> --request "<original se
 
 ## Later phases (held)
 
-Do not implement these from this document. Open an ADR when a phase starts if the decision is architectural.
+Do not implement these from this document. The decisions are [ADR-0007](../architecture/adr-0007-action-runner.md) through [ADR-0012](../architecture/adr-0012-external-shell.md).
 
 | Phase | Intent | Done when | Constraint |
 |-------|--------|-----------|------------|
@@ -140,7 +140,7 @@ Do not implement these from this document. Open an ADR when a phase starts if th
 
 # Diseño técnico: App builder
 
-**Estado:** Aprobado para la fase 1. Las fases 2 a 7 están retenidas, sin diseño.  
+**Estado:** Aprobado para la fase 1. Las fases 2 a 7 están decididas en los ADR-0007 a ADR-0012.  
 **Fecha:** 2026-09-24  
 **ADR:** [ADR-0006](../architecture/adr-0006-app-builder-outside-rorcc-inside.md)
 
@@ -192,7 +192,7 @@ No se piden secretos. Una respuesta que parece un token se rechaza. Las pruebas 
 
 ## Fases posteriores
 
-No se implementan desde este documento. Hace falta un ADR al abrir cada fase si la decisión es de arquitectura. La tabla de la versión en inglés fija intención, criterio de cierre y restricción de las fases 2 a 7.
+No se implementan desde este documento. Cada fase ya tiene ADR: [0007](../architecture/adr-0007-action-runner.md), [0008](../architecture/adr-0008-security-pass.md), [0009](../architecture/adr-0009-preview.md), [0010](../architecture/adr-0010-stack-core.md), [0011](../architecture/adr-0011-next-stack.md) y [0012](../architecture/adr-0012-external-shell.md). La tabla de la versión en inglés conserva intención, criterio de cierre y restricción.
 
 ## Preguntas abiertas
 
