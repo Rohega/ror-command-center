@@ -42,6 +42,7 @@ It leaves `jq`/`zstd`/`git` alone and keeps your own files in `--project` mode.
 |---------|-------------|
 | `rorcc` | Interactive menu — pick a specialist by number (best for non-devs) |
 | `rorcc init <project>` | Scaffold a new project with the `.ai/` framework |
+| `rorcc init --next <project>` | Write `next.config.mjs` and install the framework. Does not run npm |
 | `rorcc init --docker <project>` | Scaffold a full Dockerized Rails app (MySQL, no local Ruby/Rails) with the RSpec test stack pre-wired + framework |
 | `rorcc doctor` | Check Ollama, models, RAM, and cloud-key readiness |
 | `rorcc build-agent <name>` | Compile `.ai/agents/<name>.yaml` (+ standards) into model `rorcc-<name>` |
@@ -93,6 +94,26 @@ rorcc workflow new-feature --skip deployment
 rorcc workflow new-feature --plan --full       # do not omit path-based reviews
 ```
 
+The first lines of `--plan` name the workflow and the stack. In this kit:
+
+```text
+Workflow: new-feature
+stack: unspecified
+```
+
+`stack: rails` needs a `Gemfile`, `config/application.rb`, or `bin/rails` (those win over `next.config.*`). `stack: nextjs` needs `next.config.*` and no Rails marker. The id does not change the selected units.
+
+```bash
+rorcc builder --plan
+rorcc actions lista.txt          # lines start with: --- file path   or   --- shell command
+rorcc actions --undo
+rorcc security --size L --paths app/models/user.rb
+rorcc preview
+rorcc preview refresh
+rorcc preview restart
+rorcc init --next mi-app
+```
+
 How to pick a workflow, read `--plan` output, and recover from `blocked` /
 `workflow invalid`: [docs/how-to/run-workflows.md](how-to/run-workflows.md).
 
@@ -103,7 +124,7 @@ then runs **selected skills** (not a redundant agent chat on top of each skill).
 
 | Flag | What happens |
 |------|----------------|
-| `--plan` | Preflight + router. Prints declared / selected / omitted units. No writes |
+| `--plan` | Preflight + router. Prints `stack:`, then declared / selected / omitted units. No writes |
 | `--auto` | No per-phase `[Enter]`. One model completion per selected unit. **Gates still require `y`** |
 | `--only a,b` | Only those **phase ids**. Other phases are skipped; their absence does not block |
 | `--skip a` | Skip those ids; later phases that `depends_on` them become `blocked` |

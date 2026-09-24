@@ -1,5 +1,6 @@
 # shellcheck shell=bash
-# Stack id for the path router. Phase 5. Does not change which units are selected.
+# Stack id for the path router. Rails markers win. Does not change which units are selected.
+# Membership is .ai/stacks/<id>/STANDARDS; markdown stays in .ai/standards/.
 # See docs/architecture/adr-0010-stack-core.md.
 
 # _stack_id <project-root>
