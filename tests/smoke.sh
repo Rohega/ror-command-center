@@ -549,6 +549,24 @@ printf '%s\n' '--- file ../escape.txt' 'x' >"$BAD"
 assert_exit 1 "actions reject .." -- bash -c 'cd "$1" && "$2" actions "$3"' _ "$ACT" "$RORCC" "$BAD"
 rm -rf "$ACT" "$LIST" "$BAD"
 
+printf '\nsecurity:\n'
+SEC="$(mktemp -d)"
+git -C "$SEC" init -q
+mkdir -p "$SEC/.ai/agents" "$SEC/app"
+printf 'keep\n' >"$SEC/.ai/agents/.keep"
+printf 'class User\nend\n' >"$SEC/app/clean.rb"
+printf 'password = "hunter2"\n' >"$SEC/app/leaky.rb"
+SKIP="$(cd "$SEC" && "$RORCC" security --size S 2>&1)"
+printf '%s\n' "$SKIP" | grep -q 'security pass skipped' && ok "size S skips the pass" || bad "skip: $SKIP"
+[ -z "$(find "$SEC/docs/security" -type f 2>/dev/null)" ] && ok "skipped pass writes nothing" || bad "skip wrote a file"
+HIT="$(cd "$SEC" && "$RORCC" security --size S --signals auth_changed --paths app/leaky.rb,app/clean.rb 2>&1)"
+printf '%s\n' "$HIT" | grep -q 'security findings:' && ok "auth signal writes findings" || bad "hit: $HIT"
+REPORT="$(find "$SEC/docs/security" -name 'findings-*.md' | head -1)"
+grep -q 'files: app/leaky.rb' "$REPORT" && ok "finding cites the opened leaky file" || bad "cite missing"
+grep -q 'files: app/clean.rb' "$REPORT" && bad "finding cites a file with no issue" || ok "clean file is not a finding"
+grep -q 'opened: app/leaky.rb,app/clean.rb' "$REPORT" && ok "report lists both opened files" || bad "opened list: $(cat "$REPORT")"
+rm -rf "$SEC"
+
 printf '\n'
 printf '\033[1mResult:\033[0m %d passed, %d failed\n' "$PASS" "$FAIL"
 [ "$FAIL" -eq 0 ]
