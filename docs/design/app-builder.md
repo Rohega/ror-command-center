@@ -126,8 +126,8 @@ Do not implement these from this document. Open an ADR when a phase starts if th
 | 3 | Structured security findings. Decision: [ADR-0008](../architecture/adr-0008-security-pass.md). | Findings cite files the pass opened. | Runs only when the proportional DoD already requires security. |
 | 4 | Preview refresh and restart. Decision: [ADR-0009](../architecture/adr-0009-preview.md). | The person is not told to type a shell command for those two. | Preview is not the Definition of Done. |
 | 5 | Stack id on the path router. Decision: [ADR-0010](../architecture/adr-0010-stack-core.md). | `rorcc workflow new-feature --plan` in a Rails app selects the same units as before. | No new stack in this phase. |
-| 6 | Next.js stack: detector, bootstrap, one implementer. | A real Next project runs one workflow. | Python and standalone React are out of scope. |
-| 7 | Desktop or web shell that shells out to `rorcc`. | The shell is a separate repo. | It does not vendor this tree. |
+| 6 | Next.js stack id, `next-feature`, one implementer. Decision: [ADR-0011](../architecture/adr-0011-next-stack.md). | `next-feature --plan` selects `frontend-react-inertia-developer`. | Python and standalone React are out of scope. |
+| 7 | External shell contract. Decision: [ADR-0012](../architecture/adr-0012-external-shell.md). | The shell is a separate repo. | It does not vendor this tree. |
 
 ## Open Questions
 

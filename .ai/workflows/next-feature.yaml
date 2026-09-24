@@ -1,0 +1,6 @@
+name: next-feature
+description: One-pass workflow for a Next.js app. One implementer. No Rails phases.
+phases:
+  - id: development
+    label: Development
+    agent: frontend-react-inertia-developer
