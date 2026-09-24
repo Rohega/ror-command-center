@@ -28,6 +28,7 @@ USAGE:
 COMMANDS:
   menu                    Interactive launcher: pick a specialist by number
   init <project>          Scaffold a new project with the .ai/ framework
+  init --next <project>   Scaffold a Next.js marker (next.config.mjs) plus the framework
   init --docker <project> Scaffold a full Dockerized Rails app (MySQL, no local Ruby)
   doctor                  Check Ollama, models, and environment
   build-agent <name>      Compile a .ai/agents/<name>.yaml into an Ollama model
@@ -66,10 +67,11 @@ EOF
 }
 
 cmd_init() {
-  local docker=0 target=""
+  local docker=0 next=0 target=""
   while [ $# -gt 0 ]; do
     case "$1" in
       --docker) docker=1 ;;
+      --next) next=1 ;;
       -*) err "unknown option: $1"; return 2 ;;
       *)
         if [ -n "$target" ]; then err "unexpected argument: $1"; return 2; fi
@@ -85,8 +87,19 @@ cmd_init() {
     return $?
   fi
 
+  if [ "$next" -eq 1 ]; then
+    [ -n "$target" ] || { err "usage: rorcc init --next <project-dir>"; return 2; }
+    mkdir -p "$target"
+    if [ ! -f "$target/next.config.mjs" ]; then
+      printf '%s\n' 'const nextConfig = {};' 'export default nextConfig;' >"$target/next.config.mjs"
+    fi
+    if [ ! -f "$target/package.json" ]; then
+      printf '%s\n' '{' '  "private": true' '}' >"$target/package.json"
+    fi
+  fi
+
   if [ -z "$target" ]; then
-    err "usage: rorcc init [--docker] <project-dir>"
+    err "usage: rorcc init [--docker|--next] <project-dir>"
     return 2
   fi
   local installer="$RORCC_HOME/install.sh"

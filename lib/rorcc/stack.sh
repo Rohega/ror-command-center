@@ -9,5 +9,9 @@ _stack_id() {
     printf '%s\n' rails
     return 0
   fi
+  if [ -f "$root/next.config.js" ] || [ -f "$root/next.config.mjs" ] || [ -f "$root/next.config.ts" ]; then
+    printf '%s\n' nextjs
+    return 0
+  fi
   printf '%s\n' unspecified
 }

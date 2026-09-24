@@ -606,11 +606,20 @@ RORCC_LIB_DIR="$ROOT/lib/rorcc" bash -c '. "$1/lib/rorcc/stack.sh"; _stack_id "$
 BARE_APP="$(mktemp -d)"
 RORCC_LIB_DIR="$ROOT/lib/rorcc" bash -c '. "$1/lib/rorcc/stack.sh"; _stack_id "$2"' _ "$ROOT" "$BARE_APP" | grep -qx unspecified \
   && ok "empty tree is unspecified" || bad "bare id"
+NEXT_APP="$(mktemp -d)"
+touch "$NEXT_APP/next.config.mjs"
+RORCC_LIB_DIR="$ROOT/lib/rorcc" bash -c '. "$1/lib/rorcc/stack.sh"; _stack_id "$2"' _ "$ROOT" "$NEXT_APP" | grep -qx nextjs \
+  && ok "next.config detects nextjs" || bad "next id"
+NEXT_PLAN="$(cd "$ROOT" && "$RORCC" workflow next-feature --plan 2>&1)"
+printf '%s\n' "$NEXT_PLAN" | grep -q 'frontend-react-inertia-developer' \
+  && ok "next-feature selects the one implementer" || bad "next plan: $NEXT_PLAN"
+printf '%s\n' "$STACK_PLAN" | grep -q 'Selected units: 12' && ok "rails plan still selects 12 after next stack" || bad "rails selection drifted"
 CORE_N="$(grep -c . "$ROOT/.ai/stacks/core/STANDARDS")"
 RAILS_N="$(grep -c . "$ROOT/.ai/stacks/rails/STANDARDS")"
+NEXT_N="$(grep -c . "$ROOT/.ai/stacks/nextjs/STANDARDS")"
 FILE_N="$(find "$ROOT/.ai/standards" -name '*.md' | wc -l | tr -d ' ')"
-[ "$((CORE_N + RAILS_N))" -eq "$FILE_N" ] && ok "every standard is core or rails" || bad "lists $CORE_N+$RAILS_N != $FILE_N"
-rm -rf "$RAILS_APP" "$BARE_APP"
+[ "$((CORE_N + RAILS_N + NEXT_N))" -eq "$FILE_N" ] && ok "every standard is core, rails, or nextjs" || bad "lists $CORE_N+$RAILS_N+$NEXT_N != $FILE_N"
+rm -rf "$RAILS_APP" "$BARE_APP" "$NEXT_APP"
 
 printf '\n'
 printf '\033[1mResult:\033[0m %d passed, %d failed\n' "$PASS" "$FAIL"
