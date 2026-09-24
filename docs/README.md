@@ -25,7 +25,7 @@ For AI sessions (not humans): root [`AGENTS.md`](../AGENTS.md), [`CLAUDE.md`](..
 1. [CONTRIBUTING.md](../CONTRIBUTING.md) — branching, PR expectations, contributor checklist.
 2. Extend specialists: [how-to/create-specialist-agent.md](how-to/create-specialist-agent.md).
 3. Canonical definitions: [`.ai/README.md`](../.ai/README.md).
-4. App builder (kit decision, not the warehouse example): [ADR-0006](architecture/adr-0006-app-builder-outside-rorcc-inside.md) · [ADR-0007](architecture/adr-0007-action-runner.md) · [ADR-0008](architecture/adr-0008-security-pass.md) · [design](design/app-builder.md).
+4. App builder (kit decision, not the warehouse example): [ADR-0006](architecture/adr-0006-app-builder-outside-rorcc-inside.md) · [ADR-0007](architecture/adr-0007-action-runner.md) · [ADR-0008](architecture/adr-0008-security-pass.md) · [ADR-0009](architecture/adr-0009-preview.md) · [design](design/app-builder.md).
 
 ## EXAMPLE ONLY — warehouse WMS
 
