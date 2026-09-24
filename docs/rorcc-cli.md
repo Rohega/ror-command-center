@@ -59,6 +59,7 @@ It leaves `jq`/`zstd`/`git` alone and keeps your own files in `--project` mode.
 | `rorcc workflow <name> --signals a,b` | Override signals (implies classification) |
 | `rorcc builder [--plan]` | Fixed questions, write a plan, and on `--accept` run `new-feature`. `--plan` prints the command and writes nothing |
 | `rorcc actions <file>` | Run `file` and `shell` actions. A failure restores `refs/rorcc/checkpoint`. `--undo` restores it after a success |
+| `rorcc security` | Findings (`title`, `level`, `risk`, `files`) when size is L/XL or `auth_changed` is set. Skips otherwise. Cites only files it opened |
 | `rorcc proxy [--start]` | Show IDE (Cursor/Claude Code) config; `--start` runs a LiteLLM gateway |
 | `rorcc uninstall [opts]` | Remove what `setup.sh` installed (`--models`, `--ollama`, `--project <dir>`, `--dry-run`) |
 | `rorcc help` | Show usage |

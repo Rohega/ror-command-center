@@ -186,5 +186,6 @@ cmd_builder() {
     ( cd "$root" && "$RORCC_HOME/cli/rorcc" workflow new-feature --size "$BUILDER_SIZE" --request "$request" ) || wf_rc=$?
   fi
   [ "$wf_rc" -eq 0 ] || return "$wf_rc"
+  "$RORCC_HOME/cli/rorcc" security --size "$BUILDER_SIZE" --signals "$BUILDER_SIGNALS" || return $?
   ok "$done_when"
 }
