@@ -57,6 +57,7 @@ It leaves `jq`/`zstd`/`git` alone and keeps your own files in `--project` mode.
 | `rorcc workflow <name> --request "…"` | Classify once (heuristic, 0 LLM) then apply `applies_when` |
 | `rorcc workflow <name> --size S\|M\|L\|XL` | Override size (implies classification) |
 | `rorcc workflow <name> --signals a,b` | Override signals (implies classification) |
+| `rorcc builder [--plan]` | Fixed questions, write a plan, and on `--accept` run `new-feature`. `--plan` prints the command and writes nothing |
 | `rorcc proxy [--start]` | Show IDE (Cursor/Claude Code) config; `--start` runs a LiteLLM gateway |
 | `rorcc uninstall [opts]` | Remove what `setup.sh` installed (`--models`, `--ollama`, `--project <dir>`, `--dry-run`) |
 | `rorcc help` | Show usage |
