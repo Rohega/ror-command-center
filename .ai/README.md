@@ -73,5 +73,5 @@ permission to bypass the Task Router. Runtime behavior is governed by
 - Testable Code
 - Senior Engineer Standards
 - Minimalism — lazy senior engineer ([standards/minimalism.md](standards/minimalism.md)): YAGNI, stdlib/Rails-native first, deletion over addition, never cutting safety. Skills: `ponytail-review`, `ponytail-audit`, `ponytail-debt`.
-- Orchestration — deterministic workflow router ([standards/orchestration.md](standards/orchestration.md)): classify impact once (optional), then select skills by `applies_when` + project paths. Never spend tokens to decide the next phase.
+- Orchestration — deterministic workflow router ([standards/orchestration.md](standards/orchestration.md)): classify impact once (optional), select work by `applies_when` + project paths, verify opted-in phases deterministically, persist resumable run state, and keep local evidence traces. Never spend tokens to decide the next phase.
 - Native agent orchestration — the Task Router decides **what** work exists; Cursor, Claude Code, Codex, and future runtimes decide **how** to execute only that selected work ([standards/native-agent-orchestration.md](standards/native-agent-orchestration.md)).
