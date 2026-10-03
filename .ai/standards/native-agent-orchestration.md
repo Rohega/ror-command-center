@@ -35,6 +35,27 @@ bypass the router.
 6. **Lead agent synthesizes once.** Subagents return concise findings/diffs;
    avoid chains of agents reviewing identical context.
 
+## Evidence-based verification loop
+
+After implementation or a meaningful correction, verify the changed behavior
+before declaring it complete.
+
+1. **Execute the narrowest relevant deterministic check.** Prefer targeted tests,
+   lint/build checks, migration validation, security checks, or an explicit
+   project verification command over model judgment.
+2. **Treat failures as evidence.** Feed the concrete failing output into the next
+   correction attempt; do not retry from the same unsupported hypothesis.
+3. **Re-run the failed check after the correction.** Expand verification only
+   when the change or risk justifies broader coverage.
+4. **Bound retries.** After two failed correction attempts on the same problem,
+   stop blind retries and use the architect/reviewer escalation rules below.
+5. **Stay proportional.** A size-S copy or visual change does not earn a full
+   test suite unless it touches non-trivial logic or a risk signal.
+
+A second LLM is not the default verifier when deterministic evidence is
+available. Human gates remain human gates; a passing automated check does not
+auto-approve them.
+
 ## Architect / reviewer escalation
 
 Use a strong architect or independent reviewer only when the extra reasoning is
