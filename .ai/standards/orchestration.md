@@ -108,6 +108,24 @@ applies. Verifier logs live in the existing `.rorcc/runs/<run-id>/` directory.
 The first rollout is intentionally limited to the `new-feature` development
 phase. Expand only after real runs show value.
 
+## Resume incomplete runs
+
+Every executed workflow now stores `metadata.tsv` beside its existing state and
+metrics. Resume with:
+
+```bash
+rorcc workflow resume latest
+rorcc workflow resume <run-id>
+```
+
+Passed phases are not rerun. Failed, running, blocked, or pending phases are
+eligible to continue; skipped phases stay skipped. Resume restores the original
+classification and routing overrides.
+
+For safety, RORCC compares the workflow definition, git branch, and git HEAD
+against the saved run. A mismatch stops by default. `--force` is the explicit
+human override when the repository changed intentionally.
+
 ## Lean context
 
 Workflow-invoked cloud skills send: specialist `purpose` + `SKILL.md` + named
@@ -148,6 +166,7 @@ rorcc workflow <name> --auto
 rorcc workflow <name> --only development,testing
 rorcc workflow <name> --skip deployment
 rorcc workflow <name> --full
+rorcc workflow resume latest
 ```
 
 ## Upgrade path

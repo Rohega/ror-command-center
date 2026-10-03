@@ -14,6 +14,8 @@ WF_FS=$'|'
 . "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/classify.sh"
 # shellcheck source=verify.sh
 . "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/verify.sh"
+# shellcheck source=run_state.sh
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/run_state.sh"
 
 # _parse_phases <file>
 # PSV: id|label|agents|skills|depends_on|gate|notes|applies_when
@@ -446,7 +448,13 @@ _workflow_classify() {
 }
 
 cmd_workflow() {
-  local name="" backend_flag="" plan=0 auto=0
+  if [ "${1:-}" = "resume" ]; then
+    shift
+    _cmd_workflow_resume "$@"
+    return $?
+  fi
+
+  local name="" backend_flag="" plan=0 auto=0 resume_run=""
   WF_ONLY=""; WF_SKIP=""; export WF_FULL=0
   WF_REQUEST=""; WF_SIZE_OVERRIDE=""; WF_SIGNALS_OVERRIDE=""
   while [ $# -gt 0 ]; do
@@ -481,6 +489,11 @@ cmd_workflow() {
         [ -n "${1:-}" ] || { err "usage: --signals <name,name>"; return 2; }
         WF_SIGNALS_OVERRIDE="$1"
         ;;
+      --resume-run)
+        shift
+        [ -n "${1:-}" ] || { err "internal resume run id missing"; return 2; }
+        resume_run="$1"
+        ;;
       --cloud) backend_flag="--cloud" ;;
       --local) backend_flag="--local" ;;
       -*) err "unknown option: $1"; return 2 ;;
@@ -489,7 +502,7 @@ cmd_workflow() {
     shift
   done
   if [ -z "$name" ]; then
-    err "usage: rorcc workflow <workflow-name> [--plan|--auto|--full|--only ids|--skip ids|--request text|--size S|M|L|XL|--signals names|--local|--cloud]"
+    err "usage: rorcc workflow <workflow-name> [...] | rorcc workflow resume <run-id|latest> [--auto|--force|--local|--cloud]"
     return 2
   fi
   if ! _workflow_classify; then
@@ -546,24 +559,44 @@ cmd_workflow() {
   fi
   printf '\n'
 
-  local run_id run_dir state_file metrics_file summary_file
-  run_id="$(date +%Y%m%dT%H%M%S)-$$"
-  run_dir="$root/.rorcc/runs/$run_id"
-  mkdir -p "$run_dir"
-  state_file="$run_dir/state.tsv"
-  metrics_file="$run_dir/metrics.tsv"
-  summary_file="$run_dir/summary.tsv"
-  printf 'phase_id\tstatus\n' > "$state_file"
-  printf 'phase_id\telapsed_seconds\texecution_units\tstatus\n' > "$metrics_file"
-  while IFS="$WF_FS" read -r id _r _a _s _d _g _n; do
-    [ -z "$id" ] && continue
-    printf '%s\tpending\n' "$id" >> "$state_file"
-  done < <(_parse_phases "$wf")
+  local run_id run_dir state_file metrics_file summary_file metadata_file resumed=0
+  if [ -n "$resume_run" ]; then
+    run_id="$resume_run"
+    run_dir="$root/.rorcc/runs/$run_id"
+    state_file="$run_dir/state.tsv"
+    metrics_file="$run_dir/metrics.tsv"
+    summary_file="$run_dir/summary.tsv"
+    metadata_file="$run_dir/metadata.tsv"
+    if [ ! -f "$state_file" ] || [ ! -f "$metrics_file" ] || [ ! -f "$metadata_file" ]; then
+      err "run is not resumable: $run_id"
+      return 1
+    fi
+    resumed=1
+  else
+    run_id="$(date +%Y%m%dT%H%M%S)-$$"
+    run_dir="$root/.rorcc/runs/$run_id"
+    mkdir -p "$run_dir"
+    state_file="$run_dir/state.tsv"
+    metrics_file="$run_dir/metrics.tsv"
+    summary_file="$run_dir/summary.tsv"
+    metadata_file="$run_dir/metadata.tsv"
+    printf 'phase_id\tstatus\n' > "$state_file"
+    printf 'phase_id\telapsed_seconds\texecution_units\tstatus\n' > "$metrics_file"
+    while IFS="$WF_FS" read -r id _r _a _s _d _g _n; do
+      [ -z "$id" ] && continue
+      printf '%s\tpending\n' "$id" >> "$state_file"
+    done < <(_parse_phases "$wf")
+    _write_run_metadata "$metadata_file" "$name" "$wf" "$root" "$auto" "$backend_flag"
+  fi
 
-  local i=0 choice run_start now elapsed rc units_run total_units=0
+  local i=0 choice run_start now elapsed rc units_run total_units=0 previous_status
   local any_failed=0 any_blocked=0
   local verify_mode max_attempts attempt verify_log verify_feedback units_this_attempt
   local -a verify_cfg
+  if [ "$resumed" -eq 1 ]; then
+    total_units="$(awk -F'\t' 'NR>1 {sum+=$3} END{print sum+0}' "$metrics_file")"
+    info "continuing existing run $run_id"
+  fi
   run_start="$(date +%s)"
 
   while IFS="$WF_FS" read -r id label agents skills deps gate notes applies <&3; do
@@ -591,6 +624,22 @@ cmd_workflow() {
     max_attempts="${verify_cfg[1]:-1}"
     [ -n "$verify_mode" ] && [ "$verify_mode" != "none" ] \
       && printf '  verification: %s · max attempts %s\n' "$verify_mode" "$max_attempts"
+
+    if [ "$resumed" -eq 1 ]; then
+      previous_status="$(awk -F'\t' -v id="$id" 'NR>1 && $1==id {print $2; exit}' "$state_file")"
+      case "$previous_status" in
+        passed)
+          info "resume: phase '$id' already passed"
+          printf '\n'
+          continue
+          ;;
+        skipped)
+          info "resume: phase '$id' remains skipped"
+          printf '\n'
+          continue
+          ;;
+      esac
+    fi
 
     if [ -n "${WF_ONLY:-}" ] && ! _csv_has "$WF_ONLY" "$id"; then
       info "skipped $id (not in --only)"
