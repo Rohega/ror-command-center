@@ -540,7 +540,7 @@ cmd_workflow() {
   printf '\n'
   info "Running $n phases. Router selects skills; agents run only when a phase has no skills."
   if [ "$auto" -eq 1 ]; then
-    info "--auto: one-shot per unit; gates still need confirmation."
+    info "--auto: one model turn per unit per attempt; deterministic verification may retry; gates still need confirmation."
   else
     info "At each phase: [Enter] run · s skip · q quit."
   fi
