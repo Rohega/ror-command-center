@@ -12,6 +12,8 @@ WF_FS=$'|'
 . "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/router.sh"
 # shellcheck source=classify.sh
 . "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/classify.sh"
+# shellcheck source=verify.sh
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/verify.sh"
 
 # _parse_phases <file>
 # PSV: id|label|agents|skills|depends_on|gate|notes|applies_when
@@ -197,6 +199,28 @@ _state_set() {
   mv "$tmp" "$file"
 }
 
+# Read optional verification metadata for one phase.
+# Output: line 1 = verify mode, line 2 = max attempts (default 1).
+_phase_verification() {
+  local wf="$1" target="$2"
+  awk -v target="$target" '
+    function trim(s){ gsub(/^[ \t]+|[ \t]+$/,"",s); return s }
+    function value_after_colon(line){ return trim(substr(line, index(line,":")+1)) }
+    /^  - id:/ {
+      id=value_after_colon($0)
+      active=(id==target)
+      next
+    }
+    active && /^    verify:/ { verify=value_after_colon($0); next }
+    active && /^    max_attempts:/ { max=value_after_colon($0); next }
+    END {
+      if(max=="") max="1"
+      print verify
+      print max
+    }
+  ' "$wf"
+}
+
 # _preflight_workflow <yaml> <root>
 # Prints "workflow invalid" + reasons on failure. No LLM.
 _preflight_workflow() {
@@ -204,10 +228,23 @@ _preflight_workflow() {
   local invalid=0
   local id label agents skills deps gate notes applies
   local seen_ids="" seen
-  local item stale
+  local item stale verify_mode max_attempts
+  local -a verify_cfg
 
   while IFS="$WF_FS" read -r id label agents skills deps gate notes applies; do
     [ -z "$id" ] && continue
+
+    mapfile -t verify_cfg < <(_phase_verification "$wf" "$id")
+    verify_mode="${verify_cfg[0]:-}"
+    max_attempts="${verify_cfg[1]:-1}"
+    case "$verify_mode" in
+      ""|none|auto|command:*) ;;
+      *) err "phase '$id' has invalid verify mode: $verify_mode"; invalid=1 ;;
+    esac
+    case "$max_attempts" in
+      1|2|3) ;;
+      *) err "phase '$id' max_attempts must be 1, 2, or 3"; invalid=1 ;;
+    esac
 
     case " $seen_ids " in
       *" $id "*) err "duplicate phase id: $id"; invalid=1 ;;
@@ -268,7 +305,8 @@ _print_workflow_plan() {
   local name="$1" wf="$2" root="$3"
   local i=0 id label agents skills deps gate notes applies
   local declared=0 selected=0 omitted=0
-  local scope_note=""
+  local scope_note="" verify_mode max_attempts
+  local -a verify_cfg
 
   printf '%s\n' "Workflow: $name"
   printf 'stack: %s\n' "$(_stack_id "$root")"
@@ -320,6 +358,11 @@ _print_workflow_plan() {
     [ -n "$skills" ] && [ -n "$agents" ] && printf '   agents: %s\n' "$(_csv_pretty "$agents")"
     printf '   dependencies: %s\n' "$(_csv_pretty "$deps")"
     [ -n "$gate" ] && printf '   gate: %s\n' "$gate"
+    mapfile -t verify_cfg < <(_phase_verification "$wf" "$id")
+    verify_mode="${verify_cfg[0]:-}"
+    max_attempts="${verify_cfg[1]:-1}"
+    [ -n "$verify_mode" ] && [ "$verify_mode" != "none" ] \
+      && printf '   verification: %s (max attempts: %s)\n' "$verify_mode" "$max_attempts"
     printf '\n'
   done < <(_parse_phases "$wf")
 
@@ -519,6 +562,8 @@ cmd_workflow() {
 
   local i=0 choice run_start now elapsed rc units_run total_units=0
   local any_failed=0 any_blocked=0
+  local verify_mode max_attempts attempt verify_log verify_feedback units_this_attempt
+  local -a verify_cfg
   run_start="$(date +%s)"
 
   while IFS="$WF_FS" read -r id label agents skills deps gate notes applies <&3; do
@@ -541,6 +586,11 @@ cmd_workflow() {
     [ -n "$deps" ]  && printf '  depends_on: %s\n' "$(_csv_pretty "$deps")"
     [ -n "$notes" ] && printf '  notes: %s\n' "$notes"
     [ -n "$gate" ]  && printf '  %bgate:%b  %s\n' "$C_YELLOW" "$C_RESET" "$gate"
+    mapfile -t verify_cfg < <(_phase_verification "$wf" "$id")
+    verify_mode="${verify_cfg[0]:-}"
+    max_attempts="${verify_cfg[1]:-1}"
+    [ -n "$verify_mode" ] && [ "$verify_mode" != "none" ] \
+      && printf '  verification: %s · max attempts %s\n' "$verify_mode" "$max_attempts"
 
     if [ -n "${WF_ONLY:-}" ] && ! _csv_has "$WF_ONLY" "$id"; then
       info "skipped $id (not in --only)"
@@ -595,23 +645,67 @@ cmd_workflow() {
       esac
     fi
 
-    _state_set "$state_file" "$id" "running"
-    export RORCC_SKILL_PREAMBLE="You are working through the '$name' workflow, phase '${label:-$id}'.${gate:+ Gate to satisfy before completing: $gate.} Apply the workflow design principles (Rails conventions, minimalism, security, tests)."
-
     now="$(date +%s)"
     rc=0
     units_run=0
-    if [ -z "${WF_SELECTED:-}" ]; then
-      info "phase '$id' has no applicable units — passing"
-      units_run=0
-    elif [ -n "$skills" ]; then
-      _run_csv_items skill "$WF_SELECTED" "$backend_flag" || rc=1
-      units_run="$(_csv_count "$WF_SELECTED")"
-    else
-      _run_csv_items agent "$WF_SELECTED" "$backend_flag" || rc=1
-      units_run="$(_csv_count "$WF_SELECTED")"
-    fi
-    unset RORCC_SKILL_PREAMBLE
+    attempt=1
+    verify_feedback=""
+
+    while :; do
+      _state_set "$state_file" "$id" "running"
+      RORCC_SKILL_PREAMBLE="You are working through the '$name' workflow, phase '${label:-$id}'.${gate:+ Gate to satisfy before completing: $gate.} Apply the workflow design principles (Rails conventions, minimalism, security, tests)."
+      if [ -n "$verify_feedback" ]; then
+        RORCC_SKILL_PREAMBLE="$RORCC_SKILL_PREAMBLE Previous deterministic verification failed. Fix the failure before completing this phase. Evidence: $verify_feedback"
+      fi
+      export RORCC_SKILL_PREAMBLE
+
+      units_this_attempt=0
+      if [ -z "${WF_SELECTED:-}" ]; then
+        info "phase '$id' has no applicable units — passing"
+        unset RORCC_SKILL_PREAMBLE
+        break
+      elif [ -n "$skills" ]; then
+        _run_csv_items skill "$WF_SELECTED" "$backend_flag" || rc=1
+        units_this_attempt="$(_csv_count "$WF_SELECTED")"
+      else
+        _run_csv_items agent "$WF_SELECTED" "$backend_flag" || rc=1
+        units_this_attempt="$(_csv_count "$WF_SELECTED")"
+      fi
+      units_run=$((units_run + units_this_attempt))
+      unset RORCC_SKILL_PREAMBLE
+
+      [ "$rc" -ne 0 ] && break
+
+      if [ -n "$verify_mode" ] && [ "$verify_mode" != "none" ]; then
+        verify_log="$run_dir/verify-${id}-attempt-${attempt}.log"
+        if _verify_phase "$root" "$verify_mode" "$verify_log"; then
+          break
+        fi
+
+        if [ "$attempt" -ge "$max_attempts" ]; then
+          rc=1
+          warn "verification exhausted for phase '$id' ($attempt/$max_attempts)"
+          break
+        fi
+
+        if [ "$auto" -eq 0 ]; then
+          printf '%b' "  Verification failed. Retry phase? [y/N]: "
+          IFS= read -r choice || choice=""
+          case "$choice" in
+            y|Y) : ;;
+            *) rc=1; break ;;
+          esac
+        fi
+
+        verify_feedback="command failed; see ${verify_log#$root/}"
+        attempt=$((attempt + 1))
+        warn "retrying phase '$id' after deterministic verification failure ($attempt/$max_attempts)"
+        continue
+      fi
+
+      break
+    done
+
     elapsed=$(( $(date +%s) - now ))
 
     if [ "$rc" -ne 0 ]; then
