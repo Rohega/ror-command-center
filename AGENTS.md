@@ -9,7 +9,8 @@ Do not duplicate content here; reference the source of truth.
 `.ai/` is the source of truth and works as a team. Before planning or coding,
 **read the relevant standards in `.ai/standards/`**. The core always applies:
 `collaboration` · `minimalism` · `development` · `project-bootstrap` · `testing` ·
-`security` · `git-workflow` · `code-review` · `documentation`. Then add the
+`security` · `git-workflow` · `code-review` · `documentation` ·
+`native-agent-orchestration`. Then add the
 domain standard for the area you touch:
 
 - Frontend/UI → `frontend` · `hotwire` · `ux-accessibility`
@@ -66,6 +67,20 @@ When a task matches a specialist, **delegate** to that subagent (Cursor Task /
 
 Fallback (Ask mode / no Task): act as the role in `.ai/agents/<id>.yaml` with `@`-mentions.
 
+## Native runtime orchestration
+
+Canonical policy: `.ai/standards/native-agent-orchestration.md`.
+
+The Task Router decides **what** work is earned; the active runtime decides only
+**how** to execute that selected work. Prefer the runtime's built-in explorer for
+broad repository discovery, use skills for bounded procedures, and spawn RORCC
+specialists only when their domain is selected. Do not fan out all specialists.
+
+Escalate architecture/independent review only for XL/architecture work, after
+the same failure repeats twice, or before closing L/XL/high-risk work when an
+equivalent RORCC review has not already run. Parallelize only independent
+workstreams.
+
 ## Follow the workflows
 
 For multi-step work, you **MUST** follow the matching process in `.ai/workflows/`.
@@ -84,7 +99,7 @@ Reusable capabilities live in `.ai/skills/` (e.g. `create-feature-spec`, `ponyta
 ## Notes
 
 - `.cursor/agents/` — native Cursor subagents (compiled from `.ai/agents/*/delegation`).
-- `.cursor/rules/` adapts these standards for Cursor. Most are glob-scoped; `workflow-gates.mdc`, `minimalism.mdc`, and `project-structure.mdc` are always applied.
+- `.cursor/rules/` adapts these standards for Cursor. Most are glob-scoped; `workflow-gates.mdc`, `minimalism.mdc`, `project-structure.mdc`, and `native-agent-orchestration.mdc` are always applied.
 - `.cursor/hooks.json` enforces hard gates in Cursor (protected-branch push block, commit/secret checks, new-project gap detection).
 - `.claude/` adapts them for Claude Code; its hooks run only in Claude Code.
 - Standards are vendor-neutral — they apply regardless of the agent tool.
