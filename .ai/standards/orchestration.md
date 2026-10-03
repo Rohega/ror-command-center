@@ -139,6 +139,16 @@ deterministic verification results, bounded retries, and gate decisions. Resume
 continues the same file. It does not send telemetry anywhere and it does not
 replace `state.tsv`, `metrics.tsv`, or `summary.tsv`.
 
+## Evidence audit
+
+`rorcc runs audit --last N` reads local event traces and reports raw counts for
+completed/failed/incomplete runs, retries, verification failures, and repeated
+retry phases. It is read-only.
+
+With fewer than five traced runs it explicitly treats the sample as too small
+for router/skill changes. Even after that threshold, changes remain
+human-reviewed; the audit never rewrites prompts, workflows, or standards.
+
 ## Lean context
 
 Workflow-invoked cloud skills send: specialist `purpose` + `SKILL.md` + named
