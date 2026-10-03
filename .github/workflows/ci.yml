@@ -26,3 +26,4 @@ jobs:
           bash tests/smoke.sh
           bash tests/native-agent-orchestration.sh
           bash tests/verification-loop.sh
+          bash tests/workflow-resume.sh
