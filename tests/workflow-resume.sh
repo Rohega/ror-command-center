@@ -57,6 +57,55 @@ else
 fi
 
 RUN_ID="$(_latest_resumable_run "$FIX")"
+if printf '%s\n' "$RUN_ID" | grep -Eq '^[0-9]{8}T[0-9]{6}-[0-9]+STATE="$FIX/.rorcc/runs/$RUN_ID/state.tsv"
+META="$FIX/.rorcc/runs/$RUN_ID/metadata.tsv"
+
+[ -f "$META" ] && [ "$(_run_meta_get "$META" workflow)" = "mini" ]   && ok_t "run metadata is persisted" || bad_t "run metadata"
+
+FIRST_BEFORE="$(grep -c '^first$' "$CALLS" || true)"
+SECOND_BEFORE="$(grep -c '^second$' "$CALLS" || true)"
+[ "$FIRST_BEFORE" = "1" ] && [ "$SECOND_BEFORE" = "1" ]   && ok_t "first run executed each reached phase once" || bad_t "initial execution counts"
+
+if (cd "$FIX" && cmd_workflow resume latest --auto >/dev/null 2>&1); then
+  ok_t "latest incomplete run resumes"
+else
+  bad_t "resume latest failed"
+fi
+
+FIRST_AFTER="$(grep -c '^first$' "$CALLS" || true)"
+SECOND_AFTER="$(grep -c '^second$' "$CALLS" || true)"
+if [ "$FIRST_AFTER" = "1" ] && [ "$SECOND_AFTER" = "2" ]; then
+  ok_t "resume skips passed phase and reruns failed phase"
+else
+  bad_t "resume counts first=$FIRST_AFTER second=$SECOND_AFTER"
+fi
+
+if awk -F'\t' '$1=="first" && $2=="passed"{a=1} $1=="second" && $2=="passed"{b=1} END{exit !(a&&b)}' "$STATE"; then
+  ok_t "resumed state reaches passed"
+else
+  bad_t "resumed state did not pass"
+fi
+
+printf '\n# changed definition\n' >> "$FIX/.ai/workflows/mini.yaml"
+if (cd "$FIX" && cmd_workflow resume "$RUN_ID" --auto >/dev/null 2>&1); then
+  bad_t "resume accepted changed workflow without force"
+else
+  ok_t "resume blocks changed workflow by default"
+fi
+
+if (cd "$FIX" && cmd_workflow resume "$RUN_ID" --auto --force >/dev/null 2>&1); then
+  ok_t "explicit force accepts changed workflow"
+else
+  bad_t "forced resume failed"
+fi
+
+printf '\nResult: %d passed, %d failed\n' "$pass" "$fail"
+[ "$fail" -eq 0 ]
+; then
+  ok_t "run id includes timestamp and pid"
+else
+  bad_t "unexpected run id: $RUN_ID"
+fi
 STATE="$FIX/.rorcc/runs/$RUN_ID/state.tsv"
 META="$FIX/.rorcc/runs/$RUN_ID/metadata.tsv"
 
