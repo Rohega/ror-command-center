@@ -71,7 +71,8 @@ _write_run_metadata() {
 }
 
 _latest_resumable_run() {
-  local root="$1" runs="$root/.rorcc/runs" id
+  local root="$1" runs id
+  runs="$root/.rorcc/runs"
   [ -d "$runs" ] || return 1
   while IFS= read -r id; do
     [ -f "$runs/$id/metadata.tsv" ] && [ -f "$runs/$id/state.tsv" ] || continue
