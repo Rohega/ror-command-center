@@ -13,6 +13,9 @@ grep -q 'Task Router is authoritative' "$STD" || fail "router authority missing"
 grep -q 'same implementation/debugging failure occurs twice' "$STD" || fail "retry escalation missing"
 grep -q 'Use up to two in parallel' "$STD" || fail "parallel budget missing"
 grep -q 'Do not add a duplicate reviewer' "$STD" || fail "duplicate review guard missing"
+grep -q 'Evidence-based verification loop' "$STD" || fail "verification loop missing"
+grep -q 'After two failed correction attempts' "$STD" || fail "bounded verification retry missing"
+grep -q 'second LLM is not the default verifier' "$STD" || fail "deterministic verification priority missing"
 pass "canonical native orchestration policy"
 
 for entry in \
