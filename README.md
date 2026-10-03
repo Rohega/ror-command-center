@@ -101,8 +101,10 @@ No Ollama or API keys needed for `--plan`.
 ```bash
 rorcc workflow new-feature --plan          # validate + show what would run (0 model calls)
 rorcc workflow new-feature                 # interactive: Enter / s skip / q quit
-rorcc workflow new-feature --auto          # one model turn per selected skill; still stops at gates
+rorcc workflow new-feature --auto          # bounded retries may occur after deterministic verification; gates stay human
 rorcc workflow new-feature --only idea,specification
+rorcc workflow resume latest                # continue an interrupted/incomplete run safely
+rorcc runs audit --last 20                  # read-only summary of local run evidence
 ```
 
 | I want to… | Workflow name |
@@ -114,7 +116,7 @@ rorcc workflow new-feature --only idea,specification
 
 `--plan` prints **Declared / Selected / Omitted** units. Reviews whose files do
 not exist (for example `capistrano-review` without `config/deploy.rb`) are
-omitted so you do not pay for them. `--full` forces every declared skill.
+omitted so you do not pay for them. `--full` forces every declared skill. The `new-feature` development phase also uses deterministic verification with bounded retries. Real runs store local state/evidence under `.rorcc/runs/<run-id>/`; `resume` continues that state and `runs audit` summarizes traces without changing the router.
 
 Step-by-step (Cursor, Claude, CLI, gates, troubleshooting):
 [docs/how-to/run-workflows.md](docs/how-to/run-workflows.md).
