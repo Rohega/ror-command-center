@@ -2,7 +2,7 @@
 
 Goal: improve reliability only where it solves a real failure mode. Keep the current deterministic router and native-agent model; do not add a generic graph framework.
 
-Status: Phase 1 is implemented in PR #53 and is being validated before merge.
+Status: Phase 1 is implemented and CI-green in PR #53. Phase 2 is implemented on `feature/workflow-resume` and is under validation.
 
 ## Phase 1 — Verification loop (implement now)
 
