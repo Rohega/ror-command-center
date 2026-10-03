@@ -36,6 +36,7 @@ COMMANDS:
   agent <name> [--cloud]  Chat with an agent (local Ollama by default, --cloud for hybrid)
   skill <name> [--cloud]  Run a .ai/skills/<name> skill with its responsible agent
   workflow <name> [--plan|--auto|--full|--only ids|--skip ids|--request text|--size S|M|L|XL|--signals names|--cloud]
+  workflow resume <run-id|latest> [--auto|--force|--local|--cloud]
   builder [--plan] [--request text] [--who role] [--data yes|no] [--sign-in yes|no] [--area new|change] [--done text] [--accept]
                           Fixed questions, then new-feature after an explicit accept
   actions <file>          Run file/shell actions; --undo restores the git checkpoint
@@ -63,6 +64,7 @@ EXAMPLES:
   rorcc workflow new-feature --plan
   rorcc builder --plan
   rorcc workflow new-feature --auto
+  rorcc workflow resume latest
 EOF
 }
 
