@@ -2,7 +2,7 @@
 
 Goal: improve reliability only where it solves a real failure mode. Keep the current deterministic router and native-agent model; do not add a generic graph framework.
 
-Status: Phase 1 is CI-green in PR #53. Phase 2 is CI-green in PR #54.
+Status: Phases 1–3 are CI-green in PRs #53–#55.
 
 ## Phase 1 — Verification loop (implement now)
 

@@ -126,6 +126,19 @@ For safety, RORCC compares the workflow definition, git branch, and git HEAD
 against the saved run. A mismatch stops by default. `--force` is the explicit
 human override when the repository changed intentionally.
 
+## Minimal run trace
+
+Executed workflows append significant lifecycle evidence to:
+
+```text
+.rorcc/runs/<run-id>/events.jsonl
+```
+
+The trace is local and append-only. It records workflow/phase/unit lifecycle,
+deterministic verification results, bounded retries, and gate decisions. Resume
+continues the same file. It does not send telemetry anywhere and it does not
+replace `state.tsv`, `metrics.tsv`, or `summary.tsv`.
+
 ## Lean context
 
 Workflow-invoked cloud skills send: specialist `purpose` + `SKILL.md` + named

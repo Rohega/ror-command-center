@@ -16,6 +16,8 @@ WF_FS=$'|'
 . "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/verify.sh"
 # shellcheck source=run_state.sh
 . "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/run_state.sh"
+# shellcheck source=events.sh
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/events.sh"
 
 # _parse_phases <file>
 # PSV: id|label|agents|skills|depends_on|gate|notes|applies_when
@@ -403,6 +405,9 @@ _run_csv_items() {
   # $1=kind (skill|agent) $2=csv $3=backend_flag
   local kind="$1" csv="$2" backend_flag="$3" item rc=0
   while IFS= read -r item; do
+    _event_emit "${RORCC_EVENT_FILE:-}" "unit_started" "${RORCC_EVENT_WORKFLOW:-}" \
+      "${RORCC_EVENT_RUN_ID:-}" "${RORCC_EVENT_PHASE:-}" "$item" \
+      "${RORCC_EVENT_ATTEMPT:-}" "running" "$kind"
     if [ "$kind" = "skill" ]; then
       # shellcheck source=skill.sh disable=SC1091
       . "$RORCC_LIB_DIR/skill.sh"
@@ -414,7 +419,15 @@ _run_csv_items() {
       # shellcheck disable=SC2086
       cmd_agent "$item" $backend_flag || rc=1
     fi
-    [ "$rc" -ne 0 ] && return 1
+    if [ "$rc" -ne 0 ]; then
+      _event_emit "${RORCC_EVENT_FILE:-}" "unit_finished" "${RORCC_EVENT_WORKFLOW:-}" \
+        "${RORCC_EVENT_RUN_ID:-}" "${RORCC_EVENT_PHASE:-}" "$item" \
+        "${RORCC_EVENT_ATTEMPT:-}" "failed" "$kind"
+      return 1
+    fi
+    _event_emit "${RORCC_EVENT_FILE:-}" "unit_finished" "${RORCC_EVENT_WORKFLOW:-}" \
+      "${RORCC_EVENT_RUN_ID:-}" "${RORCC_EVENT_PHASE:-}" "$item" \
+      "${RORCC_EVENT_ATTEMPT:-}" "passed" "$kind"
   done < <(_each_csv "$csv")
   return 0
 }
@@ -559,7 +572,7 @@ cmd_workflow() {
   fi
   printf '\n'
 
-  local run_id run_dir state_file metrics_file summary_file metadata_file resumed=0
+  local run_id run_dir state_file metrics_file summary_file metadata_file event_file resumed=0
   if [ -n "$resume_run" ]; then
     run_id="$resume_run"
     run_dir="$root/.rorcc/runs/$run_id"
@@ -567,6 +580,8 @@ cmd_workflow() {
     metrics_file="$run_dir/metrics.tsv"
     summary_file="$run_dir/summary.tsv"
     metadata_file="$run_dir/metadata.tsv"
+    event_file="$run_dir/events.jsonl"
+    touch "$event_file"
     if [ ! -f "$state_file" ] || [ ! -f "$metrics_file" ] || [ ! -f "$metadata_file" ]; then
       err "run is not resumable: $run_id"
       return 1
@@ -580,6 +595,8 @@ cmd_workflow() {
     metrics_file="$run_dir/metrics.tsv"
     summary_file="$run_dir/summary.tsv"
     metadata_file="$run_dir/metadata.tsv"
+    event_file="$run_dir/events.jsonl"
+    : > "$event_file"
     printf 'phase_id\tstatus\n' > "$state_file"
     printf 'phase_id\telapsed_seconds\texecution_units\tstatus\n' > "$metrics_file"
     while IFS="$WF_FS" read -r id _r _a _s _d _g _n; do
@@ -587,6 +604,17 @@ cmd_workflow() {
       printf '%s\tpending\n' "$id" >> "$state_file"
     done < <(_parse_phases "$wf")
     _write_run_metadata "$metadata_file" "$name" "$wf" "$root" "$auto" "$backend_flag"
+  fi
+
+  RORCC_EVENT_FILE="$event_file"
+  RORCC_EVENT_WORKFLOW="$name"
+  RORCC_EVENT_RUN_ID="$run_id"
+  RORCC_EVENT_PHASE=""
+  RORCC_EVENT_ATTEMPT=""
+  if [ "$resumed" -eq 1 ]; then
+    _event_emit "$event_file" "workflow_resumed" "$name" "$run_id" "" "" "" "running" ""
+  else
+    _event_emit "$event_file" "workflow_started" "$name" "$run_id" "" "" "" "running" ""
   fi
 
   local i=0 choice run_start now elapsed rc units_run total_units=0 previous_status
@@ -644,6 +672,7 @@ cmd_workflow() {
     if [ -n "${WF_ONLY:-}" ] && ! _csv_has "$WF_ONLY" "$id"; then
       info "skipped $id (not in --only)"
       _state_set "$state_file" "$id" "skipped"
+      _event_emit "$event_file" "phase_skipped" "$name" "$run_id" "$id" "" "" "skipped" "not in --only"
       printf '%s\t%s\t%s\t%s\n' "$id" "0" "0" "skipped" >> "$metrics_file"
       printf '\n'
       continue
@@ -651,6 +680,7 @@ cmd_workflow() {
     if [ -n "${WF_SKIP:-}" ] && _csv_has "$WF_SKIP" "$id"; then
       info "skipped $id (--skip)"
       _state_set "$state_file" "$id" "skipped"
+      _event_emit "$event_file" "phase_skipped" "$name" "$run_id" "$id" "" "" "skipped" "--skip"
       printf '%s\t%s\t%s\t%s\n' "$id" "0" "0" "skipped" >> "$metrics_file"
       printf '\n'
       continue
@@ -660,6 +690,7 @@ cmd_workflow() {
       && ! _applies_when "$applies"; then
       info "phase '$id' omitted by applies_when — passing"
       _state_set "$state_file" "$id" "passed"
+      _event_emit "$event_file" "phase_omitted" "$name" "$run_id" "$id" "" "" "passed" "applies_when"
       printf '%s\t%s\t%s\t%s\n' "$id" "0" "0" "passed" >> "$metrics_file"
       printf '\n'
       continue
@@ -668,6 +699,7 @@ cmd_workflow() {
     if [ "$(_dep_outcome "$deps" "$state_file")" = "blocked" ]; then
       warn "phase '$id' blocked — dependencies are not all passed"
       _state_set "$state_file" "$id" "blocked"
+      _event_emit "$event_file" "phase_blocked" "$name" "$run_id" "$id" "" "" "blocked" "dependency"
       printf '%s\t%s\t%s\t%s\n' "$id" "0" "$units" "blocked" >> "$metrics_file"
       any_blocked=1
       printf '\n'
@@ -680,6 +712,7 @@ cmd_workflow() {
       case "$choice" in
         q|Q)
           info "workflow stopped"
+          _event_emit "$event_file" "workflow_stopped" "$name" "$run_id" "$id" "" "" "stopped" "human"
           now="$(date +%s)"
           _write_summary "$summary_file" "$name" "$run_id" "$state_file" "$total_units" "$((now - run_start))"
           return 0
@@ -687,6 +720,7 @@ cmd_workflow() {
         s|S)
           info "skipped $label"
           _state_set "$state_file" "$id" "skipped"
+          _event_emit "$event_file" "phase_skipped" "$name" "$run_id" "$id" "" "" "skipped" "human"
           printf '%s\t%s\t%s\t%s\n' "$id" "0" "$units" "skipped" >> "$metrics_file"
           printf '\n'
           continue
@@ -694,6 +728,8 @@ cmd_workflow() {
       esac
     fi
 
+    _event_emit "$event_file" "phase_started" "$name" "$run_id" "$id" "" "" "running" ""
+    RORCC_EVENT_PHASE="$id"
     now="$(date +%s)"
     rc=0
     units_run=0
@@ -701,6 +737,7 @@ cmd_workflow() {
     verify_feedback=""
 
     while :; do
+      RORCC_EVENT_ATTEMPT="$attempt"
       _state_set "$state_file" "$id" "running"
       RORCC_SKILL_PREAMBLE="You are working through workflow $name, phase ${label:-$id}.${gate:+ Gate to satisfy before completing: $gate.} Apply the workflow design principles (Rails conventions, minimalism, security, tests)."
       if [ -n "$verify_feedback" ]; then
@@ -728,8 +765,10 @@ cmd_workflow() {
       if [ -n "$verify_mode" ] && [ "$verify_mode" != "none" ]; then
         verify_log="$run_dir/verify-${id}-attempt-${attempt}.log"
         if _verify_phase "$root" "$verify_mode" "$verify_log"; then
+          _event_emit "$event_file" "verification_finished" "$name" "$run_id" "$id" "" "$attempt" "passed" "${verify_log#$root/}"
           break
         fi
+        _event_emit "$event_file" "verification_finished" "$name" "$run_id" "$id" "" "$attempt" "failed" "${verify_log#$root/}"
 
         if [ "$attempt" -ge "$max_attempts" ]; then
           rc=1
@@ -748,6 +787,7 @@ cmd_workflow() {
 
         verify_feedback="command failed; see ${verify_log#$root/}"
         attempt=$((attempt + 1))
+        _event_emit "$event_file" "phase_retry" "$name" "$run_id" "$id" "" "$attempt" "retrying" "verification failed"
         warn "retrying phase '$id' after deterministic verification failure ($attempt/$max_attempts)"
         continue
       fi
@@ -761,6 +801,7 @@ cmd_workflow() {
       _state_set "$state_file" "$id" "failed"
       printf '%s\t%s\t%s\t%s\n' "$id" "$elapsed" "$units_run" "failed" >> "$metrics_file"
       any_failed=1
+      _event_emit "$event_file" "phase_finished" "$name" "$run_id" "$id" "" "$attempt" "failed" ""
       warn "phase '$id' failed"
       printf '\n'
       continue
@@ -770,19 +811,25 @@ cmd_workflow() {
       printf '%b' "  ${C_YELLOW}Gate:${C_RESET} $gate — satisfied? [y/N]: "
       IFS= read -r choice || break
       case "$choice" in
-        y|Y|s|S) : ;;
+        y|Y|s|S)
+          _event_emit "$event_file" "gate_decision" "$name" "$run_id" "$id" "" "" "confirmed" "$gate"
+          ;;
         *)
+          _event_emit "$event_file" "gate_decision" "$name" "$run_id" "$id" "" "" "rejected" "$gate"
           warn "gate not confirmed — pausing workflow at '${label:-$id}'"
           _state_set "$state_file" "$id" "failed"
+          _event_emit "$event_file" "phase_finished" "$name" "$run_id" "$id" "" "$attempt" "failed" "gate rejected"
           printf '%s\t%s\t%s\t%s\n' "$id" "$elapsed" "$units_run" "failed" >> "$metrics_file"
           now="$(date +%s)"
           _write_summary "$summary_file" "$name" "$run_id" "$state_file" "$((total_units + units_run))" "$((now - run_start))"
+          _event_emit "$event_file" "workflow_stopped" "$name" "$run_id" "$id" "" "" "stopped" "gate rejected"
           return 0
           ;;
       esac
     fi
 
     _state_set "$state_file" "$id" "passed"
+    _event_emit "$event_file" "phase_finished" "$name" "$run_id" "$id" "" "$attempt" "passed" ""
     printf '%s\t%s\t%s\t%s\n' "$id" "$elapsed" "$units_run" "passed" >> "$metrics_file"
     total_units=$((total_units + units_run))
     printf '\n'
@@ -793,8 +840,10 @@ cmd_workflow() {
   info "run state: $run_dir"
 
   if [ "$any_failed" -ne 0 ] || [ "$any_blocked" -ne 0 ]; then
+    _event_emit "$event_file" "workflow_finished" "$name" "$run_id" "" "" "" "failed" ""
     warn "workflow '$name' finished with blocked or failed phases"
     return 1
   fi
+  _event_emit "$event_file" "workflow_finished" "$name" "$run_id" "" "" "" "passed" ""
   ok "workflow '$name' complete"
 }
