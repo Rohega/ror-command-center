@@ -76,7 +76,7 @@ Follow .ai/workflows/new-feature.yaml from phase testing.
 Stop after each phase and wait for my approval.
 ```
 
-CLI preview (0 tokens): `rorcc workflow new-feature --plan`.
+CLI preview (0 tokens): `rorcc workflow new-feature --plan`. Interrupted CLI runs can continue with `rorcc workflow resume latest`; local evidence can be inspected with `rorcc runs audit --last 20`.
 How-to: [../how-to/run-workflows.md](../how-to/run-workflows.md).
 
 ## CI / Automation
