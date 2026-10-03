@@ -30,6 +30,7 @@ Full examples: `docs/COLLABORATIVE-DESIGN-PRINCIPLE.md`
 @.ai/standards/development.md
 @.ai/standards/project-bootstrap.md
 @.ai/standards/minimalism.md
+@.ai/standards/native-agent-orchestration.md
 @.ai/standards/frontend.md
 @.ai/standards/hotwire.md
 @.ai/standards/ux-accessibility.md
@@ -52,10 +53,19 @@ Full examples: `docs/COLLABORATIVE-DESIGN-PRINCIPLE.md`
 
 Cursor uses the same YAML via native subagents in `.cursor/agents/` (priority over `.claude/agents/` when names match).
 
+## Claude Native Orchestration
+
+The Task Router remains authoritative about **what** phases/skills are earned.
+Claude Code may use built-in Explore/Plan and project subagents to decide **how**
+to execute selected work. Prefer subagents for isolated work; use agent teams
+only when independent sessions must communicate with each other. Follow
+`.ai/standards/native-agent-orchestration.md` for escalation, parallelism, and
+completion review rules.
+
 ## Getting Started
 
 1. Read `.ai/workflows/new-feature.yaml` for the default development flow
 2. Invoke skills with `/create-feature-spec`, `/qa-plan`, etc.
-3. Spawn agents per task — definitions in `.ai/agents/`; Cursor adapters in `.cursor/agents/`
+3. Let the router select the work, then use Claude native subagents only for the selected specialist roles
 
 See `docs/integrations/claude-code.md` for full setup.

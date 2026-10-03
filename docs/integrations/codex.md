@@ -20,6 +20,7 @@ behavior, paste or attach:
 7. `.ai/standards/git-workflow.md`
 8. `.ai/standards/code-review.md`
 9. `.ai/standards/documentation.md`
+10. `.ai/standards/native-agent-orchestration.md`
 
 **Plus, for the task at hand:**
 
@@ -44,6 +45,25 @@ Skill:
 
 Task: Implement US-003 from docs/stories/...
 ```
+
+## Native multi-agent delegation
+
+RORCC uses `AGENTS.md` as the Codex project adapter and **does not require a
+project-local `.codex/agents/` layer**. This avoids depending on an
+undocumented/project-specific format and keeps `.ai/` canonical.
+
+When the active Codex runtime exposes multi-agent/subagent delegation:
+
+- keep one lead agent responsible for integration and the final response;
+- prefer native repository exploration for broad/unfamiliar code;
+- delegate only specialist work already earned by the RORCC Task Router;
+- escalate architecture/review only at the checkpoints in
+  `.ai/standards/native-agent-orchestration.md`;
+- do not create a duplicate Explorer, Researcher, or Reviewer when the harness
+  or selected RORCC phase already provides that capability.
+
+The Codex harness can evolve independently; the contract RORCC depends on is
+`AGENTS.md` + the canonical `.ai/` policy, not a vendor-specific agent roster.
 
 ## Workflows
 

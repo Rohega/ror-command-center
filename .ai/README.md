@@ -1,6 +1,6 @@
 # RoR Command Center — Canonical Index
 
-This directory is the **single source of truth** for all Ruby on Rails AI engineering definitions. Platform-specific folders (`.cursor/`, `.claude/`) are adapters only — they reference files here and must not duplicate content.
+This directory is the **single source of truth** for all Ruby on Rails AI engineering definitions. Platform entry files (`AGENTS.md`, `CLAUDE.md`) and platform-specific folders (`.cursor/`, `.claude/`) are adapters only — they reference files here and must not duplicate content.
 
 ## Contents
 
@@ -53,13 +53,15 @@ Each agent YAML includes additive discovery fields used by platform adapters:
 | `id` | Stable slug (= filename = Cursor subagent `name`) |
 | `delegation.summary` | One-line WHAT for adapter `description` |
 | `delegation.use_when` | Trigger phrases for automatic delegation |
-| `delegation.use_proactively` | Prefer proactive Task/subagent handoff |
+| `delegation.use_proactively` | Capability hint; native orchestration may suppress handoff when the router did not earn it |
 | `delegation.readonly` | Cursor subagent `readonly` flag |
 | `delegation.pairs_with_skills` | Skills this role typically runs |
 
 **Compile rule:** `.cursor/agents/<id>.md` and `.claude/agents/<id>.md` are thin
 adapters — they compile `delegation` into frontmatter `description` and point
-back to `.ai/agents/<id>.yaml`. Do not duplicate role content in adapters.
+back to `.ai/agents/<id>.yaml`. Descriptions are discovery metadata, not
+permission to bypass the Task Router. Runtime behavior is governed by
+[standards/native-agent-orchestration.md](standards/native-agent-orchestration.md).
 
 ## Core Philosophy
 
@@ -72,3 +74,4 @@ back to `.ai/agents/<id>.yaml`. Do not duplicate role content in adapters.
 - Senior Engineer Standards
 - Minimalism — lazy senior engineer ([standards/minimalism.md](standards/minimalism.md)): YAGNI, stdlib/Rails-native first, deletion over addition, never cutting safety. Skills: `ponytail-review`, `ponytail-audit`, `ponytail-debt`.
 - Orchestration — deterministic workflow router ([standards/orchestration.md](standards/orchestration.md)): classify impact once (optional), then select skills by `applies_when` + project paths. Never spend tokens to decide the next phase.
+- Native agent orchestration — the Task Router decides **what** work exists; Cursor, Claude Code, Codex, and future runtimes decide **how** to execute only that selected work ([standards/native-agent-orchestration.md](standards/native-agent-orchestration.md)).

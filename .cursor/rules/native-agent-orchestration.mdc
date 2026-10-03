@@ -1,0 +1,18 @@
+---
+description: RoR Command Center — native subagent orchestration without bypassing the deterministic Task Router.
+alwaysApply: true
+---
+
+# Native agent orchestration
+
+@.ai/standards/native-agent-orchestration.md
+
+The RORCC Task Router decides **what** work is earned. Cursor decides only
+**how** to execute selected work.
+
+- Prefer Cursor's built-in exploration for broad/unfamiliar repository discovery.
+- Use `.cursor/agents/<id>.md` only for specialists selected by the task/workflow.
+- Prefer a skill over a subagent for a bounded one-shot procedure.
+- Parallelize only independent L/XL workstreams; do not fan out by default.
+- Escalate to architecture/independent review only at the canonical checkpoints.
+- Never re-add a phase/artifact omitted by `applies_when` or the path router.
