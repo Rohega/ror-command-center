@@ -27,3 +27,4 @@ jobs:
           bash tests/native-agent-orchestration.sh
           bash tests/verification-loop.sh
           bash tests/workflow-resume.sh
+          bash tests/workflow-events.sh
