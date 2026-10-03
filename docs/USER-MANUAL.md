@@ -4,7 +4,7 @@
 > agente de IA (Cursor, Claude Code, Codex, Copilot…). Pensada para ponerte a
 > producir en una sola sesión.
 
-Última actualización: 2026-09-24
+Última actualización: 2026-10-03
 
 ---
 
@@ -292,14 +292,21 @@ rorcc workflow new-feature --plan
 
 ```bash
 rorcc workflow new-feature            # te pregunta en cada fase (Enter / s / q)
-rorcc workflow new-feature --auto     # un turno de modelo por skill; los gates siguen pidiendo "y"
+rorcc workflow new-feature --auto     # puede reintentar de forma acotada si falla la verificación; los gates siguen pidiendo "y"
 ```
 
-4. **Retoma** sin repetir idea/spec: `rorcc workflow new-feature --only development,testing`.
-5. **Fuerza reviews omitidos** (vas a crear esos archivos): añade `--full`.
+4. **Reanuda una ejecución interrumpida:** `rorcc workflow resume latest`. Las fases ya aprobadas no se repiten; si cambió branch/HEAD/workflow, se detiene por seguridad. `--force` solo confirma un cambio intencional.
+5. **Usa `--only development,testing`** cuando esas fases previas ya se hicieron fuera del runner; no es el mecanismo de recuperación.
+6. **Fuerza reviews omitidos** (vas a crear esos archivos): añade `--full`.
 
 Si el YAML está roto verás `workflow invalid` **antes** de llamar al modelo.
-`--auto` **no** aprueba gates y **no** hace commit.
+`--auto` **no** aprueba gates y **no** hace commit. Una fase con `verify: auto`
+puede ejecutar una verificación determinista y reintentarse solo hasta su límite.
+
+Cada ejecución real deja estado local en `.rorcc/runs/<run-id>/`: estado,
+métricas, metadata de recuperación, `events.jsonl` y logs de verificación
+cuando aplican. `rorcc runs audit --last 20` resume esa evidencia en modo
+**solo lectura**; con pocas ejecuciones no debe usarse para cambiar reglas.
 
 Guía completa (flags, gates, paralelo vs secuencial, los otros 3 workflows):
 `docs/how-to/run-workflows.md`.
@@ -426,6 +433,8 @@ Resumen:
 - **DoD (Definition of Done)** — Criterios mínimos para dar por terminado el trabajo.
 - **Unit (unidad de ejecución)** — Una skill seleccionada (o un agent si la fase no tiene skills).
 - **`--plan`** — Previsualiza el workflow: 0 llamadas a modelo.
+- **Verification loop** — Verificación determinista de una fase; si falla puede provocar un reintento acotado.
+- **Resume** — Continúa un run existente sin repetir fases ya aprobadas (`rorcc workflow resume latest`).
 - **Gate** — Pregunta humana al final de una fase; `--auto` no la salta.
 - **`alwaysApply`** — Frontmatter de una regla de Cursor que la activa en todo chat.
 - **Glob** — Patrón de archivos que activa una regla `.mdc` por tipo de archivo.

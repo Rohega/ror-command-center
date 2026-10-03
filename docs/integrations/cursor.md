@@ -108,7 +108,8 @@ Same process on the CLI (preview costs **zero** tokens — no Ollama needed):
 ```bash
 rorcc workflow new-feature --plan    # declared / selected / omitted
 rorcc workflow new-feature           # Enter / s / q each phase
-rorcc workflow new-feature --auto    # one model turn per skill; gates still ask
+rorcc workflow new-feature --auto    # deterministic verification may cause a bounded retry
+rorcc workflow resume latest         # continue an interrupted CLI run
 ```
 
 Flags, phase ids, and the other three workflows:

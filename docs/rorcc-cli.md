@@ -51,13 +51,16 @@ It leaves `jq`/`zstd`/`git` alone and keeps your own files in `--project` mode.
 | `rorcc skill <name> [--cloud]` | Run a `.ai/skills/<name>` skill with its responsible agent |
 | `rorcc workflow <name> [--cloud]` | Run a `.ai/workflows/<name>` end to end, phase by phase |
 | `rorcc workflow <name> --plan` | Preflight + deterministic router; print selected/omitted units. No LLM, no project writes |
-| `rorcc workflow <name> --auto` | Skip per-phase `[Enter]`; one-shot model turn per unit. Gates still need a human |
+| `rorcc workflow <name> --auto` | Skip per-phase `[Enter]`; one model turn per unit **per attempt**. Deterministic verification may cause a bounded retry; gates stay human |
 | `rorcc workflow <name> --only a,b` | Run only those phase ids (prior phases are treated as already done) |
 | `rorcc workflow <name> --skip a` | Skip those phases; dependents follow `depends_on` |
 | `rorcc workflow <name> --full` | Disable the router; run every declared unit |
 | `rorcc workflow <name> --request "…"` | Classify once (heuristic, 0 LLM) then apply `applies_when` |
 | `rorcc workflow <name> --size S\|M\|L\|XL` | Override size (implies classification) |
 | `rorcc workflow <name> --signals a,b` | Override signals (implies classification) |
+| `rorcc workflow resume <run-id\|latest>` | Continue an existing run; passed/skipped phases are not repeated. Repository/workflow drift blocks by default |
+| `rorcc workflow resume latest --force` | Explicitly resume despite an intentional branch/HEAD/workflow mismatch |
+| `rorcc runs audit [--last N]` | Read-only summary of local run evidence; never rewrites router, skills, or prompts |
 | `rorcc builder [--plan]` | Fixed questions, write a plan, and on `--accept` run `new-feature`. `--plan` prints the command and writes nothing |
 | `rorcc actions <file>` | Run `file` and `shell` actions. A failure restores `refs/rorcc/checkpoint`. `--undo` restores it after a success |
 | `rorcc security` | Findings (`title`, `level`, `risk`, `files`) when size is L/XL or `auth_changed` is set. Skips otherwise. Cites only files it opened |
@@ -88,8 +91,10 @@ Run a process end to end — **start with `--plan`** (no Ollama, no API keys):
 rorcc workflow new-feature --plan              # what will run; 0 LLM calls
 rorcc workflow new-feature --plan --request "Cambiar el texto Login por Entrar"
 rorcc workflow new-feature                     # Enter / s skip / q quit
-rorcc workflow new-feature --auto              # one-shot per selected skill; gates still ask
+rorcc workflow new-feature --auto              # deterministic verification may trigger a bounded retry
 rorcc workflow new-feature --only development,testing
+rorcc workflow resume latest                    # continue without rerunning passed phases
+rorcc runs audit --last 20                      # inspect local evidence only
 rorcc workflow new-feature --skip deployment
 rorcc workflow new-feature --plan --full       # do not omit path-based reviews
 ```
@@ -125,7 +130,7 @@ then runs **selected skills** (not a redundant agent chat on top of each skill).
 | Flag | What happens |
 |------|----------------|
 | `--plan` | Preflight + router. Prints `stack:`, then declared / selected / omitted units. No writes |
-| `--auto` | No per-phase `[Enter]`. One model completion per selected unit. **Gates still require `y`** |
+| `--auto` | No per-phase `[Enter]`. One model completion per selected unit per attempt; opted-in verification may retry up to the phase limit. **Gates still require `y`** |
 | `--only a,b` | Only those **phase ids**. Other phases are skipped; their absence does not block |
 | `--skip a` | Skip those ids; later phases that `depends_on` them become `blocked` |
 | `--full` | Ignore path-based omission; run every declared skill |
@@ -135,8 +140,15 @@ then runs **selected skills** (not a redundant agent chat on top of each skill).
 repository `new-feature` is usually **14 declared / 12 selected** because
 `review-rails-models` and `capistrano-review` have no matching files.
 
-**After a real run** (not `--plan`): `.rorcc/runs/<run-id>/{state,metrics,summary}.tsv`
-(gitignored).
+**After a real run** (not `--plan`), `.rorcc/runs/<run-id>/` is gitignored and contains:
+
+- `state.tsv` — current phase states;
+- `metrics.tsv` / `summary.tsv` — execution counts and elapsed summary;
+- `metadata.tsv` — workflow/classification plus branch/HEAD safety metadata for resume;
+- `events.jsonl` — append-only local lifecycle evidence;
+- `verify-<phase>-attempt-<n>.log` — deterministic verifier output when verification runs.
+
+`rorcc workflow resume latest` reuses this run state. `rorcc runs audit --last 20` reads only `events.jsonl`.
 
 Workflow-invoked **cloud** skills send a lean prompt (`purpose` + skill +
 templates). Standalone `rorcc skill` still inlines referenced standards.
@@ -192,7 +204,8 @@ Full step-by-step onboarding (with troubleshooting and rollback):
 | `RORCC_MAX_CHARS` | _(unset)_ | Hard-cap (truncate) the system prompt for small models |
 | `RORCC_PROXY_PORT` | `4000` | Port for the `proxy --start` LiteLLM gateway |
 | `RORCC_LEAN` | `1` during `workflow` | Cloud: specialist purpose + skill only (set by the runner) |
-| `RORCC_WORKFLOW_AUTO` | `1` with `--auto` | One-shot chat turn per unit |
+| `RORCC_WORKFLOW_AUTO` | `1` with `--auto` | One model turn per unit per attempt |
+| `RORCC_VERIFY_CMD` | _(auto-detected when unset)_ | Explicit deterministic verification command for `verify: auto` phases |
 | `OPENAI_API_KEY` / `ANTHROPIC_API_KEY` | _(unset)_ | Cloud credentials |
 
 ## Use from Cursor / Claude Code
@@ -227,6 +240,8 @@ Best-effort — IDE behavior changes between versions.
 | Slow / poor answers | use a larger model tier, or `--cloud` for that task |
 | `workflow invalid` | Preflight failed — read `error:` lines; fix YAML before spending tokens |
 | Phase `blocked` | A `depends_on` phase was skipped/failed; re-run it or use `--only` |
+| Interrupted workflow | `rorcc workflow resume latest`; inspect drift if resume refuses |
+| Resume says repository/workflow changed | Verify the change first; use `--force` only when the mismatch is intentional |
 | Skill omitted in `--plan` | No matching `paths:` on disk; pass `--full` if you still need it |
 
 See also: [docs/integrations/ollama.md](integrations/ollama.md).
