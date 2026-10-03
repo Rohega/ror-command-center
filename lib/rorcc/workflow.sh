@@ -653,7 +653,7 @@ cmd_workflow() {
 
     while :; do
       _state_set "$state_file" "$id" "running"
-      RORCC_SKILL_PREAMBLE="You are working through the '$name' workflow, phase '${label:-$id}'.${gate:+ Gate to satisfy before completing: $gate.} Apply the workflow design principles (Rails conventions, minimalism, security, tests)."
+      RORCC_SKILL_PREAMBLE="You are working through workflow $name, phase ${label:-$id}.${gate:+ Gate to satisfy before completing: $gate.} Apply the workflow design principles (Rails conventions, minimalism, security, tests)."
       if [ -n "$verify_feedback" ]; then
         RORCC_SKILL_PREAMBLE="$RORCC_SKILL_PREAMBLE Previous deterministic verification failed. Fix the failure before completing this phase. Evidence: $verify_feedback"
       fi
