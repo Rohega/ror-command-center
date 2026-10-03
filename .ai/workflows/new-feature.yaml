@@ -45,6 +45,8 @@ phases:
     agents: [backend-rails-developer, frontend-react-inertia-developer]
     skills: [create-api-endpoints, review-db-migrations, ponytail-review]
     depends_on: [implementation-plan]
+    verify: auto
+    max_attempts: 2
     notes: >-
       Apply .ai/standards/minimalism.md while building — stdlib/Rails-native before new gems,
       deletion over addition. On Cursor, backend-rails-developer and frontend-react-inertia-developer
