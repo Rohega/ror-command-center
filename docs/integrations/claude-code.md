@@ -108,6 +108,7 @@ Same process on the CLI (preview costs **zero** tokens — no Ollama needed):
 ```bash
 rorcc workflow new-feature --plan
 rorcc workflow new-feature --auto
+rorcc workflow resume latest
 ```
 
 Flags, phase ids, and the other three workflows:
