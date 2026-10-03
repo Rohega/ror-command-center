@@ -140,20 +140,27 @@ Then run (picks a backend):
 
 ```bash
 rorcc workflow new-feature                  # Enter = run this phase, s = skip, q = quit
-rorcc workflow new-feature --auto           # no Enter; one model turn per selected skill
+rorcc workflow new-feature --auto           # no Enter; verification may cause a bounded retry
 rorcc workflow new-feature --auto --cloud   # same, using OpenAI/Anthropic
 ```
 
 `--auto` does **not** approve gates and does **not** commit.
 
-Resume later without redoing idea/spec:
+Resume an interrupted run:
 
 ```bash
-rorcc workflow new-feature --only development,testing
+rorcc workflow resume latest
+rorcc workflow resume <run-id>
 ```
 
-`--only` treats phases you omitted as already done. `--skip deployment` skips
-that phase and **blocks** anything that `depends_on` it.
+Resume keeps passed/skipped phases and continues incomplete work. It refuses
+workflow/branch/HEAD drift unless you explicitly accept an intentional mismatch
+with `--force`.
+
+Use `rorcc workflow new-feature --only development,testing` only when earlier
+work was completed outside this run. `--only` treats omitted phases as already
+done. `--skip deployment` skips that phase and **blocks** anything that
+`depends_on` it.
 
 ---
 
@@ -185,6 +192,10 @@ Rules in [`.ai/standards/orchestration.md`](../../.ai/standards/orchestration.md
    write). `--full` turns the router off.
 6. **Workflow cloud prompts are lean:** specialist `purpose` + `SKILL.md` +
    named templates. Standalone `rorcc skill` still sends the full standards dump.
+7. **Verification is deterministic when enabled.** A phase with `verify: auto`
+   runs an existing project check and may retry only up to `max_attempts`.
+8. **Run state is resumable and observable locally.** Resume reuses the saved
+   run; `events.jsonl` records lifecycle evidence without external telemetry.
 
 **Parallel agents (Cursor only):** backend and frontend **may** run as two
 Cursor `Task` subagents when the contract is already frozen (ADR + stories) and
@@ -198,7 +209,9 @@ dependents are not blocked. Without these flags, behavior is unchanged
 (path router only). `--full` and `--only` ignore `applies_when`.
 
 Run state (after a real run, not `--plan`) is under `.rorcc/runs/<run-id>/`
-(`state.tsv`, `metrics.tsv`, `summary.tsv`) — gitignored.
+and is gitignored: `state.tsv`, `metrics.tsv`, `summary.tsv`,
+`metadata.tsv`, `events.jsonl`, plus verifier logs when applicable.
+`rorcc runs audit --last 20` reads these traces without changing the workflow.
 
 ---
 
@@ -207,7 +220,7 @@ Run state (after a real run, not `--plan`) is under `.rorcc/runs/<run-id>/`
 | Flag | Effect | Use when |
 |------|--------|----------|
 | `--plan` | Parse + preflight + router. Print units. No model, no writes | Always first |
-| `--auto` | No `[Enter]` per phase; one-shot reply per unit; **gates still ask** | You accept sequential one-shots |
+| `--auto` | No `[Enter]` per phase; one model reply per unit per attempt; deterministic verification may retry; **gates still ask** | You accept bounded autonomous retries |
 | `--only id,id` | Run only those phase ids | You already finished earlier phases |
 | `--skip id` | Skip those phases; dependents become `blocked` | You explicitly do not want a later phase |
 | `--full` | Select every declared skill, even if paths are missing | Greenfield / you know the files will appear |
@@ -372,7 +385,8 @@ run, postmortem under `docs/incidents/postmortem-*.md`.
 ```bash
 rorcc workflow new-feature --plan     # 0 llamadas a modelo; muestra selected / omitted
 rorcc workflow new-feature            # Enter / s / q
-rorcc workflow new-feature --auto     # un turno por skill; los gates siguen pidiendo sí
+rorcc workflow new-feature --auto     # verificación determinista puede provocar un reintento acotado
+rorcc workflow resume latest          # reanuda sin repetir fases aprobadas
 rorcc workflow new-feature --only development,testing
 ```
 
@@ -390,7 +404,7 @@ rorcc workflow new-feature --only development,testing
 - Paralelo backend+frontend: solo en **Cursor Task** cuando el contrato ya está
   cerrado. El CLI es secuencial a propósito (menos tokens, menos APIs inventadas).
 
-**Flags:** `--plan` (0 tokens) · `--auto` (un turno por skill; los gates piden `y`) ·
+**Flags:** `--plan` (0 tokens) · `--auto` (un turno por unidad por intento; los gates piden `y`) ·
 `--only id,id` (trata el resto como ya hecho) · `--skip id` (bloquea dependientes) ·
 `--full` (no omitir reviews) · `--request` / `--size` / `--signals` (clasificación).
 
@@ -411,6 +425,8 @@ rorcc workflow new-feature --only development,testing
 | `no .ai/ framework found` | `cd` a la carpeta que tiene `.ai/` |
 | `workflow invalid` | Lee `error:`; no se llamó a ningún modelo |
 | Fase `blocked` | Repite la dependencia, o `--only` si ya la hiciste fuera |
+| Run interrumpido | `rorcc workflow resume latest` |
+| Resume rechaza cambios | Revisa branch/HEAD/workflow; usa `--force` solo si el cambio fue intencional |
 | `--auto` pregunta | Es un **gate**. Escribe `y` solo si el texto del gate se cumple |
 
 Detalle de fases y troubleshooting: secciones en inglés arriba.
