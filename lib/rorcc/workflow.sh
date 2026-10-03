@@ -818,9 +818,11 @@ cmd_workflow() {
           _event_emit "$event_file" "gate_decision" "$name" "$run_id" "$id" "" "" "rejected" "$gate"
           warn "gate not confirmed — pausing workflow at '${label:-$id}'"
           _state_set "$state_file" "$id" "failed"
+          _event_emit "$event_file" "phase_finished" "$name" "$run_id" "$id" "" "$attempt" "failed" "gate rejected"
           printf '%s\t%s\t%s\t%s\n' "$id" "$elapsed" "$units_run" "failed" >> "$metrics_file"
           now="$(date +%s)"
           _write_summary "$summary_file" "$name" "$run_id" "$state_file" "$((total_units + units_run))" "$((now - run_start))"
+          _event_emit "$event_file" "workflow_stopped" "$name" "$run_id" "$id" "" "" "stopped" "gate rejected"
           return 0
           ;;
       esac
