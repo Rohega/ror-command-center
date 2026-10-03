@@ -55,7 +55,7 @@ else
 fi
 
 FIX="$TMP/integration"
-mkdir -p "$FIX/.ai/workflows" "$FIX/.ai/skills/dummy"
+mkdir -p "$FIX/.ai/agents" "$FIX/.ai/workflows" "$FIX/.ai/skills/dummy"
 printf '# dummy\n' > "$FIX/.ai/skills/dummy/SKILL.md"
 cat > "$FIX/.ai/workflows/mini.yaml" <<'EOF'
 name: mini
