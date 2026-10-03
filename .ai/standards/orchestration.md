@@ -86,6 +86,28 @@ tree has no `app/javascript`, `app/frontend`, `app/assets`, `frontend`, or
 
 `--auto` does not approve gates and does not commit.
 
+## Deterministic verification loop
+
+A phase may opt in with:
+
+```yaml
+verify: auto
+max_attempts: 2
+```
+
+`auto` uses an existing deterministic project check when one is detectable
+(RORCC smoke test, RSpec, or Rails tests). `RORCC_VERIFY_CMD` may explicitly
+provide the check. If no deterministic check exists, verification is skipped
+rather than inventing an LLM reviewer.
+
+On failure, the phase may retry up to `max_attempts` (hard limit: 3). In
+interactive mode the retry requires confirmation; `--auto` retries without a
+prompt. Exhausted verification fails the phase and normal dependency blocking
+applies. Verifier logs live in the existing `.rorcc/runs/<run-id>/` directory.
+
+The first rollout is intentionally limited to the `new-feature` development
+phase. Expand only after real runs show value.
+
 ## Lean context
 
 Workflow-invoked cloud skills send: specialist `purpose` + `SKILL.md` + named
