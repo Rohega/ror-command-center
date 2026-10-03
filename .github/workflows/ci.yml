@@ -28,3 +28,4 @@ jobs:
           bash tests/verification-loop.sh
           bash tests/workflow-resume.sh
           bash tests/workflow-events.sh
+          bash tests/run-audit.sh
