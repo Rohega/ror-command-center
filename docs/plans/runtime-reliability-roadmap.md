@@ -2,6 +2,8 @@
 
 Goal: improve reliability only where it solves a real failure mode. Keep the current deterministic router and native-agent model; do not add a generic graph framework.
 
+Status: Phase 1 is implemented in PR #53 and is being validated before merge.
+
 ## Phase 1 — Verification loop (implement now)
 
 Problem: a phase can finish because the execution unit returned success, without deterministic evidence that the produced code works.
