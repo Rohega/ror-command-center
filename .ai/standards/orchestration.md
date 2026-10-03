@@ -81,7 +81,7 @@ tree has no `app/javascript`, `app/frontend`, `app/assets`, `frontend`, or
 | Flag | Behavior |
 |------|----------|
 | (default) | Prompt `[Enter] run · s skip · q quit` per phase; interactive chat |
-| `--auto` | No per-phase prompt; one-shot model turn per unit; **gates still require a human** |
+| `--auto` | No per-phase prompt; one model turn per unit per attempt; deterministic verification may cause a bounded retry; **gates still require a human** |
 | `--plan` | Router + preflight only. Zero LLM calls. No project writes |
 
 `--auto` does not approve gates and does not commit.
