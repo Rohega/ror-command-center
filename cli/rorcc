@@ -37,6 +37,7 @@ COMMANDS:
   skill <name> [--cloud]  Run a .ai/skills/<name> skill with its responsible agent
   workflow <name> [--plan|--auto|--full|--only ids|--skip ids|--request text|--size S|M|L|XL|--signals names|--cloud]
   workflow resume <run-id|latest> [--auto|--force|--local|--cloud]
+  runs audit [--last N]   Summarize local workflow evidence; read-only
   builder [--plan] [--request text] [--who role] [--data yes|no] [--sign-in yes|no] [--area new|change] [--done text] [--accept]
                           Fixed questions, then new-feature after an explicit accept
   actions <file>          Run file/shell actions; --undo restores the git checkpoint
@@ -65,6 +66,7 @@ EXAMPLES:
   rorcc builder --plan
   rorcc workflow new-feature --auto
   rorcc workflow resume latest
+  rorcc runs audit --last 20
 EOF
 }
 
@@ -137,6 +139,7 @@ main() {
     agent)        . "$RORCC_LIB_DIR/agent.sh";       cmd_agent "$@" ;;
     skill)        . "$RORCC_LIB_DIR/skill.sh";       cmd_skill "$@" ;;
     workflow)     . "$RORCC_LIB_DIR/workflow.sh";    cmd_workflow "$@" ;;
+    runs)         . "$RORCC_LIB_DIR/runs.sh";        cmd_runs "$@" ;;
     builder)      . "$RORCC_LIB_DIR/builder.sh";     cmd_builder "$@" ;;
     actions)      . "$RORCC_LIB_DIR/actions.sh";     cmd_actions "$@" ;;
     security)     . "$RORCC_LIB_DIR/security_pass.sh"; cmd_security "$@" ;;
