@@ -573,7 +573,7 @@ cmd_workflow() {
     fi
     resumed=1
   else
-    run_id="$(date +%Y%m%dT%H%M%S)-$"
+    run_id="$(date +%Y%m%dT%H%M%S)-$$"
     run_dir="$root/.rorcc/runs/$run_id"
     mkdir -p "$run_dir"
     state_file="$run_dir/state.tsv"
